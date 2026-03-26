@@ -48,7 +48,7 @@
                 <li><span>✓</span> 1 Core Integration</li>
                 <li><span>✓</span> Email support</li>
               </ul>
-              <a href="signup.html" class="btn btn-outline bundle-card__btn" style="text-align:center;">Get started</a>
+              <button onclick="window.aikeCheckout.basic()" class="btn btn-outline bundle-card__btn" style="text-align:center; width:100%; cursor:pointer;">Get started</button>
             </div>
 
             <!-- Pro (Recommended) -->
@@ -63,7 +63,7 @@
                 <li><span>✓</span> Premium API webhooks</li>
                 <li><span>✓</span> Priority support</li>
               </ul>
-              <a href="signup.html" class="btn btn-primary bundle-card__btn" style="text-align:center;">Get started →</a>
+              <button onclick="window.aikeCheckout.pro()" class="btn btn-primary bundle-card__btn" style="text-align:center; width:100%; cursor:pointer;">Get started →</button>
             </div>
 
             <!-- Custom -->
@@ -99,8 +99,10 @@
     <div id="footer-placeholder"></div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
   <script src="../assets/js/config.js"></script>
   <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/stripe-checkout.js"></script>
   <script src="../assets/js/bundle.js"></script>
 </body>
 </html>

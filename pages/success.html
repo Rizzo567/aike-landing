@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Successful | aike automation</title>
+  <meta name="description" content="Your Aike subscription is now active." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/components.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/sections.css?v=5" />
+
+  <style>
+    .success-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-xl) var(--space-md);
+      background: var(--color-bg);
+    }
+
+    .success-card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-2xl);
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(168, 85, 247, 0.15);
+      border: 2px solid rgba(168, 85, 247, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-lg);
+      font-size: 1.75rem;
+    }
+
+    .success-heading {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .success-subheading {
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: var(--space-xl);
+    }
+
+    .success-plan-badge {
+      display: inline-block;
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-primary);
+      text-transform: capitalize;
+      margin-bottom: var(--space-xl);
+    }
+
+    .success-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .success-loading {
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+      margin-top: var(--space-md);
+    }
+  </style>
+</head>
+<body>
+  <main class="success-page">
+    <div class="success-card">
+      <div class="success-icon">✓</div>
+      <h1 class="success-heading">You're all set!</h1>
+      <p class="success-subheading">
+        Your subscription is now active. Welcome to Aike — your automation is ready to deploy.
+      </p>
+      <div class="success-plan-badge" id="plan-badge">Loading…</div>
+      <p class="success-loading" id="status-msg">Activating your plan…</p>
+      <div class="success-actions" style="margin-top: var(--space-xl);">
+        <a href="../index.html" class="btn btn-primary">Go to dashboard →</a>
+        <a href="../pages/booking.html" class="btn btn-outline">Book an onboarding call</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script>
+    (async function () {
+      var params = new URLSearchParams(window.location.search);
+      var plan = params.get('plan') || 'basic';
+
+      // Show plan badge
+      var badge = document.getElementById('plan-badge');
+      var statusMsg = document.getElementById('status-msg');
+      badge.textContent = plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan';
+
+      // Init Supabase
+      var sb = window.supabase.createClient(
+        window.AIKE_CONFIG.supabase.url,
+        window.AIKE_CONFIG.supabase.anonKey
+      );
+
+      // Get current user from session (still in localStorage after Stripe redirect)
+      var userResult = await sb.auth.getUser();
+      var user = userResult.data && userResult.data.user ? userResult.data.user : null;
+
+      if (!user) {
+        statusMsg.textContent = 'Plan recorded. Log in to see your account.';
+        return;
+      }
+
+      // Update plan in public.users
+      var updateResult = await sb
+        .from('users')
+        .update({ plan: plan })
+        .eq('id', user.id);
+
+      if (updateResult.error) {
+        statusMsg.textContent = 'Plan activated — refresh your account to see it.';
+      } else {
+        statusMsg.textContent = 'Plan activated successfully.';
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,43 +1,85 @@
 /**
  * AIKE — stripe-checkout.js
  * Redirects to Stripe Payment Links for Basic and Pro plans.
- * No Stripe.js SDK needed — Payment Links are plain URLs.
  */
 
 (function () {
   'use strict';
 
-  async function checkout(plan) {
-    // Use localStorage session — no network request, works everywhere
-    var user = await window.aikeAuth.getSessionUser();
-
-    if (!user) {
-      // Not logged in — send to signup
-      var inPages = window.location.pathname.includes('/pages/');
-      window.location.href = inPages ? 'signup.html' : 'pages/signup.html';
-      return;
+  async function checkout(plan, triggerEl) {
+    // Visual feedback on the button
+    if (triggerEl) {
+      triggerEl.disabled = true;
+      triggerEl._originalText = triggerEl.textContent;
+      triggerEl.textContent = 'Loading…';
     }
 
-    var link = plan === 'pro'
-      ? window.AIKE_CONFIG.stripe.proPaymentLink
-      : window.AIKE_CONFIG.stripe.basicPaymentLink;
-
-    if (!link || link.includes('REPLACE')) {
-      alert('Payment link not configured yet. Add it to config.js.');
-      return;
+    function resetBtn() {
+      if (triggerEl) {
+        triggerEl.disabled = false;
+        triggerEl.textContent = triggerEl._originalText || (plan === 'pro' ? 'Get started →' : 'Get started');
+      }
     }
 
-    // Append user info so Stripe pre-fills email and we can track via client_reference_id
-    var url = link
-      + '?prefilled_email=' + encodeURIComponent(user.email)
-      + '&client_reference_id=' + encodeURIComponent(user.id);
+    try {
+      // Get session — try localStorage first, fallback to network
+      var sb = window.aikeSupabase.getClient();
+      var sessionRes = await sb.auth.getSession();
+      var user = sessionRes.data && sessionRes.data.session
+        ? sessionRes.data.session.user
+        : null;
 
-    window.location.href = url;
+      // If session missing (bfcache edge case), try refreshing it
+      if (!user) {
+        var refreshRes = await sb.auth.refreshSession();
+        user = refreshRes.data && refreshRes.data.session
+          ? refreshRes.data.session.user
+          : null;
+      }
+
+      if (!user) {
+        var inPages = window.location.pathname.includes('/pages/');
+        window.location.href = inPages ? 'signup.html' : 'pages/signup.html';
+        return;
+      }
+
+      var link = plan === 'pro'
+        ? window.AIKE_CONFIG.stripe.proPaymentLink
+        : window.AIKE_CONFIG.stripe.basicPaymentLink;
+
+      if (!link || link.includes('REPLACE')) {
+        alert('Payment link not configured. Add it to config.js.');
+        resetBtn();
+        return;
+      }
+
+      // Build URL with user context
+      var url = link
+        + '?prefilled_email=' + encodeURIComponent(user.email)
+        + '&client_reference_id=' + encodeURIComponent(user.id);
+
+      window.location.href = url;
+
+    } catch (err) {
+      console.error('[aikeCheckout] Error:', err);
+      resetBtn();
+      alert('Something went wrong. Please try again.');
+    }
   }
 
   window.aikeCheckout = {
-    basic: function () { return checkout('basic'); },
-    pro:   function () { return checkout('pro'); }
+    basic: function (el) { return checkout('basic', el); },
+    pro:   function (el) { return checkout('pro', el); }
   };
+
+  // Handle bfcache restore — re-enable any disabled buttons
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) {
+      document.querySelectorAll('button[disabled]').forEach(function (btn) {
+        btn.disabled = false;
+        if (btn._originalText) btn.textContent = btn._originalText;
+      });
+    }
+  });
 
 })();

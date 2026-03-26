@@ -49,6 +49,14 @@
       return (result.data && result.data.user) ? result.data.user : null;
     },
 
+    // Reads session from localStorage — no network request, works on file://
+    getSessionUser: async function () {
+      var result = await getClient().auth.getSession();
+      return (result.data && result.data.session && result.data.session.user)
+        ? result.data.session.user
+        : null;
+    },
+
     /**
      * Fetch public profile (is_admin, plan) for a given user ID.
      * Uses maybeSingle() so missing rows don't throw errors.
@@ -118,7 +126,8 @@
   document.addEventListener('DOMContentLoaded', function () {
     // Wait for bundle.js to inject the header HTML, then wire up
     setTimeout(async function () {
-      var user = await window.aikeAuth.getUser();
+      // getSessionUser reads localStorage — no network, works everywhere
+      var user = await window.aikeAuth.getSessionUser();
       var profile = null;
       if (user) profile = await window.aikeAuth.getProfile(user.id);
       updateHeaderAuthState(user, profile);

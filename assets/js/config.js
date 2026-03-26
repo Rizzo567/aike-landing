@@ -12,7 +12,7 @@ window.AIKE_CONFIG = {
   },
   stripe: {
     publishableKey: 'pk_live_51TFHHB0vGzVFnco6NraggfcNNQ6SrjNBizE6R92oxCkCT3bPcKPwuxwgbEykPwS4Csm1ZOjBVO6jElri4OaDPBfH00OxorIKTx', // pk_test_... or pk_live_...
-    basicPriceId: 'prod_UDj0nS3eqDlgfK',            // price_... for €14/mo
-    proPriceId: 'prod_UDj1OUHD4PoIT8'                 // price_... for €49/mo
+    basicPriceId: 'price_1TFHYa0vGzVFnco62JmjVE0Z',            // price_... for €14/mo
+    proPriceId: 'price_1TFHYz0vGzVFnco6MPM8vVf8'                 // price_... for €49/mo
   }
 };

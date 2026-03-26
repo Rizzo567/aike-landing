@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Preview | aike automation</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); background: var(--color-bg); color: var(--color-text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+    .admin-layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+    .admin-sidebar { background: var(--color-surface); border-right: 1px solid var(--color-border); padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 2rem; }
+    .admin-brand { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; padding: 0 0.5rem; }
+    .admin-brand img { width: 24px; height: 24px; }
+    .admin-brand span { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--color-white); letter-spacing: -0.02em; }
+    .admin-brand .admin-tag { font-size: 0.65rem; font-weight: 600; font-family: var(--font-sans); color: var(--color-primary); background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 4px; padding: 1px 5px; letter-spacing: 0.04em; text-transform: uppercase; }
+    .admin-nav { display: flex; flex-direction: column; gap: 0.25rem; }
+    .admin-nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.75rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; color: var(--color-text-muted); cursor: pointer; transition: background 150ms, color 150ms; text-decoration: none; }
+    .admin-nav-item.active, .admin-nav-item:hover { background: rgba(168, 85, 247, 0.1); color: var(--color-white); }
+    .admin-nav-item .nav-icon { font-size: 1rem; width: 18px; text-align: center; }
+    .admin-sidebar-footer { margin-top: auto; }
+    .admin-logout-btn { width: 100%; padding: 0.6rem 0.75rem; background: transparent; border: 1px solid var(--color-border); border-radius: 8px; color: var(--color-text-muted); font-family: var(--font-sans); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: border-color 150ms, color 150ms; text-align: left; display: flex; align-items: center; gap: 0.6rem; }
+    .admin-logout-btn:hover { border-color: rgba(239, 68, 68, 0.4); color: #f87171; }
+    .admin-main { padding: 2rem 2.5rem; overflow-y: auto; }
+    .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+    .admin-header-title { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--color-white); letter-spacing: -0.02em; }
+    .admin-header-sub { font-size: 0.875rem; color: var(--color-text-muted); margin-top: 0.2rem; }
+    .admin-user-chip { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--color-text-muted); }
+    .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--color-primary); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem; color: #fff; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; padding: 1.25rem 1.5rem; }
+    .stat-label { font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); margin-bottom: 0.5rem; }
+    .stat-value { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; color: var(--color-white); line-height: 1; }
+    .stat-value.purple { color: var(--color-primary); }
+    .stat-sub { font-size: 0.75rem; color: var(--color-text-muted); margin-top: 0.35rem; }
+    .section-heading { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; color: var(--color-white); margin-bottom: 1rem; }
+    .admin-table-wrap { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; overflow: hidden; }
+    .admin-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .admin-table th { padding: 0.75rem 1.25rem; text-align: left; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); background: rgba(255,255,255,0.02); }
+    .admin-table td { padding: 0.875rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--color-text); }
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .plan-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: capitalize; }
+    .plan-badge.free { background: rgba(156,163,175,0.12); color: #9ca3af; }
+    .plan-badge.basic { background: rgba(59,130,246,0.12); color: #60a5fa; }
+    .plan-badge.pro { background: rgba(168,85,247,0.15); color: #c084fc; }
+    .plan-badge.custom { background: rgba(251,191,36,0.12); color: #fbbf24; }
+    .email-cell { color: var(--color-white); font-weight: 500; }
+    .admin-loading { text-align: center; padding: 3rem; color: var(--color-text-muted); }
+    .admin-spinner { display: inline-block; width: 24px; height: 24px; border: 2px solid var(--color-border); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 0.75rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #admin-gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--color-bg); }
+    #admin-app { display: none; }
+    @media (max-width: 768px) { .admin-layout { grid-template-columns: 1fr; } .admin-sidebar { display: none; } .stats-grid { grid-template-columns: 1fr 1fr; } .admin-main { padding: 1.25rem; } }
+  </style>
+</head>
+<body>
+  <div id="admin-gate">
+    <div style="text-align:center;">
+      <div class="admin-spinner"></div>
+      <div style="color:var(--color-text-muted); font-size:0.875rem; margin-top:0.75rem;">Verifying access…</div>
+    </div>
+  </div>
+
+  <div id="admin-app">
+    <div class="admin-layout">
+      <!-- Sidebar -->
+      <aside class="admin-sidebar">
+        <a href="../index.html" class="admin-brand">
+          <img src="../assets/images/logo.png" alt="Aike" />
+          <span>aike</span>
+          <span class="admin-tag">Admin</span>
+        </a>
+
+        <nav class="admin-nav">
+          <a class="admin-nav-item active" href="#">
+            <span class="nav-icon">◈</span> Overview
+          </a>
+          <a class="admin-nav-item" href="../index.html">
+            <span class="nav-icon">↗</span> View Site
+          </a>
+        </nav>
+
+        <div class="admin-sidebar-footer">
+          <button class="admin-logout-btn" id="admin-logout-btn">
+            <span>⇤</span> Log out
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="admin-main">
+        <div class="admin-header">
+          <div>
+            <div class="admin-header-title">Dashboard</div>
+            <div class="admin-header-sub" id="admin-date"></div>
+          </div>
+          <div class="admin-user-chip">
+            <div class="admin-avatar" id="admin-avatar-initial">A</div>
+            <span id="admin-email-label"></span>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Users</div>
+            <div class="stat-value" id="stat-users">—</div>
+            <div class="stat-sub">registered accounts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Visits</div>
+            <div class="stat-value" id="stat-visits">—</div>
+            <div class="stat-sub">all-time page views</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Now</div>
+            <div class="stat-value purple" id="stat-active">—</div>
+            <div class="stat-sub">visits in last 5 min</div>
+          </div>
+        </div>
+
+        <div class="section-heading">All Users</div>
+        <div class="admin-table-wrap">
+          <div id="users-loading" class="admin-loading">
+            <div class="admin-spinner"></div>
+            <div>Loading users…</div>
+          </div>
+          <table class="admin-table" id="users-table" style="display:none;">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Plan</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+      document.getElementById('admin-gate').style.display = 'none';
+      document.getElementById('admin-app').style.display = 'block';
+
+      document.getElementById('admin-email-label').textContent = 'admin@aike.com';
+      document.getElementById('admin-avatar-initial').textContent = 'A';
+      document.getElementById('admin-date').textContent = new Date().toLocaleDateString('en-GB', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+
+      document.getElementById('stat-users').textContent = '145';
+      document.getElementById('stat-visits').textContent = '12,450';
+      document.getElementById('stat-active').textContent = '8';
+
+      document.getElementById('users-loading').style.display = 'none';
+      var tbody = document.getElementById('users-tbody');
+      tbody.innerHTML = [
+        '<tr><td class="email-cell">admin@aike.com</td><td><span class="plan-badge pro">pro</span></td><td style="color:var(--color-text-muted);">26 Mar 2026</td></tr>',
+        '<tr><td class="email-cell">client@company.com</td><td><span class="plan-badge basic">basic</span></td><td style="color:var(--color-text-muted);">25 Mar 2026</td></tr>',
+        '<tr><td class="email-cell">user@gmail.com</td><td><span class="plan-badge free">free</span></td><td style="color:var(--color-text-muted);">20 Mar 2026</td></tr>',
+        '<tr><td class="email-cell">contact@startup.io</td><td><span class="plan-badge custom">custom</span></td><td style="color:var(--color-text-muted);">18 Mar 2026</td></tr>'
+      ].join('');
+      document.getElementById('users-table').style.display = 'table';
+    })();
+  </script>
+</body>
+</html>

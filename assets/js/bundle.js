@@ -17,10 +17,28 @@ const getHeaderHTML = (b) => `
     </nav>
     <div class="header__actions">
       <a id="auth-login-btn" href="${b}pages/login.html" class="btn btn-outline" style="border-color:transparent; padding: 0.5rem 1rem;">Log in</a>
-      <div id="auth-profile-wrapper" style="display:none; align-items:center; gap:0.75rem;">
-        <button id="auth-profile-btn" aria-label="Account menu" aria-haspopup="true" data-dropdown="auth-menu" style="width:36px; height:36px; border-radius:50%; background:var(--color-primary); border:2px solid rgba(168,85,247,0.4); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.875rem; font-weight:600; color:#fff; font-family:var(--font-sans);">
+      <div id="auth-profile-wrapper" style="display:none; align-items:center; position:relative;">
+        <button id="auth-profile-btn" aria-label="Account menu" aria-haspopup="true" aria-expanded="false" style="width:36px; height:36px; border-radius:50%; background:var(--color-primary); border:2px solid rgba(168,85,247,0.4); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.875rem; font-weight:600; color:#fff; font-family:var(--font-sans);">
           <span id="auth-profile-initial">?</span>
         </button>
+        <div id="auth-dropdown" role="menu" aria-label="Account menu" style="display:none; position:absolute; top:calc(100% + 10px); right:0; background:#1a1a1a; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:0.375rem; min-width:210px; z-index:9999; box-shadow:0 8px 40px rgba(0,0,0,0.6);">
+          <div id="auth-dropdown-admin" style="display:none;">
+            <a href="${b}pages/admin.html" role="menuitem" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.875rem;border-radius:8px;color:#c084fc;text-decoration:none;font-size:0.875rem;font-weight:600;transition:background 150ms;" onmouseover="this.style.background='rgba(168,85,247,0.12)'" onmouseout="this.style.background='transparent'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Admin Dashboard
+            </a>
+            <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.25rem 0.5rem;"></div>
+          </div>
+          <a href="${b}pages/pricing.html" role="menuitem" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.875rem;border-radius:8px;color:#9ca3af;text-decoration:none;font-size:0.875rem;font-weight:500;transition:background 150ms;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+            My Plan
+          </a>
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:0.25rem 0.5rem;"></div>
+          <button id="auth-logout-btn" role="menuitem" style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.875rem;border-radius:8px;color:#9ca3af;font-size:0.875rem;font-weight:500;background:transparent;border:none;cursor:pointer;width:100%;text-align:left;transition:background 150ms,color 150ms;" onmouseover="this.style.background='rgba(239,68,68,0.08)';this.style.color='#f87171'" onmouseout="this.style.background='transparent';this.style.color='#9ca3af'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Log out
+          </button>
+        </div>
       </div>
       <a href="${b}pages/booking.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Book a Call</a>
     </div>

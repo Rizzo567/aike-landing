@@ -1,14 +1,14 @@
 /**
  * AIKE — auth.js
- * Supabase auth: signup, login, logout, session persistence, header state.
+ * Supabase auth: signup, login, logout, session, header state, profile dropdown.
  * Loaded after config.js and supabase CDN, before bundle.js.
  */
 
 (function () {
   'use strict';
 
-  // Init Supabase client (window.supabase set by CDN, window.AIKE_CONFIG set by config.js)
   var _client = null;
+  var _profileCache = null;
 
   function getClient() {
     if (!_client) {
@@ -20,66 +20,66 @@
     return _client;
   }
 
-  // Expose client globally so bundle.js and future scripts can use it
   window.aikeSupabase = { getClient: getClient };
 
   // ── Auth actions ────────────────────────────────────────────
 
   window.aikeAuth = {
 
-    /**
-     * Sign up with email + password.
-     * @returns {Promise<{error: string|null}>}
-     */
     signUp: async function (email, password) {
-      var sb = getClient();
-      var result = await sb.auth.signUp({ email: email, password: password });
+      var result = await getClient().auth.signUp({ email: email, password: password });
       if (result.error) return { error: result.error.message };
       return { error: null };
     },
 
-    /**
-     * Sign in with email + password.
-     * @returns {Promise<{error: string|null}>}
-     */
     signIn: async function (email, password) {
-      var sb = getClient();
-      var result = await sb.auth.signInWithPassword({ email: email, password: password });
+      var result = await getClient().auth.signInWithPassword({ email: email, password: password });
       if (result.error) return { error: result.error.message };
       return { error: null };
     },
 
-    /**
-     * Sign out current user.
-     */
     signOut: async function () {
-      var sb = getClient();
-      await sb.auth.signOut();
-      updateHeaderAuthState(null);
+      _profileCache = null;
+      await getClient().auth.signOut();
+      updateHeaderAuthState(null, null);
+    },
+
+    getUser: async function () {
+      var result = await getClient().auth.getUser();
+      return (result.data && result.data.user) ? result.data.user : null;
     },
 
     /**
-     * Get current session user (null if not logged in).
-     * @returns {Promise<object|null>}
+     * Fetch public profile (is_admin, plan) for a given user ID.
+     * Uses maybeSingle() so missing rows don't throw errors.
      */
-    getUser: async function () {
-      var sb = getClient();
-      var result = await sb.auth.getUser();
-      return result.data && result.data.user ? result.data.user : null;
+    getProfile: async function (userId) {
+      if (_profileCache) return _profileCache;
+      var result = await getClient()
+        .from('users')
+        .select('is_admin, plan, email')
+        .eq('id', userId)
+        .maybeSingle();
+      if (result.error) {
+        console.warn('[aikeAuth] getProfile error:', result.error.message);
+        return null;
+      }
+      _profileCache = result.data || null;
+      return _profileCache;
     }
   };
 
-  // ── Header auth state ────────────────────────────────────────
+  // ── Header / dropdown ────────────────────────────────────────
 
   function getInitials(email) {
-    if (!email) return '?';
-    return email.charAt(0).toUpperCase();
+    return email ? email.charAt(0).toUpperCase() : '?';
   }
 
-  function updateHeaderAuthState(user) {
-    var loginBtn = document.getElementById('auth-login-btn');
+  function updateHeaderAuthState(user, profile) {
+    var loginBtn       = document.getElementById('auth-login-btn');
     var profileWrapper = document.getElementById('auth-profile-wrapper');
     var profileInitial = document.getElementById('auth-profile-initial');
+    var adminSection   = document.getElementById('auth-dropdown-admin');
 
     if (!loginBtn || !profileWrapper) return;
 
@@ -87,36 +87,77 @@
       loginBtn.style.display = 'none';
       profileWrapper.style.display = 'flex';
       if (profileInitial) profileInitial.textContent = getInitials(user.email);
+      if (adminSection) {
+        adminSection.style.display = (profile && profile.is_admin) ? 'block' : 'none';
+      }
     } else {
       loginBtn.style.display = '';
       profileWrapper.style.display = 'none';
+      closeDropdown();
     }
   }
 
-  // ── Bootstrap on DOMContentLoaded ───────────────────────────
+  function closeDropdown() {
+    var dropdown = document.getElementById('auth-dropdown');
+    var btn = document.getElementById('auth-profile-btn');
+    if (dropdown) dropdown.style.display = 'none';
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleDropdown() {
+    var dropdown = document.getElementById('auth-dropdown');
+    var btn = document.getElementById('auth-profile-btn');
+    if (!dropdown) return;
+    var isOpen = dropdown.style.display === 'block';
+    dropdown.style.display = isOpen ? 'none' : 'block';
+    if (btn) btn.setAttribute('aria-expanded', String(!isOpen));
+  }
+
+  // ── Bootstrap ─────────────────────────────────────────────────
 
   document.addEventListener('DOMContentLoaded', function () {
-    // Check session after header is injected by bundle.js (use a small timeout)
+    // Wait for bundle.js to inject the header HTML, then wire up
     setTimeout(async function () {
       var user = await window.aikeAuth.getUser();
-      updateHeaderAuthState(user);
+      var profile = null;
+      if (user) profile = await window.aikeAuth.getProfile(user.id);
+      updateHeaderAuthState(user, profile);
 
-      // Attach logout handler if profile button exists
+      // Profile button → toggle dropdown (NOT logout)
       var profileBtn = document.getElementById('auth-profile-btn');
       if (profileBtn) {
-        profileBtn.addEventListener('click', async function () {
-          await window.aikeAuth.signOut();
-          window.location.href = window.location.pathname.includes('/pages/')
-            ? '../index.html'
-            : 'index.html';
+        profileBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          toggleDropdown();
         });
       }
-    }, 50);
 
-    // Listen for auth state changes (e.g. login in another tab)
-    getClient().auth.onAuthStateChange(function (_event, session) {
-      var user = session && session.user ? session.user : null;
-      updateHeaderAuthState(user);
+      // Logout inside dropdown
+      var logoutBtn = document.getElementById('auth-logout-btn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async function () {
+          closeDropdown();
+          await window.aikeAuth.signOut();
+          var isPage = window.location.pathname.includes('/pages/');
+          window.location.href = isPage ? '../index.html' : 'index.html';
+        });
+      }
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function (e) {
+        var wrapper = document.getElementById('auth-profile-wrapper');
+        if (wrapper && !wrapper.contains(e.target)) closeDropdown();
+      });
+
+    }, 80);
+
+    // Sync across tabs
+    getClient().auth.onAuthStateChange(async function (_event, session) {
+      _profileCache = null;
+      var user = (session && session.user) ? session.user : null;
+      var profile = null;
+      if (user) profile = await window.aikeAuth.getProfile(user.id);
+      updateHeaderAuthState(user, profile);
     });
   });
 

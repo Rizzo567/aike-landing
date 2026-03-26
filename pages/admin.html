@@ -423,12 +423,22 @@
         .from('users')
         .select('is_admin, email')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
+
+      if (profileResult.error) {
+        console.error('[Admin] Profile fetch error:', profileResult.error.message);
+      }
 
       var profile = profileResult.data;
 
-      if (!profile || !profile.is_admin) {
-        // Not an admin — redirect away
+      if (!profile) {
+        // Row missing — user signed up before trigger was created
+        // Show a helpful message instead of silent redirect
+        document.getElementById('admin-gate').innerHTML = '<div style="text-align:center;padding:2rem;color:#f87171;font-size:0.9rem;max-width:400px;line-height:1.6;">Your user profile row is missing.<br><br>Run this in Supabase SQL Editor:<br><code style="background:#1a1a1a;padding:0.5rem;border-radius:6px;display:block;margin-top:0.75rem;color:#c084fc;font-size:0.8rem;">INSERT INTO public.users (id, email, plan, is_admin)<br>SELECT id, email, \'free\', true<br>FROM auth.users<br>WHERE email = \'' + escHtml(user.email) + '\';</code></div>';
+        return;
+      }
+
+      if (!profile.is_admin) {
         window.location.href = '../index.html';
         return;
       }

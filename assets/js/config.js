@@ -11,8 +11,10 @@ window.AIKE_CONFIG = {
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imljemt4bGxpZ2ZlbHFtY2RkYmRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NDE3MTksImV4cCI6MjA5MDExNzcxOX0.pI8qlZetECLe8pOrj7qpJpmMmIysfNzwXb2WiVzrz4c'  // Settings > API > anon public
   },
   stripe: {
-    publishableKey: 'pk_live_51TFHHB0vGzVFnco6NraggfcNNQ6SrjNBizE6R92oxCkCT3bPcKPwuxwgbEykPwS4Csm1ZOjBVO6jElri4OaDPBfH00OxorIKTx', // pk_test_... or pk_live_...
-    basicPriceId: 'price_1TFHYa0vGzVFnco62JmjVE0Z',            // price_... for €14/mo
-    proPriceId: 'price_1TFHYz0vGzVFnco6MPM8vVf8'                 // price_... for €49/mo
+    publishableKey: 'pk_live_51TFHHB0vGzVFnco6NraggfcNNQ6SrjNBizE6R92oxCkCT3bPcKPwuxwgbEykPwS4Csm1ZOjBVO6jElri4OaDPBfH00OxorIKTx',
+    basicPriceId: 'price_1TFHYa0vGzVFnco62JmjVE0Z',
+    proPriceId: 'price_1TFHYz0vGzVFnco6MPM8vVf8',
+    basicPaymentLink: 'REPLACE_WITH_BASIC_PAYMENT_LINK',  // https://buy.stripe.com/xxx
+    proPaymentLink:   'REPLACE_WITH_PRO_PAYMENT_LINK'    // https://buy.stripe.com/xxx
   }
 };

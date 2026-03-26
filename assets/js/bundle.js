@@ -16,7 +16,12 @@ const getHeaderHTML = (b) => `
       <a href="${b}pages/booking.html" class="header__link">Booking</a>
     </nav>
     <div class="header__actions">
-      <a href="${b}pages/pricing.html" class="btn btn-outline" style="border-color:transparent; padding: 0.5rem 1rem;">Log in</a>
+      <a id="auth-login-btn" href="${b}pages/login.html" class="btn btn-outline" style="border-color:transparent; padding: 0.5rem 1rem;">Log in</a>
+      <div id="auth-profile-wrapper" style="display:none; align-items:center; gap:0.75rem;">
+        <button id="auth-profile-btn" aria-label="Account menu" aria-haspopup="true" data-dropdown="auth-menu" style="width:36px; height:36px; border-radius:50%; background:var(--color-primary); border:2px solid rgba(168,85,247,0.4); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.875rem; font-weight:600; color:#fff; font-family:var(--font-sans);">
+          <span id="auth-profile-initial">?</span>
+        </button>
+      </div>
       <a href="${b}pages/booking.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Book a Call</a>
     </div>
   </div>

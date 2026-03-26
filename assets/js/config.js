@@ -14,7 +14,7 @@ window.AIKE_CONFIG = {
     publishableKey: 'pk_live_51TFHHB0vGzVFnco6NraggfcNNQ6SrjNBizE6R92oxCkCT3bPcKPwuxwgbEykPwS4Csm1ZOjBVO6jElri4OaDPBfH00OxorIKTx',
     basicPriceId: 'price_1TFHYa0vGzVFnco62JmjVE0Z',
     proPriceId: 'price_1TFHYz0vGzVFnco6MPM8vVf8',
-    basicPaymentLink: 'https://buy.stripe.com/eVq14f1Rb6iQcfQ5Va8og00',  // https://buy.stripe.com/xxx
-    proPaymentLink: 'https://buy.stripe.com/5kA2971Rbc9QcfQ5V'    // https://buy.stripe.com/xxx
+    basicPaymentLink: 'https://buy.stripe.com/7sYeV57bvcHedjU4R68og02',
+    proPaymentLink: 'https://buy.stripe.com/9B64granHePm4No4R68og01'    // https://buy.stripe.com/xxx
   }
 };

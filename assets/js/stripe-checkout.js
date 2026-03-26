@@ -1,85 +1,47 @@
 /**
  * AIKE — stripe-checkout.js
- * Redirects to Stripe Payment Links for Basic and Pro plans.
+ * Redirects to Stripe Payment Links. Reads session synchronously from
+ * localStorage — no async, no Promises, cannot hang after back-navigation.
  */
 
 (function () {
   'use strict';
 
-  async function checkout(plan, triggerEl) {
-    // Visual feedback on the button
-    if (triggerEl) {
-      triggerEl.disabled = true;
-      triggerEl._originalText = triggerEl.textContent;
-      triggerEl.textContent = 'Loading…';
-    }
-
-    function resetBtn() {
-      if (triggerEl) {
-        triggerEl.disabled = false;
-        triggerEl.textContent = triggerEl._originalText || (plan === 'pro' ? 'Get started →' : 'Get started');
-      }
-    }
-
+  // Read Supabase session directly from localStorage (synchronous, always works)
+  function getStoredUser() {
     try {
-      // Get session — try localStorage first, fallback to network
-      var sb = window.aikeSupabase.getClient();
-      var sessionRes = await sb.auth.getSession();
-      var user = sessionRes.data && sessionRes.data.session
-        ? sessionRes.data.session.user
-        : null;
-
-      // If session missing (bfcache edge case), try refreshing it
-      if (!user) {
-        var refreshRes = await sb.auth.refreshSession();
-        user = refreshRes.data && refreshRes.data.session
-          ? refreshRes.data.session.user
-          : null;
-      }
-
-      if (!user) {
-        var inPages = window.location.pathname.includes('/pages/');
-        window.location.href = inPages ? 'signup.html' : 'pages/signup.html';
-        return;
-      }
-
-      var link = plan === 'pro'
-        ? window.AIKE_CONFIG.stripe.proPaymentLink
-        : window.AIKE_CONFIG.stripe.basicPaymentLink;
-
-      if (!link || link.includes('REPLACE')) {
-        alert('Payment link not configured. Add it to config.js.');
-        resetBtn();
-        return;
-      }
-
-      // Build URL with user context
-      var url = link
-        + '?prefilled_email=' + encodeURIComponent(user.email)
-        + '&client_reference_id=' + encodeURIComponent(user.id);
-
-      window.location.href = url;
-
-    } catch (err) {
-      console.error('[aikeCheckout] Error:', err);
-      resetBtn();
-      alert('Something went wrong. Please try again.');
+      var projectRef = window.AIKE_CONFIG.supabase.url.split('//')[1].split('.')[0];
+      var key = 'sb-' + projectRef + '-auth-token';
+      var raw = localStorage.getItem(key);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      return (parsed && parsed.user) ? parsed.user : null;
+    } catch (e) {
+      return null;
     }
   }
 
-  window.aikeCheckout = {
-    basic: function (el) { return checkout('basic', el); },
-    pro:   function (el) { return checkout('pro', el); }
-  };
+  function checkout(plan) {
+    var user = getStoredUser();
 
-  // Handle bfcache restore — re-enable any disabled buttons
-  window.addEventListener('pageshow', function (e) {
-    if (e.persisted) {
-      document.querySelectorAll('button[disabled]').forEach(function (btn) {
-        btn.disabled = false;
-        if (btn._originalText) btn.textContent = btn._originalText;
-      });
+    if (!user) {
+      var inPages = window.location.pathname.includes('/pages/');
+      window.location.href = inPages ? 'signup.html' : 'pages/signup.html';
+      return;
     }
-  });
+
+    var link = plan === 'pro'
+      ? window.AIKE_CONFIG.stripe.proPaymentLink
+      : window.AIKE_CONFIG.stripe.basicPaymentLink;
+
+    window.location.href = link
+      + '?prefilled_email=' + encodeURIComponent(user.email)
+      + '&client_reference_id=' + encodeURIComponent(user.id);
+  }
+
+  window.aikeCheckout = {
+    basic: function () { checkout('basic'); },
+    pro:   function () { checkout('pro'); }
+  };
 
 })();

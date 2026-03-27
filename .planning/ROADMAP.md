@@ -10,9 +10,9 @@
 ## Phases
 
 - [x] **Phase 1: Foundation** — Supabase + Stripe accounts configured, deployment live, shared config wired in (completed 2026-03-27)
-- [ ] **Phase 2: Auth + Pricing UI** — Users can sign up, log in, log out; pricing is consistent; header reflects auth state
-- [ ] **Phase 3: Stripe Payments** — Users can pay for plans via Stripe Checkout; plan syncs to Supabase on success
-- [ ] **Phase 4: Admin Dashboard + Analytics** — Admin can view all users, plans, and site analytics behind a protected page
+- [x] **Phase 2: Auth + Pricing UI** — Users can sign up, log in, log out; pricing is consistent; header reflects auth state (completed 2026-03-27)
+- [x] **Phase 3: Stripe Payments** — Users can pay for plans via Stripe Checkout; plan syncs to Supabase on success (completed 2026-03-27)
+- [x] **Phase 4: Admin Dashboard + Analytics** — Admin can view all users, plans, and site analytics behind a protected page (completed 2026-03-27)
 
 ---
 
@@ -83,10 +83,10 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/? | Complete    | 2026-03-27 |
-| 2. Auth + Pricing UI | 0/? | Not started | - |
-| 3. Stripe Payments | 0/? | Not started | - |
-| 4. Admin Dashboard + Analytics | 0/? | Not started | - |
+| 1. Foundation | 1/1 | Complete | 2026-03-27 |
+| 2. Auth + Pricing UI | 1/1 | Complete | 2026-03-27 |
+| 3. Stripe Payments | 1/1 | Complete | 2026-03-27 |
+| 4. Admin Dashboard + Analytics | 1/1 | Complete | 2026-03-27 |
 
 ---
 
@@ -94,37 +94,37 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 1 | Pending |
-| INFRA-02 | Phase 1 | Pending |
-| INFRA-03 | Phase 1 | Pending |
-| INFRA-04 | Phase 1 | Pending |
-| INFRA-05 | Phase 1 | Pending |
-| AUTH-01 | Phase 2 | Pending |
-| AUTH-02 | Phase 2 | Pending |
-| AUTH-03 | Phase 2 | Pending |
-| AUTH-04 | Phase 2 | Pending |
-| AUTH-05 | Phase 2 | Pending |
-| AUTH-06 | Phase 2 | Pending |
-| AUTH-07 | Phase 2 | Pending |
-| PRICE-01 | Phase 2 | Pending |
-| PRICE-02 | Phase 2 | Pending |
-| PRICE-03 | Phase 2 | Pending |
-| NAV-01 | Phase 2 | Pending |
-| NAV-02 | Phase 2 | Pending |
-| NAV-03 | Phase 2 | Pending |
-| STRIPE-01 | Phase 3 | Pending |
-| STRIPE-02 | Phase 3 | Pending |
-| STRIPE-03 | Phase 3 | Pending |
-| STRIPE-04 | Phase 3 | Pending |
-| STRIPE-05 | Phase 3 | Pending |
-| ADMIN-01 | Phase 4 | Pending |
-| ADMIN-02 | Phase 4 | Pending |
-| ADMIN-03 | Phase 4 | Pending |
-| ADMIN-04 | Phase 4 | Pending |
-| ADMIN-05 | Phase 4 | Pending |
-| ADMIN-06 | Phase 4 | Pending |
-| ANALYTICS-01 | Phase 4 | Pending |
-| ANALYTICS-02 | Phase 4 | Pending |
+| INFRA-01 | Phase 1 | Complete |
+| INFRA-02 | Phase 1 | Complete |
+| INFRA-03 | Phase 1 | Complete |
+| INFRA-04 | Phase 1 | Complete |
+| INFRA-05 | Phase 1 | Complete |
+| AUTH-01 | Phase 2 | Complete |
+| AUTH-02 | Phase 2 | Complete |
+| AUTH-03 | Phase 2 | Complete |
+| AUTH-04 | Phase 2 | Complete |
+| AUTH-05 | Phase 2 | Complete |
+| AUTH-06 | Phase 2 | Complete |
+| AUTH-07 | Phase 2 | Complete |
+| PRICE-01 | Phase 2 | Complete |
+| PRICE-02 | Phase 2 | Complete |
+| PRICE-03 | Phase 2 | Complete |
+| NAV-01 | Phase 2 | Complete |
+| NAV-02 | Phase 2 | Complete |
+| NAV-03 | Phase 2 | Complete |
+| STRIPE-01 | Phase 3 | Complete |
+| STRIPE-02 | Phase 3 | Complete |
+| STRIPE-03 | Phase 3 | Complete |
+| STRIPE-04 | Phase 3 | Complete |
+| STRIPE-05 | Phase 3 | Complete |
+| ADMIN-01 | Phase 4 | Complete |
+| ADMIN-02 | Phase 4 | Complete |
+| ADMIN-03 | Phase 4 | Complete |
+| ADMIN-04 | Phase 4 | Complete |
+| ADMIN-05 | Phase 4 | Complete |
+| ADMIN-06 | Phase 4 | Complete |
+| ANALYTICS-01 | Phase 4 | Complete |
+| ANALYTICS-02 | Phase 4 | Complete |
 
 **v1 requirements: 27 mapped / 27 total — no orphans**
 

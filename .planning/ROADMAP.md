@@ -9,7 +9,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Foundation** — Supabase + Stripe accounts configured, deployment live, shared config wired in
+- [x] **Phase 1: Foundation** — Supabase + Stripe accounts configured, deployment live, shared config wired in (completed 2026-03-27)
 - [ ] **Phase 2: Auth + Pricing UI** — Users can sign up, log in, log out; pricing is consistent; header reflects auth state
 - [ ] **Phase 3: Stripe Payments** — Users can pay for plans via Stripe Checkout; plan syncs to Supabase on success
 - [ ] **Phase 4: Admin Dashboard + Analytics** — Admin can view all users, plans, and site analytics behind a protected page
@@ -83,7 +83,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/? | Not started | - |
+| 1. Foundation | 0/? | Complete    | 2026-03-27 |
 | 2. Auth + Pricing UI | 0/? | Not started | - |
 | 3. Stripe Payments | 0/? | Not started | - |
 | 4. Admin Dashboard + Analytics | 0/? | Not started | - |

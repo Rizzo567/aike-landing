@@ -114,16 +114,20 @@ export default async function handler(request) {
     systemPrompt += '\n\nCONTESTO AGGIUNTIVO:\n' + skillContext;
   }
 
+  const ANTHROPIC_MODELS = ['claude-sonnet-4-6'];
+  const GEMINI_MODELS    = ['gemini-2.5-flash', 'gemini-2.5-pro'];
+  const OPENAI_MODELS    = ['gpt-4o', 'gpt-4.1'];
+
   // ── Non-streaming path (backward compatibility) ────────────────────────────
   if (!useStream) {
     try {
       let content;
-      if (model === 'claude-sonnet-4-6') {
-        content = await callAnthropic(messages, systemPrompt);
-      } else if (model === 'gemini-2.5-flash') {
-        content = await callGemini(messages, systemPrompt);
-      } else if (model === 'gpt-4o') {
-        content = await callOpenAI(messages, systemPrompt);
+      if (ANTHROPIC_MODELS.includes(model)) {
+        content = await callAnthropic(messages, systemPrompt, model);
+      } else if (GEMINI_MODELS.includes(model)) {
+        content = await callGemini(messages, systemPrompt, model);
+      } else if (OPENAI_MODELS.includes(model)) {
+        content = await callOpenAI(messages, systemPrompt, model);
       } else {
         return jsonResponse({ error: `Unknown model: ${model}` }, 400);
       }
@@ -136,7 +140,7 @@ export default async function handler(request) {
   }
 
   // ── Streaming path ─────────────────────────────────────────────────────────
-  if (model !== 'claude-sonnet-4-6' && model !== 'gemini-2.5-flash' && model !== 'gpt-4o') {
+  if (!ANTHROPIC_MODELS.includes(model) && !GEMINI_MODELS.includes(model) && !OPENAI_MODELS.includes(model)) {
     return jsonResponse({ error: `Unknown model: ${model}` }, 400);
   }
 
@@ -156,12 +160,12 @@ export default async function handler(request) {
   // Run streaming in background, return SSE response immediately
   (async () => {
     try {
-      if (model === 'claude-sonnet-4-6') {
-        await streamAnthropic(messages, systemPrompt, emit);
-      } else if (model === 'gemini-2.5-flash') {
-        await streamGemini(messages, systemPrompt, emit);
-      } else if (model === 'gpt-4o') {
-        await streamOpenAI(messages, systemPrompt, emit);
+      if (ANTHROPIC_MODELS.includes(model)) {
+        await streamAnthropic(messages, systemPrompt, emit, model);
+      } else if (GEMINI_MODELS.includes(model)) {
+        await streamGemini(messages, systemPrompt, emit, model);
+      } else if (OPENAI_MODELS.includes(model)) {
+        await streamOpenAI(messages, systemPrompt, emit, model);
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Streaming error';
@@ -180,7 +184,7 @@ export default async function handler(request) {
 }
 
 // ── Anthropic (Claude) — non-streaming ────────────────────────────────────────
-async function callAnthropic(messages, systemPrompt) {
+async function callAnthropic(messages, systemPrompt, model = 'claude-sonnet-4-6') {
   const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
   if (!apiKey) {
     throw new Error(
@@ -196,7 +200,7 @@ async function callAnthropic(messages, systemPrompt) {
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
+      model,
       max_tokens: 1500,
       system: systemPrompt,
       messages,
@@ -213,7 +217,7 @@ async function callAnthropic(messages, systemPrompt) {
 }
 
 // ── Anthropic (Claude) — streaming ────────────────────────────────────────────
-async function streamAnthropic(messages, systemPrompt, emit) {
+async function streamAnthropic(messages, systemPrompt, emit, model = 'claude-sonnet-4-6') {
   const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
   if (!apiKey) {
     throw new Error(
@@ -229,7 +233,7 @@ async function streamAnthropic(messages, systemPrompt, emit) {
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
+      model,
       max_tokens: 1500,
       system: systemPrompt,
       messages,
@@ -250,7 +254,7 @@ async function streamAnthropic(messages, systemPrompt, emit) {
 }
 
 // ── Google Gemini — non-streaming ─────────────────────────────────────────────
-async function callGemini(messages, systemPrompt) {
+async function callGemini(messages, systemPrompt, model = 'gemini-2.5-flash') {
   const apiKey = Deno.env.get('GEMINI_API_KEY');
   if (!apiKey) {
     throw new Error(
@@ -259,7 +263,7 @@ async function callGemini(messages, systemPrompt) {
   }
 
   const contents = buildGeminiContents(messages);
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -286,7 +290,7 @@ async function callGemini(messages, systemPrompt) {
 }
 
 // ── Google Gemini — streaming ─────────────────────────────────────────────────
-async function streamGemini(messages, systemPrompt, emit) {
+async function streamGemini(messages, systemPrompt, emit, model = 'gemini-2.5-flash') {
   const apiKey = Deno.env.get('GEMINI_API_KEY');
   if (!apiKey) {
     throw new Error(
@@ -295,7 +299,7 @@ async function streamGemini(messages, systemPrompt, emit) {
   }
 
   const contents = buildGeminiContents(messages);
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse&key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -321,7 +325,7 @@ async function streamGemini(messages, systemPrompt, emit) {
 }
 
 // ── OpenAI (GPT) — non-streaming ──────────────────────────────────────────────
-async function callOpenAI(messages, systemPrompt) {
+async function callOpenAI(messages, systemPrompt, model = 'gpt-4o') {
   const apiKey = Deno.env.get('OPENAI_API_KEY');
   if (!apiKey) {
     throw new Error(
@@ -336,7 +340,7 @@ async function callOpenAI(messages, systemPrompt) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-4o',
+      model,
       max_tokens: 1500,
       messages: [
         { role: 'system', content: systemPrompt },
@@ -355,7 +359,7 @@ async function callOpenAI(messages, systemPrompt) {
 }
 
 // ── OpenAI (GPT) — streaming ──────────────────────────────────────────────────
-async function streamOpenAI(messages, systemPrompt, emit) {
+async function streamOpenAI(messages, systemPrompt, emit, model = 'gpt-4o') {
   const apiKey = Deno.env.get('OPENAI_API_KEY');
   if (!apiKey) {
     throw new Error(
@@ -370,7 +374,7 @@ async function streamOpenAI(messages, systemPrompt, emit) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-4o',
+      model,
       max_tokens: 1500,
       stream: true,
       messages: [

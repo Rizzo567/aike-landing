@@ -444,7 +444,300 @@
     .howl-input-tag:hover { border-color: rgba(168,85,247,0.22); color: var(--h-text-muted); background: rgba(168,85,247,0.05); }
     .howl-disclaimer { font-size: 0.71rem; color: var(--h-text-dim); white-space: nowrap; flex-shrink: 0; }
 
+    /* ── Panel system ── */
+    .howl-panel { display:none; flex-direction:column; flex:1; min-height:0; overflow:hidden; }
+    .howl-panel.active-panel { display:flex; }
+
+    /* ── Shared panel components ── */
+    .howl-panel-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:18px 24px 14px; border-bottom:1px solid var(--h-border); flex-shrink:0;
+    }
+    .howl-panel-title { font-size:1.05rem; font-weight:700; letter-spacing:-0.025em; }
+    .howl-panel-sub { font-size:0.78rem; color:var(--h-text-muted); margin-top:1px; }
+    .howl-panel-scroll { flex:1; overflow-y:auto; padding:20px 24px; }
+    .howl-panel-scroll::-webkit-scrollbar { width:4px; }
+    .howl-panel-scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.09); border-radius:99px; }
+    .howl-empty-state {
+      flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:12px; text-align:center; padding:40px 20px; color:var(--h-text-muted);
+    }
+    .howl-empty-icon {
+      width:48px; height:48px; border-radius:14px;
+      background:var(--h-surface); border:1px solid var(--h-border);
+      display:flex; align-items:center; justify-content:center; opacity:0.6;
+    }
+    .howl-empty-title { font-size:0.9rem; font-weight:600; color:var(--h-text-sec); }
+    .howl-empty-desc { font-size:0.8rem; color:var(--h-text-muted); max-width:280px; line-height:1.55; }
+    .howl-btn-primary {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:9px 16px; border-radius:var(--h-r-sm);
+      background:linear-gradient(135deg,var(--h-purple-dark),var(--h-purple));
+      color:#fff; font-size:0.84rem; font-weight:600; font-family:var(--h-font);
+      border:none; cursor:pointer; transition:opacity 150ms ease, transform 150ms ease;
+    }
+    .howl-btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+    .howl-btn-secondary {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:8px 14px; border-radius:var(--h-r-sm);
+      background:var(--h-surface); border:1px solid var(--h-border);
+      color:var(--h-text-sec); font-size:0.82rem; font-weight:500; font-family:var(--h-font);
+      cursor:pointer; transition:background 150ms ease, border-color 150ms ease;
+    }
+    .howl-btn-secondary:hover { background:var(--h-surface-alt); border-color:rgba(255,255,255,0.12); }
+    .howl-btn-ghost {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 11px; border-radius:var(--h-r-sm);
+      background:none; border:none; color:var(--h-text-muted);
+      font-size:0.8rem; font-weight:500; font-family:var(--h-font);
+      cursor:pointer; transition:background 140ms ease, color 140ms ease;
+    }
+    .howl-btn-ghost:hover { background:rgba(255,255,255,0.06); color:var(--h-text-sec); }
+    .howl-btn-danger {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:7px 13px; border-radius:var(--h-r-sm);
+      background:none; border:1px solid rgba(255,69,58,0.2);
+      color:#ff6b63; font-size:0.8rem; font-weight:500; font-family:var(--h-font);
+      cursor:pointer; transition:background 140ms ease;
+    }
+    .howl-btn-danger:hover { background:rgba(255,69,58,0.08); }
+    .howl-form-field { display:flex; flex-direction:column; gap:6px; }
+    .howl-form-label { font-size:0.78rem; font-weight:600; color:var(--h-text-muted); letter-spacing:0.01em; }
+    .howl-form-input {
+      background:var(--h-surface); border:1px solid var(--h-border);
+      border-radius:var(--h-r-sm); padding:10px 14px;
+      font-size:0.875rem; color:var(--h-text); font-family:var(--h-font);
+      transition:border-color 160ms ease;
+    }
+    .howl-form-input:focus { border-color:rgba(168,85,247,0.38); outline:none; }
+    .howl-form-input::placeholder { color:var(--h-text-dim); }
+    textarea.howl-form-input { resize:vertical; min-height:72px; line-height:1.55; }
+    select.howl-form-input { cursor:pointer; }
+    .howl-status-badge {
+      display:inline-flex; align-items:center; gap:5px;
+      padding:3px 9px; border-radius:var(--h-r-full);
+      font-size:0.7rem; font-weight:600;
+    }
+    .howl-status-badge.active  { background:rgba(52,211,153,0.12); color:#34d399; }
+    .howl-status-badge.paused  { background:rgba(251,191,36,0.12);  color:#fbbf24; }
+    .howl-status-badge.done    { background:rgba(148,163,184,0.1);   color:#94a3b8; }
+
+    /* ── Active skill banner ── */
+    .howl-skill-banner {
+      display:none; align-items:center; justify-content:space-between;
+      margin-bottom:8px; padding:8px 12px;
+      background:var(--h-purple-dim); border:1px solid rgba(168,85,247,0.22);
+      border-radius:var(--h-r-sm);
+    }
+    .howl-skill-banner.visible { display:flex; }
+    .howl-skill-banner-label { font-size:0.77rem; font-weight:500; color:var(--h-purple); display:flex; align-items:center; gap:6px; }
+    .howl-skill-banner-dismiss { background:none; border:none; color:var(--h-text-dim); cursor:pointer; font-size:0.85rem; padding:2px 4px; }
+    .howl-skill-banner-dismiss:hover { color:var(--h-text-muted); }
+
+    /* ── File attachment pill ── */
+    .howl-attach-pill {
+      display:none; align-items:center; gap:6px;
+      padding:5px 10px; margin-bottom:8px;
+      background:var(--h-surface); border:1px solid var(--h-border);
+      border-radius:var(--h-r-full); font-size:0.76rem; color:var(--h-text-sec);
+    }
+    .howl-attach-pill.visible { display:inline-flex; }
+    .howl-attach-pill-name { max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .howl-attach-dismiss { background:none; border:none; color:var(--h-text-dim); cursor:pointer; display:flex; align-items:center; }
+    .howl-attach-dismiss:hover { color:var(--h-text-muted); }
+
+    /* ── Projects panel ── */
+    .howl-projects-layout { display:flex; flex:1; min-height:0; overflow:hidden; }
+    .howl-projects-listcol {
+      width:268px; flex-shrink:0;
+      border-right:1px solid var(--h-border);
+      display:flex; flex-direction:column; overflow:hidden;
+    }
+    .howl-projects-listcol-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 14px 10px; flex-shrink:0;
+    }
+    .howl-projects-listcol-title { font-size:0.78rem; font-weight:600; color:var(--h-text-muted); text-transform:uppercase; letter-spacing:0.06em; }
+    .howl-projects-list { flex:1; overflow-y:auto; padding:4px 8px 12px; display:flex; flex-direction:column; gap:3px; }
+    .howl-projects-list::-webkit-scrollbar { width:3px; }
+    .howl-projects-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.08); border-radius:99px; }
+    .howl-project-card {
+      display:flex; flex-direction:column; gap:5px;
+      padding:10px 12px; border-radius:var(--h-r-sm);
+      background:none; border:none; text-align:left;
+      cursor:pointer; font-family:var(--h-font);
+      transition:background 130ms ease;
+    }
+    .howl-project-card:hover { background:rgba(255,255,255,0.05); }
+    .howl-project-card.active { background:var(--h-purple-dim); }
+    .howl-project-card-name { font-size:0.84rem; font-weight:600; color:var(--h-text-sec); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .howl-project-card.active .howl-project-card-name { color:var(--h-purple); }
+    .howl-project-card-meta { display:flex; align-items:center; gap:7px; }
+    .howl-project-card-deadline { font-size:0.7rem; color:var(--h-text-dim); }
+    .howl-projects-detail { flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden; }
+    .howl-project-detail-header {
+      display:flex; align-items:center; gap:10px;
+      padding:14px 20px; border-bottom:1px solid var(--h-border); flex-shrink:0;
+    }
+    .howl-project-detail-name {
+      flex:1; font-size:1rem; font-weight:700; color:var(--h-text);
+      background:none; border:none; font-family:var(--h-font);
+      padding:3px 6px; border-radius:6px; margin:-3px -6px;
+      transition:background 140ms ease;
+    }
+    .howl-project-detail-name:focus { background:var(--h-surface); outline:none; }
+    .howl-project-meta-row {
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+      padding:12px 20px 0; flex-shrink:0;
+    }
+    .howl-project-fields {
+      display:flex; flex-direction:column; gap:12px;
+      padding:14px 20px; flex-shrink:0; border-bottom:1px solid var(--h-border-sub);
+    }
+    .howl-project-fields-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .howl-project-save-row { padding:10px 20px; flex-shrink:0; display:flex; align-items:center; gap:10px; }
+    .howl-project-save-row .howl-save-hint { font-size:0.74rem; color:var(--h-text-dim); }
+    .howl-project-ai-divider {
+      display:flex; align-items:center; gap:10px; padding:14px 20px 10px; flex-shrink:0;
+    }
+    .howl-project-ai-label { font-size:0.73rem; font-weight:600; color:var(--h-text-dim); text-transform:uppercase; letter-spacing:0.07em; white-space:nowrap; }
+    .howl-project-ai-line { flex:1; height:1px; background:var(--h-border-sub); }
+
+    /* ── Code panel ── */
+    .howl-code-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 20px; border-bottom:1px solid var(--h-border); flex-shrink:0; gap:12px;
+    }
+    .howl-code-header-info { display:flex; align-items:center; gap:10px; }
+    .howl-code-header-text { display:flex; flex-direction:column; gap:1px; }
+    .howl-code-title { font-size:0.9rem; font-weight:700; }
+    .howl-code-sub { font-size:0.73rem; color:var(--h-text-muted); }
+    .howl-code-actions {
+      display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+      padding:10px 20px; border-bottom:1px solid var(--h-border-sub); flex-shrink:0;
+    }
+    .howl-code-chip {
+      padding:5px 12px; border-radius:var(--h-r-full);
+      background:var(--h-surface); border:1px solid var(--h-border);
+      font-size:0.76rem; font-weight:500; color:var(--h-text-muted);
+      cursor:pointer; font-family:var(--h-font);
+      transition:background 140ms ease, border-color 140ms ease, color 140ms ease;
+    }
+    .howl-code-chip:hover { background:var(--h-surface-alt); border-color:rgba(168,85,247,0.25); color:var(--h-purple); }
+    .howl-code-welcome {
+      flex:1; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      gap:10px; text-align:center; padding:40px 20px;
+      animation:howlFadeUp 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .howl-code-welcome.hidden { display:none; }
+    .howl-code-welcome h3 { font-size:1.1rem; font-weight:700; letter-spacing:-0.02em; }
+    .howl-code-welcome p { font-size:0.84rem; color:var(--h-text-muted); max-width:320px; line-height:1.6; }
+
+    /* ── Skills panel ── */
+    .howl-skills-bar {
+      display:flex; align-items:center; gap:10px;
+      padding:14px 20px; border-bottom:1px solid var(--h-border); flex-shrink:0; flex-wrap:wrap;
+    }
+    .howl-skills-search {
+      flex:1; min-width:160px;
+      background:var(--h-surface); border:1px solid var(--h-border);
+      border-radius:var(--h-r-full); padding:7px 14px;
+      font-size:0.84rem; color:var(--h-text); font-family:var(--h-font);
+    }
+    .howl-skills-search:focus { border-color:rgba(168,85,247,0.35); outline:none; }
+    .howl-skills-search::placeholder { color:var(--h-text-dim); }
+    .howl-skills-cats {
+      display:flex; align-items:center; gap:5px; flex-wrap:wrap;
+      padding:10px 20px; border-bottom:1px solid var(--h-border-sub); flex-shrink:0;
+    }
+    .howl-cat-pill {
+      padding:4px 12px; border-radius:var(--h-r-full);
+      background:none; border:1px solid var(--h-border);
+      font-size:0.74rem; font-weight:500; color:var(--h-text-muted);
+      cursor:pointer; font-family:var(--h-font);
+      transition:all 130ms ease;
+    }
+    .howl-cat-pill:hover { background:rgba(255,255,255,0.05); color:var(--h-text-sec); }
+    .howl-cat-pill.active { background:var(--h-purple-dim); border-color:rgba(168,85,247,0.3); color:var(--h-purple); }
+    .howl-skills-section-label { font-size:0.73rem; font-weight:600; color:var(--h-text-dim); text-transform:uppercase; letter-spacing:0.07em; padding:0 4px; margin-top:4px; }
+    .howl-skills-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; margin-top:8px; }
+    .howl-skill-card {
+      background:var(--h-surface); border:1px solid var(--h-border);
+      border-radius:var(--h-r-md); padding:14px 16px;
+      cursor:pointer; text-align:left;
+      transition:background 150ms ease, border-color 150ms ease, transform 150ms ease;
+    }
+    .howl-skill-card:hover { background:var(--h-surface-alt); border-color:rgba(168,85,247,0.25); transform:translateY(-1px); }
+    .howl-skill-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:7px; }
+    .howl-skill-card-name { font-size:0.875rem; font-weight:600; color:var(--h-text); line-height:1.3; }
+    .howl-skill-cat-badge {
+      padding:2px 8px; border-radius:var(--h-r-full);
+      font-size:0.65rem; font-weight:600; flex-shrink:0;
+    }
+    .howl-skill-card-desc { font-size:0.78rem; color:var(--h-text-muted); line-height:1.5; }
+
+    /* ── Personalizza panel ── */
+    .howl-settings-inner { max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:24px; padding-bottom:40px; }
+    .howl-settings-title { font-size:1.1rem; font-weight:700; letter-spacing:-0.025em; }
+    .howl-settings-desc { font-size:0.83rem; color:var(--h-text-muted); line-height:1.6; margin-top:4px; }
+    .howl-settings-card {
+      background:var(--h-surface); border:1px solid var(--h-border);
+      border-radius:var(--h-r-lg); padding:20px;
+      display:flex; flex-direction:column; gap:16px;
+    }
+    .howl-settings-card-title { font-size:0.82rem; font-weight:600; color:var(--h-text-sec); }
+    .howl-settings-saved {
+      display:none; align-items:center; gap:8px;
+      padding:10px 14px; background:rgba(52,211,153,0.08);
+      border:1px solid rgba(52,211,153,0.18); border-radius:var(--h-r-sm);
+      font-size:0.82rem; color:#34d399;
+    }
+    .howl-settings-saved.visible { display:flex; }
+
+    /* ── Skills modal ── */
+    .howl-modal-overlay {
+      display:none; position:fixed; inset:0; z-index:500;
+      background:rgba(0,0,0,0.65); backdrop-filter:blur(6px);
+      align-items:center; justify-content:center; padding:20px;
+    }
+    .howl-modal-overlay.visible { display:flex; }
+    .howl-modal {
+      background:#161618; border:1px solid rgba(255,255,255,0.1);
+      border-radius:20px; padding:24px; width:100%; max-width:480px;
+      box-shadow:0 24px 64px rgba(0,0,0,0.7);
+      animation:howlFadeUp 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    .howl-modal-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:16px; }
+    .howl-modal-title { font-size:1rem; font-weight:700; }
+    .howl-modal-close {
+      background:none; border:none; color:var(--h-text-dim); cursor:pointer;
+      width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; transition:background 130ms ease;
+    }
+    .howl-modal-close:hover { background:rgba(255,255,255,0.08); color:var(--h-text-muted); }
+    .howl-modal-desc { font-size:0.82rem; color:var(--h-text-muted); line-height:1.6; margin-bottom:20px; }
+    .howl-modal-prompt-box {
+      background:rgba(0,0,0,0.3); border:1px solid var(--h-border);
+      border-radius:var(--h-r-sm); padding:12px 14px; margin-bottom:20px;
+      font-size:0.8rem; color:var(--h-text-muted); line-height:1.6;
+      max-height:120px; overflow-y:auto;
+    }
+    .howl-modal-footer { display:flex; align-items:center; justify-content:flex-end; gap:8px; }
+
     /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .howl-projects-listcol { width:100%; border-right:none; border-bottom:1px solid var(--h-border); }
+      .howl-projects-layout { flex-direction:column; }
+      .howl-projects-detail { display:none; }
+      .howl-projects-detail.mobile-open { display:flex; }
+      .howl-projects-listcol.mobile-hidden { display:none; }
+      .howl-skills-grid { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .howl-skills-grid { grid-template-columns:1fr; }
+      .howl-project-fields-row { grid-template-columns:1fr; }
+    }
     @media (max-width: 820px) {
       .howl-sidebar {
         position: fixed; top: 0; left: 0; height: 100%; z-index: 100;
@@ -480,43 +773,39 @@
           <svg class="hn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
           Nuova chat
         </button>
-        <button class="howl-nav-item" aria-label="Cerca conversazioni">
-          <svg class="hn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><line x1="10.5" y1="10.5" x2="13.5" y2="13.5"/></svg>
-          Cerca
-        </button>
-        <button class="howl-nav-item" aria-label="Personalizza Howl">
-          <svg class="hn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.1 3.1l1.4 1.4M11.5 11.5l1.4 1.4M11.5 3.1l-1.4 1.4M4.5 11.5l-1.4 1.4"/></svg>
-          Personalizza
-        </button>
       </div>
 
-      <!-- Workspace nav with history -->
+      <!-- Workspace nav -->
       <div class="howl-nav-group">
         <p class="howl-nav-label">Spazio di lavoro</p>
 
         <!-- Chat item + history toggle -->
-        <div class="howl-chat-nav-row">
-          <button class="howl-nav-item active" id="howlChatNavBtn" aria-label="Chat">
+        <div class="howl-chat-nav-row" id="howlChatNavRow">
+          <button class="howl-nav-item active" id="howlChatNavBtn" data-panel="chat" aria-label="Chat">
             <svg class="hn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 10.5c0 .8-.7 1.5-1.5 1.5H4.5L2 14V3.5C2 2.7 2.7 2 3.5 2h9c.8 0 1.5.7 1.5 1.5v7z"/></svg>
             Chat
           </button>
           <button class="howl-history-toggle-btn" id="howlHistoryToggle" aria-label="Mostra cronologia">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="4 2 8 6 4 10"/>
-            </svg>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 2 8 6 4 10"/></svg>
           </button>
         </div>
-
-        <!-- History list (expandable) -->
         <div class="howl-history-list" id="howlHistoryList" aria-label="Cronologia chat"></div>
 
-        <button class="howl-nav-item" aria-label="Progetti">
+        <button class="howl-nav-item" data-panel="projects" aria-label="Progetti">
           <svg class="hn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5C2 4.7 2.7 4 3.5 4H7l1.5 2H12.5c.8 0 1.5.7 1.5 1.5V12c0 .8-.7 1.5-1.5 1.5h-9C2.7 13.5 2 12.8 2 12V5.5z"/></svg>
           Progetti
         </button>
-        <button class="howl-nav-item" aria-label="Codice">
+        <button class="howl-nav-item" data-panel="code" aria-label="Codice">
           <svg class="hn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="5.5 5 2 8 5.5 11"/><polyline points="10.5 5 14 8 10.5 11"/><line x1="9.5" y1="3.5" x2="6.5" y2="12.5"/></svg>
           Codice
+        </button>
+        <button class="howl-nav-item" data-panel="skills" aria-label="Skills">
+          <svg class="hn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.6 3.5L8 9l-3.1 1.5.6-3.5L3 4.5 6.5 4z"/></svg>
+          Skills
+        </button>
+        <button class="howl-nav-item" data-panel="personalizza" aria-label="Personalizza">
+          <svg class="hn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.1 3.1l1.4 1.4M11.5 11.5l1.4 1.4M11.5 3.1l-1.4 1.4M4.5 11.5l-1.4 1.4"/></svg>
+          Personalizza
         </button>
       </div>
 
@@ -549,6 +838,9 @@
         </svg>
       </button>
     </div>
+
+  <!-- ═══ PANEL: CHAT ═══ -->
+  <div class="howl-panel active-panel" id="panel-chat">
 
     <!-- Thread -->
     <div class="howl-thread" id="howlThread" role="log" aria-live="polite">
@@ -612,42 +904,352 @@
           </button>
         </div>
 
+        <!-- Active skill banner -->
+        <div class="howl-skill-banner" id="howlSkillBanner">
+          <span class="howl-skill-banner-label">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.6 3.5L8 9l-3.1 1.5.6-3.5L3 4.5 6.5 4z"/></svg>
+            Skill attiva: <strong id="howlSkillBannerName"></strong>
+          </span>
+          <button class="howl-skill-banner-dismiss" id="howlSkillBannerDismiss" aria-label="Rimuovi skill">×</button>
+        </div>
+
+        <!-- File attachment pill -->
+        <div class="howl-attach-pill" id="howlAttachPill">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.5L6 9.5a3 3 0 01-4.2-4.2l4-4a2 2 0 012.8 2.8L4.4 8.4a1 1 0 01-1.4-1.4L7 3"/></svg>
+          <span class="howl-attach-pill-name" id="howlAttachName"></span>
+          <button class="howl-attach-dismiss" id="howlAttachDismiss" aria-label="Rimuovi file"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg></button>
+        </div>
+
         <div class="howl-input-footer">
           <div class="howl-input-footer-left">
-
-            <!-- Model selector -->
             <div class="howl-model-wrap" id="howlModelWrap">
               <button class="howl-model-pill" id="howlModelPill" aria-haspopup="listbox" aria-expanded="false">
                 <span class="howl-model-dot" id="howlModelDot"></span>
                 <span id="howlModelLabel">Claude Sonnet 4.6</span>
                 <svg class="howl-model-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="2 3.5 5 6.5 8 3.5"/></svg>
               </button>
-              <div class="howl-model-dropdown" id="howlModelDropdown" role="listbox">
-                <!-- populated by JS -->
-              </div>
+              <div class="howl-model-dropdown" id="howlModelDropdown" role="listbox"></div>
             </div>
-
-            <!-- Action tags -->
             <div class="howl-input-tags">
-              <button class="howl-input-tag">
-                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="1.5" y="1.5" width="4" height="4" rx="1"/><rect x="6.5" y="1.5" width="4" height="4" rx="1"/><rect x="1.5" y="6.5" width="4" height="4" rx="1"/><rect x="6.5" y="6.5" width="4" height="4" rx="1"/></svg>
-                Dati
-              </button>
-              <button class="howl-input-tag">
+              <button class="howl-input-tag" id="howlFileBtn">
                 <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.5L6 9.5a3 3 0 01-4.2-4.2l4-4a2 2 0 012.8 2.8L4.4 8.4a1 1 0 01-1.4-1.4L7 3"/></svg>
-                File
+                Allega file
               </button>
+              <input type="file" id="howlFileInput" accept=".txt,.md,.js,.ts,.jsx,.tsx,.css,.html,.json,.csv,.sql,.py" style="display:none" />
             </div>
           </div>
-
           <span class="howl-disclaimer">Howl può fare errori. Verifica le informazioni critiche.</span>
         </div>
-
       </div>
     </div>
 
-  </main>
-</div>
+  </div><!-- /panel-chat -->
+
+  <!-- ═══ PANEL: PROJECTS ═══ -->
+  <div class="howl-panel" id="panel-projects">
+    <div class="howl-panel-header">
+      <div>
+        <div class="howl-panel-title">Progetti</div>
+        <div class="howl-panel-sub">Lavora su obiettivi strutturati con il supporto AI</div>
+      </div>
+      <button class="howl-btn-primary" id="newProjectBtn">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg>
+        Nuovo progetto
+      </button>
+    </div>
+    <div class="howl-projects-layout" id="projectsLayout">
+      <!-- List column -->
+      <div class="howl-projects-listcol" id="projectsListCol">
+        <div class="howl-projects-listcol-header">
+          <span class="howl-projects-listcol-title">I tuoi progetti</span>
+        </div>
+        <div class="howl-projects-list" id="projectsList"></div>
+      </div>
+      <!-- Detail column -->
+      <div class="howl-projects-detail" id="projectsDetail">
+        <div class="howl-empty-state" id="projectsEmptyDetail">
+          <div class="howl-empty-icon">
+            <svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5C2 4.7 2.7 4 3.5 4H7l1.5 2H12.5c.8 0 1.5.7 1.5 1.5V12c0 .8-.7 1.5-1.5 1.5h-9C2.7 13.5 2 12.8 2 12V5.5z"/></svg>
+          </div>
+          <div class="howl-empty-title">Nessun progetto selezionato</div>
+          <div class="howl-empty-desc">Seleziona un progetto dalla lista o creane uno nuovo.</div>
+        </div>
+        <div id="projectDetailView" style="display:none; flex-direction:column; flex:1; min-height:0; overflow:hidden;">
+          <div class="howl-project-detail-header">
+            <input class="howl-project-detail-name" id="projNameInput" type="text" placeholder="Nome progetto" />
+            <select class="howl-form-input" id="projStatusSelect" style="width:auto;padding:5px 10px;font-size:0.8rem;">
+              <option value="active">● Attivo</option>
+              <option value="paused">◑ In pausa</option>
+              <option value="done">○ Completato</option>
+            </select>
+          </div>
+          <div class="howl-project-fields">
+            <div class="howl-project-fields-row">
+              <div class="howl-form-field">
+                <label class="howl-form-label">Obiettivo</label>
+                <textarea class="howl-form-input" id="projGoalInput" placeholder="Descrivi l'obiettivo di questo progetto..." style="min-height:60px;"></textarea>
+              </div>
+              <div class="howl-form-field">
+                <label class="howl-form-label">Scadenza</label>
+                <input class="howl-form-input" id="projDeadlineInput" type="date" />
+              </div>
+            </div>
+          </div>
+          <div class="howl-project-save-row" id="projSaveRow" style="display:none;">
+            <button class="howl-btn-primary" id="projSaveBtn" style="padding:7px 14px;font-size:0.82rem;">Salva modifiche</button>
+            <span class="howl-save-hint">Hai modifiche non salvate</span>
+          </div>
+          <div class="howl-project-ai-divider">
+            <span class="howl-project-ai-label">AI Thread</span>
+            <div class="howl-project-ai-line"></div>
+          </div>
+          <div class="howl-thread" id="projectThread" role="log" aria-live="polite">
+            <div class="howl-messages" id="projectMessages" style="display:flex;flex-direction:column;gap:26px;padding:16px 0;max-width:700px;margin:0 auto;width:100%;"></div>
+            <div class="howl-typing" id="projectTyping">
+              <div class="howl-msg-avatar"><img src="../assets/images/logo.png" alt="Howl"/></div>
+              <div class="howl-typing-bubble"><span class="howl-typing-dot"></span><span class="howl-typing-dot"></span><span class="howl-typing-dot"></span></div>
+            </div>
+          </div>
+          <div class="howl-input-area">
+            <div class="howl-input-inner">
+              <div class="howl-input-shell">
+                <textarea class="howl-textarea" id="projectTextarea" placeholder="Scrivi a Howl su questo progetto..." rows="1"></textarea>
+                <button class="howl-send-btn" id="projectSendBtn" disabled>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="13" x2="8" y2="3"/><polyline points="4 7 8 3 12 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /panel-projects -->
+
+  <!-- ═══ PANEL: CODE ═══ -->
+  <div class="howl-panel" id="panel-code">
+    <div class="howl-code-header">
+      <div class="howl-code-header-info">
+        <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="rgba(168,85,247,0.7)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="5.5 5 2 8 5.5 11"/><polyline points="10.5 5 14 8 10.5 11"/><line x1="9.5" y1="3.5" x2="6.5" y2="12.5"/></svg>
+        <div class="howl-code-header-text">
+          <span class="howl-code-title">Codice Frontend</span>
+          <span class="howl-code-sub">HTML · CSS · JavaScript</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="howl-btn-secondary" id="codeAttachBtn" style="padding:6px 12px;font-size:0.78rem;">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.5L6 9.5a3 3 0 01-4.2-4.2l4-4a2 2 0 012.8 2.8L4.4 8.4a1 1 0 01-1.4-1.4L7 3"/></svg>
+          Allega file
+        </button>
+        <input type="file" id="codeFileInput" accept=".html,.css,.js,.ts,.jsx,.tsx,.json,.txt,.md" style="display:none" />
+        <button class="howl-btn-ghost" id="codeClearBtn" style="font-size:0.78rem;">Nuova sessione</button>
+      </div>
+    </div>
+    <div class="howl-code-actions" id="codeActions">
+      <button class="howl-code-chip" data-prompt="Spiega questo codice in dettaglio, riga per riga se necessario.">Spiega</button>
+      <button class="howl-code-chip" data-prompt="Trova e correggi tutti i bug o errori in questo codice. Mostra il codice corretto.">Correggi bug</button>
+      <button class="howl-code-chip" data-prompt="Ottimizza questo codice per performance, leggibilità e best practice moderne.">Ottimizza</button>
+      <button class="howl-code-chip" data-prompt="Crea un nuovo componente frontend da zero. Dimmi: cosa deve fare, stile preferito, e qualsiasi requisito.">Crea da zero</button>
+      <button class="howl-code-chip" data-prompt="Aggiungi commenti esplicativi a questo codice per renderlo più comprensibile.">Commenta</button>
+      <button class="howl-code-chip" data-prompt="Rendi questo componente completamente responsive per mobile, tablet e desktop.">Rendi responsive</button>
+    </div>
+    <!-- Code attach pill -->
+    <div style="padding:0 20px;" id="codeAttachPillWrap" style="display:none;">
+      <div class="howl-attach-pill" id="codeAttachPill">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.5L6 9.5a3 3 0 01-4.2-4.2l4-4a2 2 0 012.8 2.8L4.4 8.4a1 1 0 01-1.4-1.4L7 3"/></svg>
+        <span class="howl-attach-pill-name" id="codeAttachName"></span>
+        <button class="howl-attach-dismiss" id="codeAttachDismiss"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg></button>
+      </div>
+    </div>
+    <div class="howl-thread" id="codeThread" role="log" aria-live="polite">
+      <div class="howl-code-welcome" id="codeWelcome">
+        <div class="howl-empty-icon" style="opacity:0.9;">
+          <svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="rgba(168,85,247,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5.5 5 2 8 5.5 11"/><polyline points="10.5 5 14 8 10.5 11"/></svg>
+        </div>
+        <h3>Workspace Frontend</h3>
+        <p>Incolla il tuo codice, allega un file o descrivi cosa vuoi costruire. Howl ti aiuta a scrivere, correggere e ottimizzare il codice.</p>
+      </div>
+      <div class="howl-messages" id="codeMessages" style="display:flex;flex-direction:column;gap:26px;padding:16px 0 16px;max-width:740px;margin:0 auto;width:100%;"></div>
+      <div class="howl-typing" id="codeTyping">
+        <div class="howl-msg-avatar"><img src="../assets/images/logo.png" alt="Howl"/></div>
+        <div class="howl-typing-bubble"><span class="howl-typing-dot"></span><span class="howl-typing-dot"></span><span class="howl-typing-dot"></span></div>
+      </div>
+    </div>
+    <div class="howl-input-area">
+      <div class="howl-input-inner">
+        <div class="howl-input-shell">
+          <textarea class="howl-textarea" id="codeTextarea" placeholder="Incolla il tuo codice o descrivi cosa vuoi fare..." rows="1"></textarea>
+          <button class="howl-send-btn" id="codeSendBtn" disabled>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="13" x2="8" y2="3"/><polyline points="4 7 8 3 12 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /panel-code -->
+
+  <!-- ═══ PANEL: SKILLS ═══ -->
+  <div class="howl-panel" id="panel-skills">
+    <div class="howl-skills-bar">
+      <div style="flex:1;">
+        <div class="howl-panel-title" style="margin-bottom:2px;">Skills</div>
+        <div class="howl-panel-sub">Capacità AI preconfigurate per il tuo business</div>
+      </div>
+      <button class="howl-btn-primary" id="createSkillBtn">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg>
+        Crea skill
+      </button>
+    </div>
+    <div style="padding:10px 20px 0; flex-shrink:0;">
+      <input class="howl-skills-search" type="text" id="skillsSearch" placeholder="Cerca skills..." />
+    </div>
+    <div class="howl-skills-cats" id="skillsCats"></div>
+    <div class="howl-panel-scroll" id="skillsScrollArea">
+      <div id="skillsBuiltinSection">
+        <div class="howl-skills-section-label" style="margin-bottom:10px;">Libreria Aike</div>
+        <div class="howl-skills-grid" id="skillsBuiltinGrid"></div>
+      </div>
+      <div id="skillsCustomSection" style="margin-top:20px; display:none;">
+        <div class="howl-skills-section-label" style="margin-bottom:10px;">Le mie Skills</div>
+        <div class="howl-skills-grid" id="skillsCustomGrid"></div>
+      </div>
+    </div>
+  </div><!-- /panel-skills -->
+
+  <!-- ═══ PANEL: PERSONALIZZA ═══ -->
+  <div class="howl-panel" id="panel-personalizza">
+    <div class="howl-panel-header">
+      <div>
+        <div class="howl-panel-title">Personalizza Howl</div>
+        <div class="howl-panel-sub">Queste informazioni migliorano ogni risposta di Howl</div>
+      </div>
+    </div>
+    <div class="howl-panel-scroll">
+      <div class="howl-settings-inner">
+        <div class="howl-settings-saved" id="settingsSaved">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg>
+          Contesto salvato — Howl userà queste informazioni in tutte le risposte.
+        </div>
+        <div class="howl-settings-card">
+          <div class="howl-settings-card-title">Informazioni aziendali</div>
+          <div class="howl-form-field">
+            <label class="howl-form-label">Nome azienda</label>
+            <input class="howl-form-input" id="bizCompany" type="text" placeholder="es. Acme Srl" />
+          </div>
+          <div class="howl-form-field">
+            <label class="howl-form-label">Settore / industria</label>
+            <input class="howl-form-input" id="bizIndustry" type="text" placeholder="es. E-commerce, SaaS, Consulenza..." />
+          </div>
+          <div class="howl-form-field">
+            <label class="howl-form-label">Cosa offri — prodotto o servizio</label>
+            <textarea class="howl-form-input" id="bizOffering" placeholder="Descrivi brevemente cosa vendi e a chi..."></textarea>
+          </div>
+          <div class="howl-form-field">
+            <label class="howl-form-label">Dimensione del team</label>
+            <select class="howl-form-input" id="bizTeamSize">
+              <option value="">Seleziona...</option>
+              <option value="solo">Solo</option>
+              <option value="2-10">2–10 persone</option>
+              <option value="10-50">10–50 persone</option>
+              <option value="50+">50+ persone</option>
+            </select>
+          </div>
+          <div class="howl-form-field">
+            <label class="howl-form-label">Sfida principale</label>
+            <textarea class="howl-form-input" id="bizChallenge" placeholder="Qual è la tua sfida operativa più grande in questo momento?"></textarea>
+          </div>
+        </div>
+        <div class="howl-settings-card">
+          <div class="howl-settings-card-title">Preferenze di comunicazione</div>
+          <div class="howl-form-field">
+            <label class="howl-form-label">Tono preferito</label>
+            <select class="howl-form-input" id="bizTone">
+              <option value="professionale">Professionale</option>
+              <option value="diretto">Diretto e conciso</option>
+              <option value="informale">Informale</option>
+            </select>
+          </div>
+          <div class="howl-form-field">
+            <label class="howl-form-label">Lingua preferita</label>
+            <select class="howl-form-input" id="bizLang">
+              <option value="auto">Automatico (segue la lingua dell'utente)</option>
+              <option value="italiano">Sempre in italiano</option>
+              <option value="inglese">Sempre in inglese</option>
+            </select>
+          </div>
+        </div>
+        <button class="howl-btn-primary" id="saveSettingsBtn" style="align-self:flex-start; padding:11px 24px;">
+          Salva contesto
+        </button>
+      </div>
+    </div>
+  </div><!-- /panel-personalizza -->
+
+  </main><!-- /howl-main -->
+
+  <!-- ═══ MODAL: SKILL DETAIL ═══ -->
+  <div class="howl-modal-overlay" id="skillModal" role="dialog" aria-modal="true">
+    <div class="howl-modal">
+      <div class="howl-modal-header">
+        <div>
+          <div class="howl-modal-title" id="skillModalName"></div>
+          <div style="margin-top:4px;" id="skillModalBadge"></div>
+        </div>
+        <button class="howl-modal-close" id="skillModalClose" aria-label="Chiudi">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="2" x2="12" y2="12"/><line x1="12" y1="2" x2="2" y2="12"/></svg>
+        </button>
+      </div>
+      <div class="howl-modal-desc" id="skillModalDesc"></div>
+      <div style="font-size:0.72rem;font-weight:600;color:var(--h-text-dim);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;">Prompt skill</div>
+      <div class="howl-modal-prompt-box" id="skillModalPrompt"></div>
+      <div class="howl-modal-footer" id="skillModalFooter">
+        <button class="howl-btn-secondary" id="skillModalClose2">Annulla</button>
+        <button class="howl-btn-primary" id="skillModalUse">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.6 3.5L8 9l-3.1 1.5.6-3.5L3 4.5 6.5 4z"/></svg>
+          Usa questa skill
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MODAL: CREATE SKILL ═══ -->
+  <div class="howl-modal-overlay" id="createSkillModal" role="dialog" aria-modal="true">
+    <div class="howl-modal">
+      <div class="howl-modal-header">
+        <div class="howl-modal-title">Crea nuova skill</div>
+        <button class="howl-modal-close" id="createSkillClose">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="2" x2="12" y2="12"/><line x1="12" y1="2" x2="2" y2="12"/></svg>
+        </button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="howl-form-field">
+          <label class="howl-form-label">Nome skill</label>
+          <input class="howl-form-input" id="newSkillName" type="text" placeholder="es. Analisi feedback clienti" />
+        </div>
+        <div class="howl-form-field">
+          <label class="howl-form-label">Categoria</label>
+          <select class="howl-form-input" id="newSkillCat">
+            <option value="custom">Personalizzata</option>
+            <option value="analytics">Analytics</option>
+            <option value="comunicazione">Comunicazione</option>
+            <option value="codice">Codice</option>
+            <option value="automazione">Automazione</option>
+          </select>
+        </div>
+        <div class="howl-form-field">
+          <label class="howl-form-label">Descrizione breve</label>
+          <input class="howl-form-input" id="newSkillDesc" type="text" placeholder="Cosa fa questa skill?" />
+        </div>
+        <div class="howl-form-field">
+          <label class="howl-form-label">Prompt (istruzioni per Howl)</label>
+          <textarea class="howl-form-input" id="newSkillPrompt" style="min-height:100px;" placeholder="Scrivi le istruzioni che Howl deve seguire quando questa skill è attiva..."></textarea>
+        </div>
+      </div>
+      <div class="howl-modal-footer" style="margin-top:20px;">
+        <button class="howl-btn-secondary" id="createSkillCancel">Annulla</button>
+        <button class="howl-btn-primary" id="createSkillSave">Salva skill</button>
+      </div>
+    </div>
+  </div>
+</div><!-- /howl-shell -->
 
 <script>
 (function () {
@@ -680,18 +1282,33 @@
   // ─────────────────────────────────────────────────────────────────
   // STORAGE KEYS
   // ─────────────────────────────────────────────────────────────────
-  const STORAGE_CONVOS  = 'howl_conversations_v2';
-  const STORAGE_CURRENT = 'howl_current_id_v2';
-  const MAX_HISTORY     = 40;
+  const STORAGE_CONVOS   = 'howl_conversations_v2';
+  const STORAGE_CURRENT  = 'howl_current_id_v2';
+  const STORAGE_PROJECTS = 'howl_projects_v1';
+  const STORAGE_BUSINESS = 'howl_business_v1';
+  const STORAGE_SKILLS   = 'howl_skills_v1';
+  const MAX_HISTORY      = 40;
 
   // ─────────────────────────────────────────────────────────────────
   // STATE
   // ─────────────────────────────────────────────────────────────────
-  let currentModel  = MODELS[0].id;
-  let currentConvoId = null;          // active conversation id
-  let convoMessages  = [];            // [{role,content}] for current convo
+  let activePanel    = 'chat';
+  let currentModel   = MODELS[0].id;
+  let currentConvoId = null;
+  let convoMessages  = [];
   let isRequesting   = false;
   let historyOpen    = false;
+  let activeSkill    = null;
+  let chatAttachContent = null;
+  let chatAttachName    = null;
+  // Projects state
+  let currentProjectId      = null;
+  let isProjectRequesting   = false;
+  // Code state
+  let codeMessages          = [];
+  let isCodeRequesting      = false;
+  let codeAttachContent     = null;
+  let codeAttachName        = null;
 
   // ─────────────────────────────────────────────────────────────────
   // ELEMENTS
@@ -983,16 +1600,20 @@
   // SEND MESSAGE — real AI call
   // ─────────────────────────────────────────────────────────────────
   async function sendMessage() {
-    const text = textarea.value.trim();
+    let text = textarea.value.trim();
     if (!text || isRequesting) return;
 
-    // First message — hide welcome, show thread
+    // Prepend attached file content
+    if (chatAttachContent) {
+      text = '[File: ' + chatAttachName + ']\n```\n' + chatAttachContent + '\n```\n\n' + text;
+      clearChatAttach();
+    }
+
     if (!currentConvoId) {
       welcome.classList.add('hidden');
       messagesEl.classList.add('visible');
     }
 
-    // Add user message to state and DOM
     convoMessages.push({ role: 'user', content: text });
     renderMessage('user', text);
 
@@ -1007,7 +1628,7 @@
     scrollToBottom();
 
     try {
-      const content = await callHowlAPI(convoMessages, currentModel);
+      const content = await callHowlAPI(convoMessages, currentModel, activeSkill ? activeSkill.prompt : null);
 
       typingEl.classList.remove('visible');
       convoMessages.push({ role: 'assistant', content });
@@ -1040,11 +1661,12 @@
   // ─────────────────────────────────────────────────────────────────
   // API CALL
   // ─────────────────────────────────────────────────────────────────
-  async function callHowlAPI(messages, model) {
+  async function callHowlAPI(messages, model, skillContext) {
+    const businessContext = loadBusinessContext();
     const response = await fetch('/api/chat', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ model, messages }),
+      body:    JSON.stringify({ model, messages, businessContext: businessContext || undefined, skillContext: skillContext || undefined }),
     });
 
     const data = await response.json().catch(function () {
@@ -1190,11 +1812,529 @@
   }
 
   // ─────────────────────────────────────────────────────────────────
+  // PANEL SWITCHING
+  // ─────────────────────────────────────────────────────────────────
+  function switchPanel(name) {
+    activePanel = name;
+    document.querySelectorAll('.howl-panel').forEach(function(p) {
+      p.classList.toggle('active-panel', p.id === 'panel-' + name);
+    });
+    document.querySelectorAll('[data-panel]').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.panel === name);
+    });
+    if (window.innerWidth <= 820) closeSidebar();
+  }
+  document.querySelectorAll('[data-panel]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      switchPanel(btn.dataset.panel);
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────────────
+  // BUSINESS CONTEXT
+  // ─────────────────────────────────────────────────────────────────
+  function loadBusinessContext() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_BUSINESS) || 'null'); } catch { return null; }
+  }
+  function saveBusinessContext(ctx) {
+    localStorage.setItem(STORAGE_BUSINESS, JSON.stringify(ctx));
+  }
+  function loadSettingsForm() {
+    var ctx = loadBusinessContext();
+    if (!ctx) return;
+    document.getElementById('bizCompany').value   = ctx.company   || '';
+    document.getElementById('bizIndustry').value  = ctx.industry  || '';
+    document.getElementById('bizOffering').value  = ctx.offering  || '';
+    document.getElementById('bizTeamSize').value  = ctx.teamSize  || '';
+    document.getElementById('bizChallenge').value = ctx.challenge || '';
+    document.getElementById('bizTone').value      = ctx.tone      || 'professionale';
+    document.getElementById('bizLang').value      = ctx.language  || 'auto';
+  }
+  document.getElementById('saveSettingsBtn').addEventListener('click', function() {
+    var ctx = {
+      company:   document.getElementById('bizCompany').value.trim(),
+      industry:  document.getElementById('bizIndustry').value.trim(),
+      offering:  document.getElementById('bizOffering').value.trim(),
+      teamSize:  document.getElementById('bizTeamSize').value,
+      challenge: document.getElementById('bizChallenge').value.trim(),
+      tone:      document.getElementById('bizTone').value,
+      language:  document.getElementById('bizLang').value,
+    };
+    saveBusinessContext(ctx);
+    var saved = document.getElementById('settingsSaved');
+    saved.classList.add('visible');
+    setTimeout(function() { saved.classList.remove('visible'); }, 3500);
+  });
+
+  // ─────────────────────────────────────────────────────────────────
+  // FILE ATTACHMENT (Chat)
+  // ─────────────────────────────────────────────────────────────────
+  var howlFileInput = document.getElementById('howlFileInput');
+  document.getElementById('howlFileBtn').addEventListener('click', function() { howlFileInput.click(); });
+  howlFileInput.addEventListener('change', function() {
+    var file = howlFileInput.files[0];
+    if (!file) return;
+    if (file.size > 150000) { alert('File troppo grande. Max 150KB.'); howlFileInput.value = ''; return; }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      chatAttachContent = e.target.result;
+      chatAttachName    = file.name;
+      document.getElementById('howlAttachName').textContent = file.name;
+      document.getElementById('howlAttachPill').classList.add('visible');
+    };
+    reader.readAsText(file);
+    howlFileInput.value = '';
+  });
+  function clearChatAttach() {
+    chatAttachContent = null;
+    chatAttachName    = null;
+    document.getElementById('howlAttachPill').classList.remove('visible');
+  }
+  document.getElementById('howlAttachDismiss').addEventListener('click', clearChatAttach);
+
+  // ─────────────────────────────────────────────────────────────────
+  // ACTIVE SKILL BANNER (Chat)
+  // ─────────────────────────────────────────────────────────────────
+  function setActiveSkill(skill) {
+    activeSkill = skill;
+    if (skill) {
+      document.getElementById('howlSkillBannerName').textContent = skill.name;
+      document.getElementById('howlSkillBanner').classList.add('visible');
+    } else {
+      document.getElementById('howlSkillBanner').classList.remove('visible');
+    }
+  }
+  document.getElementById('howlSkillBannerDismiss').addEventListener('click', function() { setActiveSkill(null); });
+
+  // ─────────────────────────────────────────────────────────────────
+  // PROJECTS
+  // ─────────────────────────────────────────────────────────────────
+  var CAT_COLORS = { analytics:'#3b82f6', comunicazione:'#8b5cf6', codice:'#10b981', automazione:'#f59e0b', custom:'#6b7280' };
+  var STATUS_LABELS = { active:'Attivo', paused:'In pausa', done:'Completato' };
+
+  function loadProjects() { try { return JSON.parse(localStorage.getItem(STORAGE_PROJECTS) || '[]'); } catch { return []; } }
+  function saveProjects(ps) { localStorage.setItem(STORAGE_PROJECTS, JSON.stringify(ps)); }
+  function getProject(id) { return loadProjects().find(function(p) { return p.id === id; }); }
+  function upsertProject(proj) {
+    var ps = loadProjects();
+    var idx = ps.findIndex(function(p) { return p.id === proj.id; });
+    if (idx >= 0) ps[idx] = proj; else ps.push(proj);
+    saveProjects(ps);
+  }
+
+  function renderProjectList() {
+    var list = document.getElementById('projectsList');
+    var ps = loadProjects();
+    list.innerHTML = '';
+    if (ps.length === 0) {
+      list.innerHTML = '<div style="padding:20px 12px;text-align:center;font-size:0.78rem;color:var(--h-text-dim);">Nessun progetto. Creane uno!</div>';
+      return;
+    }
+    ps.slice().reverse().forEach(function(p) {
+      var card = document.createElement('button');
+      card.className = 'howl-project-card' + (p.id === currentProjectId ? ' active' : '');
+      card.dataset.id = p.id;
+      var dl = p.deadline ? new Date(p.deadline).toLocaleDateString('it-IT',{day:'numeric',month:'short'}) : '';
+      card.innerHTML =
+        '<span class="howl-project-card-name">' + escapeHTML(p.name) + '</span>' +
+        '<span class="howl-project-card-meta">' +
+          '<span class="howl-status-badge ' + p.status + '">' + STATUS_LABELS[p.status] + '</span>' +
+          (dl ? '<span class="howl-project-card-deadline">' + dl + '</span>' : '') +
+        '</span>';
+      card.addEventListener('click', function() { openProject(p.id); });
+      list.appendChild(card);
+    });
+  }
+
+  function openProject(id) {
+    currentProjectId = id;
+    var p = getProject(id);
+    if (!p) return;
+    renderProjectList();
+    document.getElementById('projectsEmptyDetail').style.display = 'none';
+    var dv = document.getElementById('projectDetailView');
+    dv.style.display = 'flex';
+    document.getElementById('projNameInput').value    = p.name;
+    document.getElementById('projStatusSelect').value = p.status;
+    document.getElementById('projGoalInput').value    = p.goal || '';
+    document.getElementById('projDeadlineInput').value = p.deadline || '';
+    document.getElementById('projSaveRow').style.display = 'none';
+    // Render project thread
+    var pm = document.getElementById('projectMessages');
+    pm.innerHTML = '';
+    (p.messages || []).forEach(function(m) { renderProjectMessage(m.role, m.content); });
+    document.getElementById('projectThread').scrollTop = 999999;
+    // Track dirty
+    ['projNameInput','projStatusSelect','projGoalInput','projDeadlineInput'].forEach(function(fid) {
+      document.getElementById(fid).addEventListener('input', showProjSave, { once: true });
+    });
+  }
+
+  function showProjSave() { document.getElementById('projSaveRow').style.display = 'flex'; }
+
+  document.getElementById('projSaveBtn').addEventListener('click', function() {
+    if (!currentProjectId) return;
+    var p = getProject(currentProjectId);
+    if (!p) return;
+    p.name     = document.getElementById('projNameInput').value.trim() || p.name;
+    p.status   = document.getElementById('projStatusSelect').value;
+    p.goal     = document.getElementById('projGoalInput').value.trim();
+    p.deadline = document.getElementById('projDeadlineInput').value || null;
+    p.updatedAt = Date.now();
+    upsertProject(p);
+    document.getElementById('projSaveRow').style.display = 'none';
+    renderProjectList();
+  });
+
+  document.getElementById('newProjectBtn').addEventListener('click', createNewProject);
+  function createNewProject() {
+    var p = {
+      id: 'proj_' + Date.now(),
+      name: 'Nuovo progetto',
+      goal: '', status: 'active', deadline: null,
+      messages: [], model: currentModel,
+      createdAt: Date.now(), updatedAt: Date.now(),
+    };
+    upsertProject(p);
+    renderProjectList();
+    openProject(p.id);
+    setTimeout(function() {
+      var ni = document.getElementById('projNameInput');
+      ni.select(); ni.focus();
+    }, 50);
+  }
+
+  function renderProjectMessage(role, content) {
+    var pm = document.getElementById('projectMessages');
+    var el = document.createElement('div');
+    el.className = 'howl-message';
+    if (role === 'user') {
+      el.innerHTML = '<div class="howl-msg-user"><div class="howl-msg-user-bubble">' + escapeHTML(content) + '</div></div>';
+    } else {
+      el.innerHTML = '<div class="howl-msg-assistant"><div class="howl-msg-avatar"><img src="../assets/images/logo.png" alt="Howl"/></div><div class="howl-msg-assistant-bubble">' + renderMarkdown(content) + '</div></div>';
+    }
+    var pt = document.getElementById('projectTyping');
+    document.getElementById('projectThread').insertBefore(el, pt);
+  }
+
+  // Project textarea + send
+  var projTextarea = document.getElementById('projectTextarea');
+  var projSendBtn  = document.getElementById('projectSendBtn');
+  function projToggleSend() {
+    var has = projTextarea.value.trim().length > 0 && !isProjectRequesting;
+    projSendBtn.disabled = !has;
+    projSendBtn.classList.toggle('active', has);
+  }
+  projTextarea.addEventListener('input', function() {
+    projTextarea.style.height = 'auto';
+    projTextarea.style.height = Math.min(projTextarea.scrollHeight, 200) + 'px';
+    projToggleSend();
+  });
+  projTextarea.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!isProjectRequesting && projTextarea.value.trim()) sendProjectMessage(); }
+  });
+  projSendBtn.addEventListener('click', function() { if (!isProjectRequesting && projTextarea.value.trim()) sendProjectMessage(); });
+
+  async function sendProjectMessage() {
+    if (!currentProjectId) return;
+    var text = projTextarea.value.trim();
+    if (!text || isProjectRequesting) return;
+    var p = getProject(currentProjectId);
+    if (!p) return;
+    p.messages = p.messages || [];
+    p.messages.push({ role: 'user', content: text });
+    renderProjectMessage('user', text);
+    projTextarea.value = ''; projTextarea.style.height = 'auto';
+    isProjectRequesting = true; projToggleSend();
+    var pt = document.getElementById('projectTyping');
+    pt.classList.add('visible');
+    document.getElementById('projectThread').scrollTop = 999999;
+    try {
+      var ctx = p.goal ? 'Progetto: ' + p.name + '\nObiettivo: ' + p.goal : 'Progetto: ' + p.name;
+      var content = await callHowlAPI(p.messages, currentModel, ctx);
+      pt.classList.remove('visible');
+      p.messages.push({ role: 'assistant', content: content });
+      p.updatedAt = Date.now();
+      upsertProject(p);
+      renderProjectMessage('assistant', content);
+    } catch (err) {
+      pt.classList.remove('visible');
+      renderProjectMessage('assistant', '⚠ Errore: ' + (err.message || 'Riprova.'));
+    }
+    isProjectRequesting = false; projToggleSend();
+    document.getElementById('projectThread').scrollTop = 999999;
+  }
+
+  renderProjectList();
+
+  // ─────────────────────────────────────────────────────────────────
+  // CODE PANEL
+  // ─────────────────────────────────────────────────────────────────
+  var CODE_SKILL = 'Sei nel pannello Codice di Howl. Aiuta con codice frontend per siti web (HTML, CSS, JavaScript). Fornisci sempre codice corretto e ben formattato in blocchi di codice. Sii tecnico e preciso.';
+  var codeTextarea = document.getElementById('codeTextarea');
+  var codeSendBtn  = document.getElementById('codeSendBtn');
+  function codeToggleSend() {
+    var has = codeTextarea.value.trim().length > 0 && !isCodeRequesting;
+    codeSendBtn.disabled = !has;
+    codeSendBtn.classList.toggle('active', has);
+  }
+  codeTextarea.addEventListener('input', function() {
+    codeTextarea.style.height = 'auto';
+    codeTextarea.style.height = Math.min(codeTextarea.scrollHeight, 200) + 'px';
+    codeToggleSend();
+  });
+  codeTextarea.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!isCodeRequesting && codeTextarea.value.trim()) sendCodeMessage(); }
+  });
+  codeSendBtn.addEventListener('click', function() { if (!isCodeRequesting && codeTextarea.value.trim()) sendCodeMessage(); });
+
+  document.querySelectorAll('.howl-code-chip').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      codeTextarea.value = chip.dataset.prompt;
+      codeTextarea.style.height = 'auto';
+      codeTextarea.style.height = Math.min(codeTextarea.scrollHeight, 200) + 'px';
+      codeToggleSend();
+      codeTextarea.focus();
+    });
+  });
+
+  var codeFileInput = document.getElementById('codeFileInput');
+  document.getElementById('codeAttachBtn').addEventListener('click', function() { codeFileInput.click(); });
+  codeFileInput.addEventListener('change', function() {
+    var file = codeFileInput.files[0];
+    if (!file) return;
+    if (file.size > 150000) { alert('File troppo grande. Max 150KB.'); codeFileInput.value = ''; return; }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      codeAttachContent = e.target.result;
+      codeAttachName    = file.name;
+      document.getElementById('codeAttachName').textContent = file.name;
+      document.getElementById('codeAttachPill').classList.add('visible');
+    };
+    reader.readAsText(file);
+    codeFileInput.value = '';
+  });
+  document.getElementById('codeAttachDismiss').addEventListener('click', function() {
+    codeAttachContent = null; codeAttachName = null;
+    document.getElementById('codeAttachPill').classList.remove('visible');
+  });
+  document.getElementById('codeClearBtn').addEventListener('click', function() {
+    codeMessages = [];
+    document.getElementById('codeMessages').innerHTML = '';
+    document.getElementById('codeWelcome').classList.remove('hidden');
+    codeAttachContent = null; codeAttachName = null;
+    document.getElementById('codeAttachPill').classList.remove('visible');
+  });
+
+  async function sendCodeMessage() {
+    var text = codeTextarea.value.trim();
+    if (!text || isCodeRequesting) return;
+    if (codeAttachContent) {
+      text = '[File: ' + codeAttachName + ']\n```\n' + codeAttachContent + '\n```\n\n' + text;
+      codeAttachContent = null; codeAttachName = null;
+      document.getElementById('codeAttachPill').classList.remove('visible');
+    }
+    document.getElementById('codeWelcome').classList.add('hidden');
+    codeMessages.push({ role: 'user', content: text });
+    renderCodeMessage('user', text);
+    codeTextarea.value = ''; codeTextarea.style.height = 'auto';
+    isCodeRequesting = true; codeToggleSend();
+    var ct = document.getElementById('codeTyping');
+    ct.classList.add('visible');
+    document.getElementById('codeThread').scrollTop = 999999;
+    try {
+      var content = await callHowlAPI(codeMessages, currentModel, CODE_SKILL);
+      ct.classList.remove('visible');
+      codeMessages.push({ role: 'assistant', content: content });
+      renderCodeMessage('assistant', content);
+    } catch (err) {
+      ct.classList.remove('visible');
+      renderCodeMessage('assistant', '⚠ Errore: ' + (err.message || 'Riprova.'));
+    }
+    isCodeRequesting = false; codeToggleSend();
+    document.getElementById('codeThread').scrollTop = 999999;
+  }
+
+  function renderCodeMessage(role, content) {
+    var cm = document.getElementById('codeMessages');
+    var el = document.createElement('div');
+    el.className = 'howl-message';
+    if (role === 'user') {
+      el.innerHTML = '<div class="howl-msg-user"><div class="howl-msg-user-bubble">' + escapeHTML(content) + '</div></div>';
+    } else {
+      el.innerHTML = '<div class="howl-msg-assistant"><div class="howl-msg-avatar"><img src="../assets/images/logo.png" alt="Howl"/></div><div class="howl-msg-assistant-bubble">' + renderMarkdown(content) + '</div></div>';
+    }
+    var ct = document.getElementById('codeTyping');
+    document.getElementById('codeThread').insertBefore(el, ct);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // SKILLS
+  // ─────────────────────────────────────────────────────────────────
+  var BUILTIN_SKILLS = [
+    { id:'sk_revenue',   name:'Analisi Revenue',        category:'analytics',     description:'Analizza entrate, trend e opportunità di crescita',           prompt:'Sei specializzato in analisi finanziaria e revenue. Analizza le metriche di fatturato dell\'utente, identifica trend e opportunità. Chiedi i dati necessari se non forniti.' },
+    { id:'sk_email',     name:'Draft Email',            category:'comunicazione', description:'Scrivi email professionali per clienti o partner',             prompt:'Sei un esperto di comunicazione business. Aiuta a scrivere email professionali ed efficaci. Chiedi: destinatario, obiettivo, tono, informazioni chiave.' },
+    { id:'sk_meeting',   name:'Riassunto Meeting',      category:'comunicazione', description:'Converti appunti di riunione in action items chiari',          prompt:'Sei specializzato nella sintesi di riunioni. Quando ricevi appunti o trascrizioni, estrai: decisioni prese, action items con responsabile e scadenza, prossimi passi.' },
+    { id:'sk_objections',name:'Gestione Obiezioni',     category:'comunicazione', description:'Rispondi alle obiezioni dei clienti con efficacia',            prompt:'Sei un esperto di vendita. Per ogni obiezione fornisci: comprensione del problema reale, risposta empatica, argomentazione logica, call to action.' },
+    { id:'sk_process',   name:'Documentazione Processo',category:'automazione',   description:'Documenta un processo aziendale step-by-step',                 prompt:'Sei specializzato in process management. Documenta processi operativi con: obiettivo, prerequisiti, passaggi numerati, output atteso, KPI di successo.' },
+    { id:'sk_competitor',name:'Analisi Competitor',     category:'analytics',     description:'Analizza punti di forza e debolezza di un competitor',         prompt:'Sei un esperto di competitive intelligence. Struttura l\'analisi con: posizionamento, offerta, punti di forza, debolezza, strategia, opportunità da sfruttare.' },
+    { id:'sk_social',    name:'Contenuto Social',       category:'comunicazione', description:'Crea post coinvolgenti per i social media',                    prompt:'Sei un esperto di social media marketing. Crea contenuti ottimizzati per la piattaforma specificata. Chiedi: piattaforma, obiettivo, tono, argomento.' },
+    { id:'sk_kpi',       name:'Report KPI',             category:'analytics',     description:'Costruisci un report KPI strutturato',                         prompt:'Sei specializzato in business intelligence. Struttura report KPI con: executive summary, KPI con target e attuale, trend, analisi scostamenti, raccomandazioni.' },
+    { id:'sk_code',      name:'Revisione Codice',       category:'codice',        description:'Analizza e migliora codice HTML/CSS/JavaScript',               prompt:'Sei un esperto di sviluppo frontend. Analizza il codice e fornisci: problemi identificati, suggerimenti di miglioramento, codice ottimizzato, best practice.' },
+    { id:'sk_automation',name:'Design Automazione',     category:'automazione',   description:'Progetta un workflow di automazione aziendale',                prompt:'Sei un esperto di business automation. Per ogni automazione: trigger, condizioni, azioni, tool consigliati (Zapier/Make/n8n), output atteso.' },
+    { id:'sk_seo',       name:'SEO Content Brief',      category:'analytics',     description:'Crea un brief content ottimizzato per SEO',                    prompt:'Sei un esperto SEO. Crea brief completi con: keyword principale e secondarie, intento di ricerca, struttura H1/H2, lunghezza target, punti da coprire.' },
+    { id:'sk_persona',   name:'Customer Persona',       category:'analytics',     description:'Definisci una customer persona dettagliata',                   prompt:'Sei un esperto di marketing. Costruisci customer personas con: demografia, obiettivi, pain points, comportamenti d\'acquisto, canali preferiti, messaggi efficaci.' },
+    { id:'sk_proposal',  name:'Proposta Commerciale',   category:'comunicazione', description:'Scrivi una proposta commerciale professionale',                prompt:'Sei un esperto di business development. Struttura proposte commerciali con: executive summary, problema cliente, soluzione, metodologia, investimento, ROI, next steps.' },
+    { id:'sk_onboarding',name:'Checklist Onboarding',   category:'automazione',   description:'Crea una checklist di onboarding per nuovi clienti',           prompt:'Sei un esperto di customer success. Crea checklist di onboarding con: fase pre-onboarding, primo giorno, obiettivi 30/60/90 giorni, milestone di successo.' },
+  ];
+  var CATS = ['tutte','analytics','comunicazione','codice','automazione','custom'];
+  var activeCat = 'tutte';
+  var skillFilter = '';
+  var selectedSkill = null;
+
+  function loadUserSkills() { try { return JSON.parse(localStorage.getItem(STORAGE_SKILLS) || '[]'); } catch { return []; } }
+  function saveUserSkills(s) { localStorage.setItem(STORAGE_SKILLS, JSON.stringify(s)); }
+
+  function buildCatPills() {
+    var el = document.getElementById('skillsCats');
+    el.innerHTML = '';
+    var labels = { tutte:'Tutte', analytics:'Analytics', comunicazione:'Comunicazione', codice:'Codice', automazione:'Automazione', custom:'Personalizzate' };
+    CATS.forEach(function(c) {
+      var btn = document.createElement('button');
+      btn.className = 'howl-cat-pill' + (c === activeCat ? ' active' : '');
+      btn.textContent = labels[c];
+      btn.dataset.cat = c;
+      btn.addEventListener('click', function() {
+        activeCat = c;
+        document.querySelectorAll('.howl-cat-pill').forEach(function(p) { p.classList.toggle('active', p.dataset.cat === c); });
+        renderSkills();
+      });
+      el.appendChild(btn);
+    });
+  }
+
+  function renderSkills() {
+    var userSkills = loadUserSkills();
+    var allBuiltin = BUILTIN_SKILLS.filter(function(s) {
+      var catOk = activeCat === 'tutte' || s.category === activeCat;
+      var q = skillFilter.toLowerCase();
+      var qOk = !q || s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q);
+      return catOk && qOk;
+    });
+    var allCustom = userSkills.filter(function(s) {
+      var catOk = activeCat === 'tutte' || activeCat === 'custom' || s.category === activeCat;
+      var q = skillFilter.toLowerCase();
+      var qOk = !q || s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q);
+      return catOk && qOk;
+    });
+    renderSkillsGrid('skillsBuiltinGrid', allBuiltin, false);
+    renderSkillsGrid('skillsCustomGrid', allCustom, true);
+    document.getElementById('skillsCustomSection').style.display = allCustom.length > 0 ? 'block' : 'none';
+  }
+
+  function renderSkillsGrid(gridId, skills, isCustom) {
+    var grid = document.getElementById(gridId);
+    grid.innerHTML = '';
+    skills.forEach(function(s) {
+      var card = document.createElement('button');
+      card.className = 'howl-skill-card';
+      var color = CAT_COLORS[s.category] || '#6b7280';
+      var catLabel = s.category.charAt(0).toUpperCase() + s.category.slice(1);
+      card.innerHTML =
+        '<div class="howl-skill-card-top">' +
+          '<span class="howl-skill-card-name">' + escapeHTML(s.name) + '</span>' +
+          '<span class="howl-skill-cat-badge" style="background:' + color + '22;color:' + color + '">' + catLabel + '</span>' +
+        '</div>' +
+        '<div class="howl-skill-card-desc">' + escapeHTML(s.description) + '</div>';
+      card.addEventListener('click', function() { openSkillModal(s, isCustom); });
+      grid.appendChild(card);
+    });
+  }
+
+  function openSkillModal(skill, isCustom) {
+    selectedSkill = skill;
+    var color = CAT_COLORS[skill.category] || '#6b7280';
+    var catLabel = skill.category.charAt(0).toUpperCase() + skill.category.slice(1);
+    document.getElementById('skillModalName').textContent = skill.name;
+    document.getElementById('skillModalBadge').innerHTML = '<span class="howl-skill-cat-badge" style="background:' + color + '22;color:' + color + '">' + catLabel + '</span>';
+    document.getElementById('skillModalDesc').textContent = skill.description;
+    document.getElementById('skillModalPrompt').textContent = skill.prompt;
+    // Add delete button for custom skills
+    var footer = document.getElementById('skillModalFooter');
+    var existing = footer.querySelector('.howl-btn-danger');
+    if (existing) existing.remove();
+    if (isCustom) {
+      var del = document.createElement('button');
+      del.className = 'howl-btn-danger';
+      del.textContent = 'Elimina';
+      del.style.marginRight = 'auto';
+      del.addEventListener('click', function() {
+        var us = loadUserSkills().filter(function(x) { return x.id !== skill.id; });
+        saveUserSkills(us);
+        closeSkillModal();
+        renderSkills();
+      });
+      footer.insertBefore(del, footer.firstChild);
+    }
+    document.getElementById('skillModal').classList.add('visible');
+  }
+
+  function closeSkillModal() { document.getElementById('skillModal').classList.remove('visible'); selectedSkill = null; }
+  document.getElementById('skillModalClose').addEventListener('click', closeSkillModal);
+  document.getElementById('skillModalClose2').addEventListener('click', closeSkillModal);
+  document.getElementById('skillModal').addEventListener('click', function(e) { if (e.target === this) closeSkillModal(); });
+  document.getElementById('skillModalUse').addEventListener('click', function() {
+    if (!selectedSkill) return;
+    setActiveSkill(selectedSkill);
+    closeSkillModal();
+    switchPanel('chat');
+    startNewConversation();
+    textarea.focus();
+  });
+
+  document.getElementById('skillsSearch').addEventListener('input', function() {
+    skillFilter = this.value;
+    renderSkills();
+  });
+
+  // Create skill modal
+  document.getElementById('createSkillBtn').addEventListener('click', function() {
+    document.getElementById('createSkillModal').classList.add('visible');
+  });
+  function closeCreateModal() {
+    document.getElementById('createSkillModal').classList.remove('visible');
+    document.getElementById('newSkillName').value = '';
+    document.getElementById('newSkillDesc').value = '';
+    document.getElementById('newSkillPrompt').value = '';
+    document.getElementById('newSkillCat').value = 'custom';
+  }
+  document.getElementById('createSkillClose').addEventListener('click', closeCreateModal);
+  document.getElementById('createSkillCancel').addEventListener('click', closeCreateModal);
+  document.getElementById('createSkillModal').addEventListener('click', function(e) { if (e.target === this) closeCreateModal(); });
+  document.getElementById('createSkillSave').addEventListener('click', function() {
+    var name   = document.getElementById('newSkillName').value.trim();
+    var desc   = document.getElementById('newSkillDesc').value.trim();
+    var prompt = document.getElementById('newSkillPrompt').value.trim();
+    var cat    = document.getElementById('newSkillCat').value;
+    if (!name || !prompt) { alert('Nome e prompt sono obbligatori.'); return; }
+    var skill = { id:'csk_' + Date.now(), name, description: desc || name, category: cat, prompt, isCustom: true };
+    var us = loadUserSkills();
+    us.push(skill);
+    saveUserSkills(us);
+    closeCreateModal();
+    renderSkills();
+  });
+
+  buildCatPills();
+  renderSkills();
+
+  // ─────────────────────────────────────────────────────────────────
   // INIT
   // ─────────────────────────────────────────────────────────────────
   updateModelUI();
   tryLoadUser();
   restoreSession();
+  loadSettingsForm();
   textarea.focus();
 
 })();

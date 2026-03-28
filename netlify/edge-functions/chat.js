@@ -56,7 +56,7 @@ export default async function handler(request) {
     return jsonResponse({ error: 'Invalid JSON body' }, 400);
   }
 
-  const { model, messages } = body;
+  const { model, messages, businessContext, skillContext } = body;
 
   if (!model || !Array.isArray(messages) || messages.length === 0) {
     return jsonResponse({ error: 'Missing required fields: model, messages' }, 400);
@@ -72,15 +72,34 @@ export default async function handler(request) {
     }
   }
 
+  // Build dynamic system prompt
+  let systemPrompt = HOWL_SYSTEM;
+  if (businessContext && typeof businessContext === 'object') {
+    const lines = [];
+    if (businessContext.company)   lines.push('Azienda: ' + businessContext.company);
+    if (businessContext.industry)  lines.push('Settore: ' + businessContext.industry);
+    if (businessContext.offering)  lines.push('Offerta: ' + businessContext.offering);
+    if (businessContext.teamSize)  lines.push('Team: ' + businessContext.teamSize);
+    if (businessContext.challenge) lines.push('Sfida principale: ' + businessContext.challenge);
+    if (businessContext.tone)      lines.push('Tono preferito: ' + businessContext.tone);
+    if (businessContext.language && businessContext.language !== 'auto') {
+      lines.push('Rispondi sempre in: ' + businessContext.language);
+    }
+    if (lines.length > 0) systemPrompt += '\n\nCONTESTO AZIENDALE:\n' + lines.join('\n');
+  }
+  if (skillContext && typeof skillContext === 'string' && skillContext.length < 2000) {
+    systemPrompt += '\n\nSKILL ATTIVA:\n' + skillContext;
+  }
+
   try {
     let content;
 
     if (model === 'claude-sonnet-4-6') {
-      content = await callAnthropic(messages);
+      content = await callAnthropic(messages, systemPrompt);
     } else if (model === 'gemini-2.5-flash') {
-      content = await callGemini(messages);
+      content = await callGemini(messages, systemPrompt);
     } else if (model === 'gpt-4o') {
-      content = await callOpenAI(messages);
+      content = await callOpenAI(messages, systemPrompt);
     } else {
       return jsonResponse({ error: `Unknown model: ${model}` }, 400);
     }
@@ -95,7 +114,7 @@ export default async function handler(request) {
 }
 
 // ── Anthropic (Claude) ────────────────────────────────────────────────────────
-async function callAnthropic(messages) {
+async function callAnthropic(messages, systemPrompt) {
   const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
   if (!apiKey) {
     throw new Error(
@@ -113,7 +132,7 @@ async function callAnthropic(messages) {
     body: JSON.stringify({
       model: 'claude-sonnet-4-6',
       max_tokens: 1500,
-      system: HOWL_SYSTEM,
+      system: systemPrompt,
       messages,
     }),
   });
@@ -128,7 +147,7 @@ async function callAnthropic(messages) {
 }
 
 // ── Google Gemini ─────────────────────────────────────────────────────────────
-async function callGemini(messages) {
+async function callGemini(messages, systemPrompt) {
   const apiKey = Deno.env.get('GEMINI_API_KEY');
   if (!apiKey) {
     throw new Error(
@@ -155,7 +174,7 @@ async function callGemini(messages) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents,
-      system_instruction: { parts: [{ text: HOWL_SYSTEM }] },
+      system_instruction: { parts: [{ text: systemPrompt }] },
       generationConfig: {
         maxOutputTokens: 1500,
         temperature: 0.7,
@@ -178,7 +197,7 @@ async function callGemini(messages) {
 }
 
 // ── OpenAI (GPT) ──────────────────────────────────────────────────────────────
-async function callOpenAI(messages) {
+async function callOpenAI(messages, systemPrompt) {
   const apiKey = Deno.env.get('OPENAI_API_KEY');
   if (!apiKey) {
     throw new Error(
@@ -196,7 +215,7 @@ async function callOpenAI(messages) {
       model: 'gpt-4o',
       max_tokens: 1500,
       messages: [
-        { role: 'system', content: HOWL_SYSTEM },
+        { role: 'system', content: systemPrompt },
         ...messages,
       ],
     }),

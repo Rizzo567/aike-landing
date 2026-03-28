@@ -77,7 +77,7 @@ export default async function handler(request) {
 
     if (model === 'claude-sonnet-4-6') {
       content = await callAnthropic(messages);
-    } else if (model === 'gemini-2.0-flash') {
+    } else if (model === 'gemini-2.5-flash') {
       content = await callGemini(messages);
     } else if (model === 'gpt-4o') {
       content = await callOpenAI(messages);
@@ -148,7 +148,7 @@ async function callGemini(messages) {
     }
   }
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
   const response = await fetch(url, {
     method: 'POST',

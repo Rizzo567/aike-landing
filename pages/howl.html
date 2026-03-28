@@ -232,7 +232,7 @@
     }
     .howl-welcome-heading {
       font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;
-      color: var(--h-text); letter-spacing: -0.045em; line-height: 1.1;
+      color: rgba(235,235,245,0.68); letter-spacing: -0.045em; line-height: 1.1;
     }
 
     /* Messages */
@@ -245,9 +245,10 @@
 
     .howl-msg-user { display: flex; justify-content: flex-end; }
     .howl-msg-user-bubble {
-      background: linear-gradient(135deg, var(--h-purple-dark), var(--h-purple));
-      color: #fff; border-radius: var(--h-r-lg) var(--h-r-lg) 4px var(--h-r-lg);
-      padding: 12px 18px; max-width: 76%;
+      background: rgba(255,255,255,0.07);
+      color: var(--h-text); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--h-r-lg) var(--h-r-lg) 4px var(--h-r-lg);
+      padding: 11px 16px; max-width: 76%;
       font-size: 0.895rem; line-height: 1.65;
     }
     .howl-msg-assistant { display: flex; align-items: flex-start; gap: 12px; }
@@ -255,15 +256,13 @@
       width: 30px; height: 30px; border-radius: 50%;
       background: var(--h-surface); border: 1px solid rgba(168,85,247,0.22);
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; margin-top: 1px;
+      flex-shrink: 0; margin-top: 2px;
     }
     .howl-msg-avatar img { width: 17px; height: 17px; object-fit: contain; }
     .howl-msg-assistant-bubble {
-      background: var(--h-surface); border: 1px solid var(--h-border);
-      border-left: 2px solid rgba(168,85,247,0.36);
-      border-radius: var(--h-r-lg) var(--h-r-lg) var(--h-r-lg) 4px;
-      padding: 14px 18px; max-width: 82%;
-      font-size: 0.895rem; color: var(--h-text-sec); line-height: 1.72;
+      background: none; border: none; padding: 2px 0;
+      max-width: 82%;
+      font-size: 0.895rem; color: var(--h-text-sec); line-height: 1.78;
     }
     .howl-msg-assistant-bubble strong { color: var(--h-text); font-weight: 600; }
     .howl-msg-assistant-bubble code {
@@ -321,15 +320,19 @@
       display: flex; flex-direction: column; gap: 9px;
     }
     .howl-input-shell {
-      display: flex; align-items: flex-end;
+      display: flex; flex-direction: column;
       background: var(--h-surface); border: 1px solid var(--h-border);
-      border-radius: 18px; padding: 12px 12px 12px 18px; gap: 10px;
+      border-radius: 18px; padding: 14px 14px 10px 18px; gap: 10px;
       transition: border-color 200ms ease, box-shadow 200ms ease;
     }
     .howl-input-shell:focus-within {
       border-color: rgba(255,255,255,0.13);
       box-shadow: none;
     }
+    .howl-input-controls {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .howl-input-controls .howl-send-btn { margin-left: auto; }
     .howl-textarea {
       flex: 1; resize: none; font-family: var(--h-font);
       font-size: 0.9rem; color: var(--h-text); background: none;
@@ -783,6 +786,29 @@
       transition:all 150ms ease;
     }
     .howl-sugg:hover { border-color:rgba(255,255,255,0.18); color:var(--h-text-muted); background:rgba(255,255,255,0.04); }
+
+    /* ── Context pin ── */
+    .howl-context-pin {
+      display:none; align-items:center; gap:10px;
+      padding:8px 18px; background:rgba(15,15,17,0.92);
+      border-bottom:1px solid var(--h-border);
+      flex-shrink:0;
+    }
+    .howl-context-pin.visible { display:flex; }
+    .howl-context-pin-text {
+      flex:1; font-size:0.8rem; color:var(--h-text-muted);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .howl-context-pin-more {
+      font-size:0.75rem; font-family:var(--h-font); font-weight:500;
+      color:var(--h-purple); background:none; border:none; cursor:pointer;
+      flex-shrink:0; padding:0;
+    }
+    .howl-context-pin-more:hover { color:#c084fc; }
+
+    /* ── Markdown links ── */
+    .howl-link { color:var(--h-purple); text-decoration:underline; text-underline-offset:2px; word-break:break-all; }
+    .howl-link:hover { color:#c084fc; }
   </style>
 </head>
 <body>
@@ -880,6 +906,12 @@
   <!-- ═══ PANEL: CHAT ═══ -->
   <div class="howl-panel active-panel" id="panel-chat">
 
+    <!-- Context pin — appears when current user question scrolls off screen -->
+    <div class="howl-context-pin" id="howlContextPin">
+      <span class="howl-context-pin-text" id="howlContextPinText"></span>
+      <button class="howl-context-pin-more" id="howlContextPinMore">Vai</button>
+    </div>
+
     <!-- Thread -->
     <div class="howl-thread" id="howlThread" role="log" aria-live="polite">
 
@@ -913,11 +945,25 @@
             rows="1" autocomplete="off" spellcheck="false"
             aria-label="Messaggio per Howl"
           ></textarea>
-          <button class="howl-send-btn" id="howlSendBtn" aria-label="Invia" disabled>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="8" y1="13" x2="8" y2="3"/><polyline points="4 7 8 3 12 7"/>
-            </svg>
-          </button>
+          <div class="howl-input-controls">
+            <div class="howl-model-wrap" id="howlModelWrap">
+              <button class="howl-model-pill" id="howlModelPill" aria-haspopup="listbox" aria-expanded="false">
+                <span class="howl-model-dot" id="howlModelDot"></span>
+                <span id="howlModelLabel">Claude Sonnet 4.6</span>
+                <svg class="howl-model-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="2 3.5 5 6.5 8 3.5"/></svg>
+              </button>
+              <div class="howl-model-dropdown" id="howlModelDropdown" role="listbox"></div>
+            </div>
+            <button class="howl-attach-icon-btn" id="howlFileBtn" title="Allega file" aria-label="Allega file">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/></svg>
+            </button>
+            <input type="file" id="howlFileInput" accept=".txt,.md,.js,.ts,.jsx,.tsx,.css,.html,.json,.csv,.sql,.py" style="display:none" />
+            <button class="howl-send-btn" id="howlSendBtn" aria-label="Invia" disabled>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="8" y1="13" x2="8" y2="3"/><polyline points="4 7 8 3 12 7"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <!-- Active skill banner -->
@@ -937,22 +983,6 @@
         </div>
 
         <div class="howl-input-footer">
-          <div class="howl-input-footer-left">
-            <div class="howl-model-wrap" id="howlModelWrap">
-              <button class="howl-model-pill" id="howlModelPill" aria-haspopup="listbox" aria-expanded="false">
-                <span class="howl-model-dot" id="howlModelDot"></span>
-                <span id="howlModelLabel">Claude Sonnet 4.6</span>
-                <svg class="howl-model-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="2 3.5 5 6.5 8 3.5"/></svg>
-              </button>
-              <div class="howl-model-dropdown" id="howlModelDropdown" role="listbox"></div>
-            </div>
-            <div class="howl-input-tags">
-              <button class="howl-attach-icon-btn" id="howlFileBtn" title="Allega file" aria-label="Allega file">
-                <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/></svg>
-              </button>
-              <input type="file" id="howlFileInput" accept=".txt,.md,.js,.ts,.jsx,.tsx,.css,.html,.json,.csv,.sql,.py" style="display:none" />
-            </div>
-          </div>
           <span class="howl-disclaimer">Howl può fare errori. Verifica le informazioni critiche.</span>
         </div>
 
@@ -1596,6 +1626,7 @@
   // ─────────────────────────────────────────────────────────────────
   newChatBtn.addEventListener('click', function () {
     startNewConversation();
+    switchPanel('chat');
     closeSidebar();
     textarea.focus();
   });
@@ -1616,6 +1647,9 @@
     resizeTextarea();
     toggleSendBtn();
     threadEl.scrollTop = 0;
+    // Hide context pin
+    var pin = document.getElementById('howlContextPin');
+    if (pin) pin.classList.remove('visible');
     if (showWelcome) {
       welcome.classList.remove('hidden');
       var suggsEl = document.getElementById('howlSuggestions');
@@ -1759,15 +1793,59 @@
   }
 
   // ─────────────────────────────────────────────────────────────────
+  // CONTEXT PIN — pins last visible user question when it scrolls off
+  // ─────────────────────────────────────────────────────────────────
+  var contextPinEl     = document.getElementById('howlContextPin');
+  var contextPinTextEl = document.getElementById('howlContextPinText');
+  var contextPinMoreEl = document.getElementById('howlContextPinMore');
+  var _pinnedTarget    = null;
+
+  threadEl.addEventListener('scroll', function () {
+    var userBubbles = threadEl.querySelectorAll('.howl-msg-user');
+    if (userBubbles.length === 0) { contextPinEl.classList.remove('visible'); return; }
+    var threadTop = threadEl.getBoundingClientRect().top;
+    var lastAbove = null;
+    for (var i = 0; i < userBubbles.length; i++) {
+      var rect = userBubbles[i].getBoundingClientRect();
+      if (rect.bottom < threadTop + 24) lastAbove = userBubbles[i];
+    }
+    if (lastAbove) {
+      var bubbleEl = lastAbove.querySelector('.howl-msg-user-bubble');
+      var txt = bubbleEl ? bubbleEl.textContent : '';
+      contextPinTextEl.textContent = txt.length > 70 ? txt.slice(0, 70) + '…' : txt;
+      _pinnedTarget = lastAbove;
+      contextPinEl.classList.add('visible');
+    } else {
+      contextPinEl.classList.remove('visible');
+      _pinnedTarget = null;
+    }
+  }, { passive: true });
+
+  contextPinMoreEl.addEventListener('click', function () {
+    if (_pinnedTarget) _pinnedTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // ─────────────────────────────────────────────────────────────────
   // MARKDOWN (lightweight renderer for AI responses)
   // ─────────────────────────────────────────────────────────────────
   function renderMarkdown(text) {
-    // Fenced code blocks
+    // Fenced code blocks (protect from further processing)
+    var blocks = [];
     text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, function (_, lang, code) {
-      return '<pre><code>' + escapeHTML(code.trim()) + '</code></pre>';
+      var ph = '\x00BLOCK' + blocks.length + '\x00';
+      blocks.push('<pre><code>' + escapeHTML(code.trim()) + '</code></pre>');
+      return ph;
     });
-    // Inline code (after block code to avoid conflicts)
+    // Inline code
     text = text.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+    // Markdown links [text](url) — before auto-URL to avoid double-processing
+    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, function (_, label, url) {
+      return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="howl-link">' + label + '</a>';
+    });
+    // Auto-URLs (not already inside an href)
+    text = text.replace(/(?<!['"=])(https?:\/\/[^\s<>")\]]+)/g, function (url) {
+      return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="howl-link">' + url + '</a>';
+    });
     // Bold
     text = text.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
     // Italic
@@ -1784,6 +1862,8 @@
     text = text.replace(/\n{2,}/g, '<br><br>');
     // Single newlines
     text = text.replace(/\n/g, '<br>');
+    // Restore code blocks
+    text = text.replace(/\x00BLOCK(\d+)\x00/g, function (_, i) { return blocks[+i]; });
     return text;
   }
 
@@ -2373,7 +2453,7 @@
     else                         phrases = ['È tardi', 'Notte fonda', 'Ancora sveglio'];
     var phrase = phrases[h % phrases.length];
     var el = document.getElementById('howlGreeting');
-    if (el) el.textContent = firstName ? phrase + ' ' + firstName : phrase;
+    if (el) el.textContent = firstName ? phrase + ', ' + firstName : phrase;
   }
   function capFirst(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : ''; }
 

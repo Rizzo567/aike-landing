@@ -83,8 +83,8 @@ export async function onRequest({ request, env }) {
   }
 
   for (const m of messages) {
-    if (!m.role || !m.content || typeof m.content !== 'string') {
-      return jsonResponse({ error: 'Each message must have role and content (string)' }, 400);
+    if (!m.role || !m.content || (typeof m.content !== 'string' && !Array.isArray(m.content))) {
+      return jsonResponse({ error: 'Each message must have role and content (string or array)' }, 400);
     }
     if (m.role !== 'user' && m.role !== 'assistant') {
       return jsonResponse({ error: 'Message role must be "user" or "assistant"' }, 400);
@@ -113,6 +113,58 @@ export async function onRequest({ request, env }) {
   const ANTHROPIC_MODELS = ['claude-sonnet-4-6'];
   const GEMINI_MODELS    = ['gemini-2.5-flash', 'gemini-2.5-pro'];
   const OPENAI_MODELS    = ['gpt-4o', 'gpt-4.1'];
+
+  // ── Credit check (server-side) ──────────────────────────────────
+  const CREDIT_COST = { 'claude-sonnet-4-6': 3, 'gemini-2.5-pro': 3, 'gpt-4.1': 3, 'gemini-2.5-flash': 2, 'gpt-4o': 2 };
+  const cost = CREDIT_COST[model] || 1;
+
+  // Only check if Supabase is configured and user has a JWT
+  const authHeader = request.headers.get('Authorization') || '';
+  const userJwt = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  const supabaseUrl2 = env.SUPABASE_URL;
+  const serviceKey2  = env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (userJwt && supabaseUrl2 && serviceKey2) {
+    try {
+      // Verify JWT to get user_id
+      const verifyR = await fetch(`${supabaseUrl2}/auth/v1/user`, {
+        headers: { 'apikey': serviceKey2, 'Authorization': `Bearer ${userJwt}` },
+      });
+      if (verifyR.ok) {
+        const userData = await verifyR.json();
+        const userId = userData.id;
+        if (userId) {
+          // Read credits
+          const credR = await fetch(`${supabaseUrl2}/rest/v1/user_credits?user_id=eq.${userId}&select=plan,total,used`, {
+            headers: { 'apikey': serviceKey2, 'Authorization': `Bearer ${serviceKey2}` },
+          });
+          if (credR.ok) {
+            const rows = await credR.json();
+            const PLAN_LIMITS2 = { free: 30, basic: 300, pro: 1000 };
+            if (rows.length > 0) {
+              const row = rows[0];
+              const limit = PLAN_LIMITS2[row.plan] || row.total;
+              if (row.used + cost > limit) {
+                return jsonResponse({ error: 'Crediti esauriti. Aggiorna il piano per continuare.', code: 'CREDITS_EXHAUSTED' }, 402);
+              }
+              // Deduct
+              await fetch(`${supabaseUrl2}/rest/v1/user_credits?user_id=eq.${userId}`, {
+                method: 'PATCH',
+                headers: {
+                  'apikey': serviceKey2, 'Authorization': `Bearer ${serviceKey2}`,
+                  'Content-Type': 'application/json', 'Prefer': 'return=minimal',
+                },
+                body: JSON.stringify({ used: row.used + cost, updated_at: new Date().toISOString() }),
+              });
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.error('[credits check]', e.message);
+      // Don't block on credit check errors — fail open
+    }
+  }
 
   // ── Non-streaming path ─────────────────────────────────────────────────────
   if (!useStream) {
@@ -331,10 +383,27 @@ function buildGeminiContents(messages) {
   const contents = [];
   for (const m of messages) {
     const role = m.role === 'assistant' ? 'model' : 'user';
-    if (contents.length > 0 && contents[contents.length - 1].role === role) {
-      contents[contents.length - 1].parts[0].text += '\n' + m.content;
+    let parts;
+    if (Array.isArray(m.content)) {
+      // Multimodal content — convert image_url parts to Gemini inline_data format
+      parts = m.content.map(function(part) {
+        if (part.type === 'image_url' && part.image_url?.url) {
+          const dataUrl = part.image_url.url;
+          const match = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+          if (match) {
+            return { inline_data: { mime_type: match[1], data: match[2] } };
+          }
+          return { text: '[image]' };
+        }
+        return { text: part.text || '' };
+      });
     } else {
-      contents.push({ role, parts: [{ text: m.content }] });
+      parts = [{ text: m.content }];
+    }
+    if (contents.length > 0 && contents[contents.length - 1].role === role) {
+      contents[contents.length - 1].parts.push(...parts);
+    } else {
+      contents.push({ role, parts });
     }
   }
   return contents;

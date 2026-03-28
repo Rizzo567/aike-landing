@@ -289,28 +289,34 @@
       font-size: 0.855rem; color: #ff6b63; line-height: 1.6;
     }
 
-    /* Typing */
+    /* ── Thinking state ── */
     .howl-typing {
-      display: none; align-items: center; gap: 12px;
-      max-width: 740px; margin: 0 auto; width: 100%; padding: 0 0 6px;
+      display: none; align-items: center; gap: 10px;
+      max-width: 740px; margin: 0 auto; width: 100%; padding: 4px 0 12px;
     }
     .howl-typing.visible { display: flex; }
-    .howl-typing-bubble {
-      background: var(--h-surface); border: 1px solid var(--h-border);
-      border-left: 2px solid rgba(168,85,247,0.36);
-      border-radius: var(--h-r-md); padding: 12px 16px;
-      display: flex; gap: 5px; align-items: center;
+    .howl-thinking-logo {
+      width: 20px; height: 20px; object-fit: contain;
+      flex-shrink: 0; opacity: 0.65;
     }
-    .howl-typing-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--h-purple); opacity: 0.3;
-      animation: howlDot 1.3s ease-in-out infinite;
+    .howl-thinking-status {
+      display: flex; align-items: baseline; gap: 0;
+      font-size: 0.835rem; font-weight: 500; color: var(--h-text-dim);
+      letter-spacing: 0.01em;
     }
-    .howl-typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .howl-typing-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes howlDot {
-      0%, 100% { opacity: 0.28; transform: scale(1); }
-      50%       { opacity: 1;    transform: scale(1.18); }
+    .howl-thinking-word {
+      display: inline-block; transition: opacity 260ms ease;
+    }
+    .howl-thinking-word.fading { opacity: 0; }
+    .howl-thinking-dot {
+      display: inline-block; opacity: 0;
+      animation: howlThinkDot 1.5s ease-in-out infinite;
+    }
+    .howl-thinking-dot:nth-child(2) { animation-delay: 0.24s; }
+    .howl-thinking-dot:nth-child(3) { animation-delay: 0.48s; }
+    @keyframes howlThinkDot {
+      0%, 55%, 100% { opacity: 0; }
+      28% { opacity: 1; }
     }
 
     /* ── Input area ── */
@@ -809,6 +815,236 @@
     /* ── Markdown links ── */
     .howl-link { color:var(--h-purple); text-decoration:underline; text-underline-offset:2px; word-break:break-all; }
     .howl-link:hover { color:#c084fc; }
+
+    /* ══════════════════════════════════════════════════════════════
+       THEME SYSTEM
+    ══════════════════════════════════════════════════════════════ */
+    [data-theme="midnight"] {
+      --h-bg:          #07071A;
+      --h-sidebar:     #0C0C22;
+      --h-surface:     #13132E;
+      --h-surface-alt: #1A1A3A;
+      --h-border:      rgba(110,130,255,0.10);
+      --h-border-sub:  rgba(110,130,255,0.05);
+      --h-purple:      #818cf8;
+      --h-purple-dark: #6366f1;
+      --h-purple-dim:  rgba(129,140,248,0.10);
+    }
+    [data-theme="ash"] {
+      --h-bg:          #111110;
+      --h-sidebar:     #161614;
+      --h-surface:     #1e1e1c;
+      --h-surface-alt: #252523;
+      --h-border:      rgba(255,255,245,0.08);
+      --h-border-sub:  rgba(255,255,245,0.04);
+      --h-purple:      #c084fc;
+      --h-purple-dark: #a855f7;
+      --h-purple-dim:  rgba(192,132,252,0.10);
+    }
+
+    /* ── Compact layout modifier ── */
+    .howl-compact .howl-messages { gap: 16px; }
+    .howl-compact .howl-msg-user-bubble { padding: 9px 14px; font-size: 0.875rem; }
+    .howl-compact .howl-msg-assistant-bubble { font-size: 0.875rem; line-height: 1.66; }
+
+    /* ══════════════════════════════════════════════════════════════
+       CREDIT WARNING BAR
+    ══════════════════════════════════════════════════════════════ */
+    .howl-credit-warn {
+      display: none; flex-direction: column; gap: 7px;
+      padding: 9px 14px; margin-bottom: 4px;
+      background: rgba(251,191,36,0.04);
+      border: 1px solid rgba(251,191,36,0.14);
+      border-radius: var(--h-r-md);
+      animation: howlFadeUp 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .howl-credit-warn.visible { display: flex; }
+    .howl-credit-warn-row { display: flex; align-items: center; gap: 8px; }
+    .howl-credit-warn-icon { color: #fbbf24; flex-shrink: 0; }
+    .howl-credit-warn-text { flex: 1; font-size: 0.79rem; color: var(--h-text-muted); }
+    .howl-credit-warn-text strong { color: #fbbf24; font-weight: 600; }
+    .howl-credit-warn-cta {
+      font-size: 0.76rem; font-weight: 600; color: var(--h-purple);
+      background: none; border: none; cursor: pointer; font-family: var(--h-font);
+      white-space: nowrap; padding: 0; flex-shrink: 0;
+      transition: color 140ms ease;
+    }
+    .howl-credit-warn-cta:hover { color: #c084fc; }
+    .howl-credit-bar-track {
+      height: 2px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden;
+    }
+    .howl-credit-bar-fill {
+      height: 100%; border-radius: 99px;
+      background: linear-gradient(90deg, #d97706, #fbbf24);
+      transition: width 600ms cubic-bezier(0.16,1,0.3,1);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       SETTINGS OVERLAY
+    ══════════════════════════════════════════════════════════════ */
+    .howl-sett-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.62);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity 240ms ease, visibility 0s linear 240ms;
+    }
+    .howl-sett-overlay.open {
+      opacity: 1; visibility: visible;
+      transition: opacity 240ms ease;
+    }
+    .howl-sett-panel {
+      background: var(--h-sidebar);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px;
+      width: 520px; max-width: 95vw; max-height: 88vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(168,85,247,0.06);
+      transform: scale(0.95) translateY(12px);
+      transition: transform 260ms cubic-bezier(0.16,1,0.3,1);
+      overflow: hidden;
+    }
+    .howl-sett-overlay.open .howl-sett-panel { transform: scale(1) translateY(0); }
+
+    .howl-sett-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 22px 16px; border-bottom: 1px solid var(--h-border); flex-shrink: 0;
+    }
+    .howl-sett-header-left { display: flex; align-items: center; gap: 12px; }
+    .howl-sett-header-logo { width: 26px; height: 26px; object-fit: contain; }
+    .howl-sett-title { font-size: 0.97rem; font-weight: 700; letter-spacing: -0.022em; }
+    .howl-sett-subtitle { font-size: 0.73rem; color: var(--h-text-muted); margin-top: 2px; }
+    .howl-sett-close {
+      width: 30px; height: 30px; border-radius: 8px; border: none; cursor: pointer;
+      background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;
+      color: var(--h-text-muted); transition: background 140ms ease, color 140ms ease;
+    }
+    .howl-sett-close:hover { background: rgba(255,255,255,0.10); color: var(--h-text); }
+
+    .howl-sett-tabs {
+      display: flex; gap: 2px; padding: 10px 16px 0;
+      border-bottom: 1px solid var(--h-border); flex-shrink: 0;
+    }
+    .howl-sett-tab {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 13px; border-radius: 8px 8px 0 0;
+      font-size: 0.8rem; font-weight: 500; color: var(--h-text-muted);
+      background: none; border: none; cursor: pointer; font-family: var(--h-font);
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color 130ms ease;
+    }
+    .howl-sett-tab:hover { color: var(--h-text-sec); }
+    .howl-sett-tab.active { color: var(--h-text); border-bottom-color: var(--h-purple); }
+
+    .howl-sett-body {
+      flex: 1; overflow-y: auto; padding: 22px;
+    }
+    .howl-sett-body::-webkit-scrollbar { width: 3px; }
+    .howl-sett-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.09); border-radius: 99px; }
+
+    .howl-sett-page { display: flex; flex-direction: column; gap: 20px; }
+    .howl-sett-page.hidden { display: none; }
+
+    /* Theme cards */
+    .howl-theme-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .howl-theme-card {
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 14px; border-radius: var(--h-r-md);
+      background: var(--h-surface); border: 2px solid var(--h-border);
+      cursor: pointer; font-family: var(--h-font); text-align: left;
+      transition: border-color 160ms ease, transform 160ms ease;
+    }
+    .howl-theme-card:hover { border-color: rgba(168,85,247,0.3); transform: translateY(-1px); }
+    .howl-theme-card.active { border-color: var(--h-purple); background: var(--h-purple-dim); }
+    .howl-theme-preview {
+      width: 100%; aspect-ratio: 16/10; border-radius: 8px;
+    }
+    .howl-theme-preview-dark    { background: linear-gradient(145deg,#0B0B0C 0%,#1C1C1E 55%,#242426 100%); }
+    .howl-theme-preview-midnight{ background: linear-gradient(145deg,#07071A 0%,#13132E 55%,#1A1A3A 100%); border: 1px solid rgba(110,130,255,0.15); }
+    .howl-theme-preview-ash     { background: linear-gradient(145deg,#111110 0%,#1e1e1c 55%,#252523 100%); }
+    .howl-theme-name { font-size: 0.84rem; font-weight: 600; color: var(--h-text-sec); }
+    .howl-theme-desc { font-size: 0.73rem; color: var(--h-text-dim); }
+
+    /* Usage display */
+    .howl-usage-card {
+      background: var(--h-surface); border: 1px solid var(--h-border);
+      border-radius: var(--h-r-md); padding: 18px 20px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .howl-usage-plan-row { display: flex; align-items: center; gap: 10px; }
+    .howl-usage-plan-badge {
+      padding: 3px 10px; border-radius: var(--h-r-full);
+      font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .howl-usage-plan-badge.free  { background: rgba(148,163,184,0.12); color: #94a3b8; }
+    .howl-usage-plan-badge.basic { background: rgba(168,85,247,0.12); color: var(--h-purple); }
+    .howl-usage-plan-badge.pro   { background: rgba(251,191,36,0.12); color: #fbbf24; }
+    .howl-usage-plan-name { font-size: 0.95rem; font-weight: 700; color: var(--h-text); }
+    .howl-usage-credits-row { display: flex; align-items: flex-end; justify-content: space-between; }
+    .howl-usage-credits-num { font-size: 2.2rem; font-weight: 700; color: var(--h-text); letter-spacing: -0.05em; line-height: 1; }
+    .howl-usage-credits-label { font-size: 0.77rem; color: var(--h-text-muted); margin-top: 4px; }
+    .howl-usage-credits-info { font-size: 0.76rem; color: var(--h-text-dim); text-align: right; line-height: 1.55; }
+    .howl-usage-bar-track { height: 6px; background: rgba(255,255,255,0.07); border-radius: 99px; overflow: hidden; }
+    .howl-usage-bar-fill {
+      height: 100%; border-radius: 99px;
+      background: linear-gradient(90deg, var(--h-purple-dark), var(--h-purple));
+      transition: width 700ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .howl-usage-bar-fill.warn { background: linear-gradient(90deg, #d97706, #fbbf24); }
+
+    .howl-upgrade-cta {
+      display: flex; flex-direction: column; gap: 10px; padding: 16px 18px;
+      border-radius: var(--h-r-md);
+      background: linear-gradient(135deg, rgba(124,58,237,0.10), rgba(168,85,247,0.06));
+      border: 1px solid rgba(168,85,247,0.16);
+    }
+    .howl-upgrade-cta-title { font-size: 0.87rem; font-weight: 600; color: var(--h-text); }
+    .howl-upgrade-cta-desc { font-size: 0.79rem; color: var(--h-text-muted); line-height: 1.55; }
+    .howl-upgrade-cta-btn {
+      align-self: flex-start; display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: var(--h-r-sm); border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--h-purple-dark), var(--h-purple));
+      color: #fff; font-size: 0.82rem; font-weight: 600; font-family: var(--h-font);
+      transition: opacity 140ms ease, transform 140ms ease;
+    }
+    .howl-upgrade-cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* Preference rows */
+    .howl-pref-section { display: flex; flex-direction: column; gap: 12px; }
+    .howl-pref-section-title {
+      font-size: 0.71rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--h-text-dim); padding-bottom: 4px; border-bottom: 1px solid var(--h-border-sub);
+    }
+    .howl-pref-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .howl-pref-info { display: flex; flex-direction: column; gap: 2px; }
+    .howl-pref-label { font-size: 0.84rem; color: var(--h-text-sec); font-weight: 500; }
+    .howl-pref-sub { font-size: 0.74rem; color: var(--h-text-dim); line-height: 1.4; }
+    .howl-pref-select {
+      background: var(--h-surface-alt); border: 1px solid var(--h-border);
+      border-radius: 8px; padding: 7px 28px 7px 11px; min-width: 140px;
+      font-size: 0.81rem; color: var(--h-text-sec); font-family: var(--h-font); cursor: pointer;
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.25)' stroke-width='2' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 7px center; background-size: 14px;
+    }
+    .howl-pref-select:focus { outline: none; border-color: rgba(168,85,247,0.38); }
+    .howl-toggle {
+      position: relative; width: 40px; height: 22px; flex-shrink: 0;
+      background: rgba(255,255,255,0.10); border-radius: 99px;
+      border: 1px solid rgba(255,255,255,0.08); cursor: pointer;
+      transition: background 200ms ease, border-color 200ms ease;
+    }
+    .howl-toggle.on { background: var(--h-purple); border-color: var(--h-purple); }
+    .howl-toggle::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+      transition: transform 200ms cubic-bezier(0.16,1,0.3,1), background 200ms ease;
+    }
+    .howl-toggle.on::after { transform: translateX(18px); background: #fff; }
   </style>
 </head>
 <body>
@@ -922,13 +1158,9 @@
       <div class="howl-messages" id="howlMessages"></div>
 
       <div class="howl-typing" id="howlTyping">
-        <div class="howl-msg-avatar">
-          <img src="../assets/images/logo.png" alt="Howl" />
-        </div>
-        <div class="howl-typing-bubble">
-          <span class="howl-typing-dot"></span>
-          <span class="howl-typing-dot"></span>
-          <span class="howl-typing-dot"></span>
+        <img src="../assets/images/logo.png" class="howl-thinking-logo" alt="Howl" />
+        <div class="howl-thinking-status">
+          <span class="howl-thinking-word" id="howlThinkingWord">thinking</span><span class="howl-thinking-dot">.</span><span class="howl-thinking-dot">.</span><span class="howl-thinking-dot">.</span>
         </div>
       </div>
 
@@ -937,6 +1169,18 @@
     <!-- Input -->
     <div class="howl-input-area">
       <div class="howl-input-inner">
+
+        <!-- Credit warning bar — visible when >80% credits used -->
+        <div class="howl-credit-warn" id="howlCreditWarn">
+          <div class="howl-credit-warn-row">
+            <svg class="howl-credit-warn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="7"/><line x1="8" y1="5.5" x2="8" y2="8.5"/><circle cx="8" cy="11" r="0.6" fill="currentColor" stroke="none"/></svg>
+            <span class="howl-credit-warn-text">Ti restano solo il <strong id="howlCreditPct">—</strong> dei crediti Howl</span>
+            <button class="howl-credit-warn-cta" id="howlCreditWarnCta">Ottieni più →</button>
+          </div>
+          <div class="howl-credit-bar-track">
+            <div class="howl-credit-bar-fill" id="howlCreditFill" style="width:0%"></div>
+          </div>
+        </div>
 
         <div class="howl-input-shell" id="howlInputShell">
           <textarea
@@ -1303,6 +1547,151 @@
     </div>
   </div>
 </div><!-- /howl-shell -->
+
+<!-- ═══════════════════════════════════════════════════════
+     SETTINGS OVERLAY
+═══════════════════════════════════════════════════════ -->
+<div class="howl-sett-overlay" id="howlSettOverlay" role="dialog" aria-modal="true" aria-label="Impostazioni Howl">
+  <div class="howl-sett-panel">
+
+    <div class="howl-sett-header">
+      <div class="howl-sett-header-left">
+        <img src="../assets/images/logo.png" class="howl-sett-header-logo" alt="Aike" />
+        <div>
+          <div class="howl-sett-title">Impostazioni</div>
+          <div class="howl-sett-subtitle">Personalizza la tua esperienza Howl</div>
+        </div>
+      </div>
+      <button class="howl-sett-close" id="howlSettClose" aria-label="Chiudi">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/></svg>
+      </button>
+    </div>
+
+    <div class="howl-sett-tabs" id="howlSettTabs">
+      <button class="howl-sett-tab active" data-stab="theme">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.5 3.5l1.4 1.4M11.1 11.1l1.4 1.4M11.1 3.5l-1.4 1.4M4.9 11.1l-1.4 1.4"/></svg>
+        Tema
+      </button>
+      <button class="howl-sett-tab" data-stab="usage">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 13V9M7 13V5M11 13V2"/></svg>
+        Utilizzo
+      </button>
+      <button class="howl-sett-tab" data-stab="prefs">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="2.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.5 3.5l1.4 1.4M11.1 11.1l1.4 1.4M11.1 3.5l-1.4 1.4M4.9 11.1l-1.4 1.4"/></svg>
+        Preferenze
+      </button>
+    </div>
+
+    <div class="howl-sett-body">
+
+      <!-- ── THEME TAB ── -->
+      <div class="howl-sett-page" id="howlStabTheme">
+        <div class="howl-theme-grid">
+          <button class="howl-theme-card" data-theme-val="dark">
+            <div class="howl-theme-preview howl-theme-preview-dark"></div>
+            <div class="howl-theme-name">Dark</div>
+            <div class="howl-theme-desc">Aike classico</div>
+          </button>
+          <button class="howl-theme-card" data-theme-val="midnight">
+            <div class="howl-theme-preview howl-theme-preview-midnight"></div>
+            <div class="howl-theme-name">Midnight</div>
+            <div class="howl-theme-desc">Blu profondo</div>
+          </button>
+          <button class="howl-theme-card" data-theme-val="ash">
+            <div class="howl-theme-preview howl-theme-preview-ash"></div>
+            <div class="howl-theme-name">Ash</div>
+            <div class="howl-theme-desc">Grigio caldo</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── USAGE TAB ── -->
+      <div class="howl-sett-page hidden" id="howlStabUsage">
+        <div class="howl-usage-card">
+          <div class="howl-usage-plan-row">
+            <span class="howl-usage-plan-badge free" id="howlPlanBadge">Free</span>
+            <span class="howl-usage-plan-name" id="howlPlanName">Piano Gratuito</span>
+          </div>
+          <div class="howl-usage-credits-row">
+            <div>
+              <div class="howl-usage-credits-num" id="howlCreditsNum">—</div>
+              <div class="howl-usage-credits-label">crediti rimanenti</div>
+            </div>
+            <div class="howl-usage-credits-info" id="howlCreditsInfo"></div>
+          </div>
+          <div class="howl-usage-bar-track">
+            <div class="howl-usage-bar-fill" id="howlUsageBarFill" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="howl-upgrade-cta">
+          <div class="howl-upgrade-cta-title">Sblocca Howl al massimo</div>
+          <div class="howl-upgrade-cta-desc">Basic: 300 crediti/mese — Pro: 1.000 crediti/mese con accesso prioritario e modelli avanzati.</div>
+          <button class="howl-upgrade-cta-btn" id="howlUpgradeBtn">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="14" x2="8" y2="4"/><polyline points="4 8 8 4 12 8"/><line x1="3" y1="14" x2="13" y2="14"/></svg>
+            Upgrade piano
+          </button>
+        </div>
+      </div>
+
+      <!-- ── PREFERENCES TAB ── -->
+      <div class="howl-sett-page hidden" id="howlStabPrefs">
+
+        <div class="howl-pref-section">
+          <div class="howl-pref-section-title">Modello AI</div>
+          <div class="howl-pref-row">
+            <div class="howl-pref-info">
+              <div class="howl-pref-label">Modello predefinito</div>
+              <div class="howl-pref-sub">Selezionato nelle nuove chat</div>
+            </div>
+            <select class="howl-pref-select" id="prefDefaultModel">
+              <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+              <option value="gemini-2.5-flash">Gemini Flash 2.5</option>
+              <option value="gpt-4o">GPT-4o</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="howl-pref-section">
+          <div class="howl-pref-section-title">Risposta</div>
+          <div class="howl-pref-row">
+            <div class="howl-pref-info">
+              <div class="howl-pref-label">Densità risposta</div>
+              <div class="howl-pref-sub">Quanto deve essere dettagliato Howl</div>
+            </div>
+            <select class="howl-pref-select" id="prefDensity">
+              <option value="balanced">Bilanciato</option>
+              <option value="concise">Conciso</option>
+              <option value="detailed">Dettagliato</option>
+            </select>
+          </div>
+          <div class="howl-pref-row">
+            <div class="howl-pref-info">
+              <div class="howl-pref-label">Lingua di risposta</div>
+              <div class="howl-pref-sub">Sovrascrive la lingua automatica</div>
+            </div>
+            <select class="howl-pref-select" id="prefLanguage">
+              <option value="auto">Automatica</option>
+              <option value="italiano">Italiano</option>
+              <option value="english">Inglese</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="howl-pref-section">
+          <div class="howl-pref-section-title">Interfaccia</div>
+          <div class="howl-pref-row">
+            <div class="howl-pref-info">
+              <div class="howl-pref-label">Layout compatto</div>
+              <div class="howl-pref-sub">Riduce la spaziatura tra i messaggi</div>
+            </div>
+            <div class="howl-toggle" id="prefCompactToggle" role="switch" tabindex="0" aria-label="Layout compatto"></div>
+          </div>
+        </div>
+
+      </div><!-- /prefs page -->
+    </div><!-- /sett-body -->
+  </div><!-- /sett-panel -->
+</div><!-- /settings overlay -->
 
 <script>
 (function () {
@@ -1686,14 +2075,17 @@
     isRequesting = true;
     toggleSendBtn();
 
-    // Show typing
+    // Show thinking state
     typingEl.classList.add('visible');
+    startThinking();
     scrollToBottom();
 
     try {
       const content = await callHowlAPI(convoMessages, currentModel, activeSkill ? activeSkill.prompt : null);
 
       typingEl.classList.remove('visible');
+      stopThinking();
+      deductCredit(currentModel);
       convoMessages.push({ role: 'assistant', content });
       renderMessage('assistant', content);
 
@@ -1712,6 +2104,7 @@
 
     } catch (err) {
       typingEl.classList.remove('visible');
+      stopThinking();
       renderError(err.message || 'Errore di connessione. Riprova.');
     }
 
@@ -1726,10 +2119,19 @@
   // ─────────────────────────────────────────────────────────────────
   async function callHowlAPI(messages, model, skillContext) {
     const businessContext = loadBusinessContext();
+    // Inject density + language pref into skillContext
+    const prefs = loadHowlPrefs();
+    let finalSkill = skillContext || '';
+    const densityHint = getDensityHint(prefs.responseDensity);
+    if (densityHint) finalSkill = finalSkill ? finalSkill + '\n\n' + densityHint : densityHint;
+    if (prefs.language && prefs.language !== 'auto') {
+      const langHint = 'LINGUA: rispondi sempre in ' + prefs.language + '.';
+      finalSkill = finalSkill ? finalSkill + '\n' + langHint : langHint;
+    }
     const response = await fetch('/api/chat', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ model, messages, businessContext: businessContext || undefined, skillContext: skillContext || undefined }),
+      body:    JSON.stringify({ model, messages, businessContext: businessContext || undefined, skillContext: finalSkill || undefined }),
     });
 
     const data = await response.json().catch(function () {
@@ -2487,12 +2889,245 @@
   });
 
   // ─────────────────────────────────────────────────────────────────
+  // THINKING STATE ANIMATION
+  // ─────────────────────────────────────────────────────────────────
+  var THINKING_WORDS = ['thinking', 'compacting', 'vibing', 'flying', 'processing'];
+  var _thinkTimer    = null;
+  var _thinkIdx      = 0;
+
+  function startThinking() {
+    var wordEl = document.getElementById('howlThinkingWord');
+    if (!wordEl) return;
+    _thinkIdx = 0;
+    wordEl.textContent = THINKING_WORDS[0];
+    wordEl.classList.remove('fading');
+    clearInterval(_thinkTimer);
+    _thinkTimer = setInterval(function () {
+      _thinkIdx = (_thinkIdx + 1) % THINKING_WORDS.length;
+      wordEl.classList.add('fading');
+      setTimeout(function () {
+        if (!_thinkTimer) return;
+        wordEl.textContent = THINKING_WORDS[_thinkIdx];
+        wordEl.classList.remove('fading');
+      }, 260);
+    }, 3000);
+  }
+
+  function stopThinking() {
+    clearInterval(_thinkTimer);
+    _thinkTimer = null;
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // CREDIT SYSTEM
+  // ─────────────────────────────────────────────────────────────────
+  var STORAGE_CREDITS = 'howl_credits_v1';
+  var CREDIT_COSTS    = { 'claude-sonnet-4-6': 2, 'gemini-2.5-flash': 1, 'gpt-4o': 2 };
+
+  function loadCredits() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(STORAGE_CREDITS));
+      if (raw && typeof raw.total === 'number') return raw;
+    } catch {}
+    var def = { total: 30, used: 0, plan: 'free' };
+    localStorage.setItem(STORAGE_CREDITS, JSON.stringify(def));
+    return def;
+  }
+
+  function saveCredits(c) { localStorage.setItem(STORAGE_CREDITS, JSON.stringify(c)); }
+
+  function deductCredit(model) {
+    var c    = loadCredits();
+    var cost = CREDIT_COSTS[model] || 1;
+    c.used   = Math.min(c.used + cost, c.total);
+    saveCredits(c);
+    updateCreditUI();
+  }
+
+  function updateCreditUI() {
+    var c   = loadCredits();
+    var pct = c.total > 0 ? c.used / c.total : 0;
+
+    // Warning bar in chat input area
+    var warnEl = document.getElementById('howlCreditWarn');
+    var fillEl = document.getElementById('howlCreditFill');
+    var pctEl  = document.getElementById('howlCreditPct');
+    if (warnEl && fillEl && pctEl) {
+      var pctLeft = Math.max(0, Math.round((1 - pct) * 100));
+      if (pct >= 0.8) {
+        pctEl.textContent = pctLeft + '%';
+        fillEl.style.width = Math.round(pct * 100) + '%';
+        warnEl.classList.add('visible');
+      } else {
+        warnEl.classList.remove('visible');
+      }
+    }
+
+    // Settings usage tab
+    var remaining = c.total - c.used;
+    var numEl = document.getElementById('howlCreditsNum');
+    if (numEl) numEl.textContent = remaining;
+    var infoEl = document.getElementById('howlCreditsInfo');
+    if (infoEl) infoEl.innerHTML = c.used + ' / ' + c.total + ' usati';
+    var barFill = document.getElementById('howlUsageBarFill');
+    if (barFill) {
+      barFill.style.width = Math.round(pct * 100) + '%';
+      barFill.classList.toggle('warn', pct >= 0.8);
+    }
+    var planBadge = document.getElementById('howlPlanBadge');
+    var planNameEl = document.getElementById('howlPlanName');
+    var planMap = { free: ['Free', 'Piano Gratuito'], basic: ['Basic', 'Piano Basic'], pro: ['Pro', 'Piano Pro'] };
+    var planInfo = planMap[c.plan] || planMap.free;
+    if (planBadge) { planBadge.className = 'howl-usage-plan-badge ' + (c.plan || 'free'); planBadge.textContent = planInfo[0]; }
+    if (planNameEl) planNameEl.textContent = planInfo[1];
+  }
+
+  document.getElementById('howlCreditWarnCta').addEventListener('click', function () {
+    openSettings('usage');
+  });
+
+  // ─────────────────────────────────────────────────────────────────
+  // HOWL PREFERENCES
+  // ─────────────────────────────────────────────────────────────────
+  var STORAGE_PREFS = 'howl_prefs_v1';
+
+  function loadHowlPrefs() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(STORAGE_PREFS));
+      if (raw && typeof raw === 'object') return raw;
+    } catch {}
+    return { defaultModel: 'claude-sonnet-4-6', responseDensity: 'balanced', compactLayout: false, language: 'auto' };
+  }
+
+  function saveHowlPrefs(p) { localStorage.setItem(STORAGE_PREFS, JSON.stringify(p)); }
+
+  function getDensityHint(density) {
+    if (density === 'concise')  return 'REGOLA RISPOSTA: sii molto conciso e diretto. Massimo 3-4 frasi, zero padding.';
+    if (density === 'detailed') return 'REGOLA RISPOSTA: sii molto dettagliato, completo e strutturato con sezioni chiare.';
+    return '';
+  }
+
+  function applyHowlPrefs() {
+    var p = loadHowlPrefs();
+    // Compact layout
+    document.body.classList.toggle('howl-compact', !!p.compactLayout);
+    // Sync settings form
+    var dm = document.getElementById('prefDefaultModel');
+    if (dm) dm.value = p.defaultModel || 'claude-sonnet-4-6';
+    var dd = document.getElementById('prefDensity');
+    if (dd) dd.value = p.responseDensity || 'balanced';
+    var dl = document.getElementById('prefLanguage');
+    if (dl) dl.value = p.language || 'auto';
+    var ct = document.getElementById('prefCompactToggle');
+    if (ct) ct.classList.toggle('on', !!p.compactLayout);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // THEME SYSTEM
+  // ─────────────────────────────────────────────────────────────────
+  var STORAGE_THEME = 'howl_theme_v1';
+
+  function applyTheme(val) {
+    var root = document.documentElement;
+    if (!val || val === 'dark') root.removeAttribute('data-theme');
+    else root.setAttribute('data-theme', val);
+    localStorage.setItem(STORAGE_THEME, val || 'dark');
+    document.querySelectorAll('.howl-theme-card').forEach(function (card) {
+      card.classList.toggle('active', card.dataset.themeVal === (val || 'dark'));
+    });
+  }
+
+  function initTheme() { applyTheme(localStorage.getItem(STORAGE_THEME) || 'dark'); }
+
+  document.querySelectorAll('.howl-theme-card').forEach(function (card) {
+    card.addEventListener('click', function () { applyTheme(card.dataset.themeVal); });
+  });
+
+  // ─────────────────────────────────────────────────────────────────
+  // SETTINGS OVERLAY
+  // ─────────────────────────────────────────────────────────────────
+  var settOverlay  = document.getElementById('howlSettOverlay');
+  var _activeStab  = 'theme';
+
+  function openSettings(tab) {
+    _activeStab = tab || _activeStab;
+    settOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    switchSettTab(_activeStab);
+    updateCreditUI();
+    applyHowlPrefs();
+  }
+
+  function closeSettings() {
+    settOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function switchSettTab(tab) {
+    _activeStab = tab;
+    var tabId = 'howlStab' + tab.charAt(0).toUpperCase() + tab.slice(1);
+    document.querySelectorAll('.howl-sett-tab').forEach(function (t) {
+      t.classList.toggle('active', t.dataset.stab === tab);
+    });
+    document.querySelectorAll('.howl-sett-page').forEach(function (p) {
+      p.classList.toggle('hidden', p.id !== tabId);
+    });
+  }
+
+  document.getElementById('howlUserBtn').addEventListener('click', function () { openSettings(); });
+  document.getElementById('howlSettClose').addEventListener('click', closeSettings);
+  settOverlay.addEventListener('click', function (e) { if (e.target === settOverlay) closeSettings(); });
+  document.getElementById('howlSettTabs').addEventListener('click', function (e) {
+    var tab = e.target.closest('.howl-sett-tab');
+    if (tab && tab.dataset.stab) switchSettTab(tab.dataset.stab);
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSettings(); });
+
+  document.getElementById('howlUpgradeBtn').addEventListener('click', function () {
+    window.location.href = '../index.html#pricing';
+  });
+
+  // Pref: default model
+  document.getElementById('prefDefaultModel').addEventListener('change', function () {
+    var p = loadHowlPrefs(); p.defaultModel = this.value; saveHowlPrefs(p);
+    if (!currentConvoId) { currentModel = this.value; updateModelUI(); }
+  });
+
+  // Pref: response density
+  document.getElementById('prefDensity').addEventListener('change', function () {
+    var p = loadHowlPrefs(); p.responseDensity = this.value; saveHowlPrefs(p);
+  });
+
+  // Pref: language
+  document.getElementById('prefLanguage').addEventListener('change', function () {
+    var p = loadHowlPrefs(); p.language = this.value; saveHowlPrefs(p);
+  });
+
+  // Pref: compact layout toggle
+  var compactToggle = document.getElementById('prefCompactToggle');
+  compactToggle.addEventListener('click', function () {
+    var p = loadHowlPrefs(); p.compactLayout = !p.compactLayout; saveHowlPrefs(p);
+    document.body.classList.toggle('howl-compact', p.compactLayout);
+    compactToggle.classList.toggle('on', p.compactLayout);
+  });
+  compactToggle.addEventListener('keydown', function (e) {
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this.click(); }
+  });
+
+  // ─────────────────────────────────────────────────────────────────
   // INIT
   // ─────────────────────────────────────────────────────────────────
+  // Apply saved prefs/theme before first paint
+  initTheme();
+  var _initPrefs = loadHowlPrefs();
+  currentModel = _initPrefs.defaultModel || MODELS[0].id;
+  document.body.classList.toggle('howl-compact', !!_initPrefs.compactLayout);
+
   updateModelUI();
   tryLoadUser();
   setDynamicGreeting();
   loadSettingsForm();
+  updateCreditUI();
   textarea.focus();
 
 })();

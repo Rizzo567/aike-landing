@@ -218,48 +218,22 @@
     .howl-thread::-webkit-scrollbar { width: 4px; }
     .howl-thread::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.09); border-radius: 99px; }
 
-    /* Welcome */
+    /* Welcome / Entry state */
     .howl-welcome {
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      gap: 20px; text-align: center; padding: 40px 20px 20px;
-      animation: howlFadeUp 0.45s cubic-bezier(0.16,1,0.3,1);
+      text-align: center; padding: 20px 20px 24px;
+      animation: howlFadeUp 0.5s cubic-bezier(0.16,1,0.3,1);
     }
     .howl-welcome.hidden { display: none; }
     @keyframes howlFadeUp {
       from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .howl-welcome-logomark {
-      width: 52px; height: 52px; border-radius: 16px;
-      background: var(--h-surface); border: 1px solid var(--h-border);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 0 1px rgba(168,85,247,0.12), 0 8px 32px rgba(0,0,0,0.4);
-    }
-    .howl-welcome-logomark img { width: 30px; height: 30px; object-fit: contain; }
     .howl-welcome-heading {
-      font-size: clamp(1.55rem, 3vw, 2.1rem); font-weight: 700;
-      color: var(--h-text); letter-spacing: -0.035em; line-height: 1.2; max-width: 440px;
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;
+      color: var(--h-text); letter-spacing: -0.045em; line-height: 1.1;
     }
-    .howl-welcome-sub {
-      font-size: 0.88rem; color: var(--h-text-muted); line-height: 1.65;
-      max-width: 340px; margin-top: -6px;
-    }
-    .howl-welcome-chips {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 10px; width: 100%; max-width: 540px; margin-top: 6px;
-    }
-    .howl-welcome-chip {
-      background: var(--h-surface); border: 1px solid var(--h-border);
-      border-radius: var(--h-r-md); padding: 14px 16px; text-align: left;
-      transition: background 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
-    }
-    .howl-welcome-chip:hover {
-      background: var(--h-surface-alt); border-color: rgba(168,85,247,0.28);
-      transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.28);
-    }
-    .howl-welcome-chip-label { font-size: 0.84rem; font-weight: 500; color: var(--h-text-sec); line-height: 1.45; }
-    .howl-welcome-chip-sub { font-size: 0.76rem; color: var(--h-text-dim); margin-top: 3px; }
 
     /* Messages */
     .howl-messages {
@@ -353,8 +327,8 @@
       transition: border-color 200ms ease, box-shadow 200ms ease;
     }
     .howl-input-shell:focus-within {
-      border-color: rgba(168,85,247,0.38);
-      box-shadow: 0 0 0 3px rgba(168,85,247,0.07);
+      border-color: rgba(255,255,255,0.13);
+      box-shadow: none;
     }
     .howl-textarea {
       flex: 1; resize: none; font-family: var(--h-font);
@@ -749,9 +723,66 @@
       .howl-disclaimer { display: none; }
     }
     @media (max-width: 480px) {
-      .howl-welcome-heading { font-size: 1.4rem; }
+      .howl-welcome-heading { font-size: 1.65rem; }
       .howl-input-tags { display: none; }
     }
+
+    /* ── Sidebar collapse ── */
+    .howl-sidebar { transition: width 0.26s cubic-bezier(0.32,0,0.67,0), transform 0.28s cubic-bezier(0.32,0,0.67,0); }
+    .howl-sidebar.collapsed { width: 60px; }
+    .howl-brand-row { display:flex; align-items:center; border-bottom:1px solid var(--h-border-sub); flex-shrink:0; }
+    .howl-brand-row .howl-brand { flex:1; border-bottom:none; }
+    .howl-collapse-btn {
+      width:36px; height:36px; flex-shrink:0; margin:0 5px;
+      background:none; border:none; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      color:var(--h-text-dim); border-radius:8px;
+      transition:background 140ms ease, color 140ms ease;
+      font-family:var(--h-font);
+    }
+    .howl-collapse-btn:hover { background:rgba(255,255,255,0.06); color:var(--h-text-muted); }
+    .howl-collapse-btn svg { transition:transform 240ms cubic-bezier(0.32,0,0.67,0); flex-shrink:0; }
+    .howl-sidebar.collapsed .howl-collapse-btn svg { transform:rotate(180deg); }
+    .howl-sidebar.collapsed .howl-brand-name,
+    .howl-sidebar.collapsed .howl-nav-label,
+    .howl-sidebar.collapsed .howl-history-toggle-btn,
+    .howl-sidebar.collapsed .howl-history-list,
+    .howl-sidebar.collapsed .howl-user-name,
+    .howl-sidebar.collapsed .howl-user-btn > svg:last-child { display:none; }
+    .howl-sidebar.collapsed .howl-nav-item { font-size:0; justify-content:center; padding:9px; gap:0; }
+    .howl-sidebar.collapsed .hn-icon { opacity:0.65; }
+    .howl-sidebar.collapsed .howl-nav-item--new { padding:9px; background:none; border-color:transparent; }
+    .howl-sidebar.collapsed .howl-brand { padding:18px 8px; flex:none; }
+    .howl-sidebar.collapsed .howl-brand-row { justify-content:center; }
+    .howl-sidebar.collapsed .howl-user-btn { justify-content:center; padding:9px; }
+    .howl-sidebar.collapsed .howl-chat-nav-row { justify-content:center; }
+    .howl-sidebar.collapsed .howl-collapse-btn { margin:0; }
+    @media (max-width:820px) { .howl-collapse-btn { display:none; } }
+
+    /* ── Attach icon button ── */
+    .howl-attach-icon-btn {
+      width:30px; height:30px; border-radius:9px; flex-shrink:0;
+      background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07);
+      display:flex; align-items:center; justify-content:center;
+      color:var(--h-text-dim); transition:all 150ms ease; cursor:pointer;
+      font-family:var(--h-font);
+    }
+    .howl-attach-icon-btn:hover { background:rgba(255,255,255,0.09); color:var(--h-text-muted); }
+
+    /* ── Suggestion chips ── */
+    .howl-suggestions {
+      display:flex; gap:7px; flex-wrap:wrap; justify-content:center;
+      padding:8px 4px 2px;
+    }
+    .howl-suggestions.hidden { display:none; }
+    .howl-sugg {
+      padding:6px 14px; border-radius:var(--h-r-full);
+      border:1px solid var(--h-border); background:none;
+      font-family:var(--h-font); font-size:0.8rem; font-weight:500;
+      color:var(--h-text-dim); cursor:pointer; white-space:nowrap;
+      transition:all 150ms ease;
+    }
+    .howl-sugg:hover { border-color:rgba(255,255,255,0.18); color:var(--h-text-muted); background:rgba(255,255,255,0.04); }
   </style>
 </head>
 <body>
@@ -760,10 +791,17 @@
   <!-- ── Sidebar ── -->
   <aside class="howl-sidebar" id="howlSidebar" aria-label="Navigazione Howl">
 
-    <a href="../index.html" class="howl-brand" aria-label="Torna alla home Aike">
-      <img src="../assets/images/logo.png" alt="Aike" class="howl-brand-logo" />
-      <span class="howl-brand-name">aike</span>
-    </a>
+    <div class="howl-brand-row">
+      <a href="../index.html" class="howl-brand" aria-label="Torna alla home Aike">
+        <img src="../assets/images/logo.png" alt="Aike" class="howl-brand-logo" />
+        <span class="howl-brand-name">aike</span>
+      </a>
+      <button class="howl-collapse-btn" id="howlCollapseBtn" aria-label="Comprimi sidebar">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 2 5 7 9 12"/><line x1="12" y1="2" x2="12" y2="12"/>
+        </svg>
+      </button>
+    </div>
 
     <nav class="howl-nav" aria-label="Howl navigation">
 
@@ -846,29 +884,7 @@
     <div class="howl-thread" id="howlThread" role="log" aria-live="polite">
 
       <div class="howl-welcome" id="howlWelcome">
-        <div class="howl-welcome-logomark">
-          <img src="../assets/images/logo.png" alt="Howl" />
-        </div>
-        <h1 class="howl-welcome-heading">Come posso aiutarti?</h1>
-        <p class="howl-welcome-sub">Il tuo direttore operativo AI. Analizza dati, progetta automazioni, gestisce operazioni.</p>
-        <div class="howl-welcome-chips" role="list">
-          <button class="howl-welcome-chip" data-prompt="Analizza i miei dati aziendali e dimmi cosa sta succedendo con le metriche principali">
-            <div class="howl-welcome-chip-label">Analizza i dati aziendali</div>
-            <div class="howl-welcome-chip-sub">KPI, metriche, andamento</div>
-          </button>
-          <button class="howl-welcome-chip" data-prompt="Progetta un flusso di automazione per la gestione dei nuovi lead">
-            <div class="howl-welcome-chip-label">Crea un'automazione</div>
-            <div class="howl-welcome-chip-sub">Flussi, trigger, azioni</div>
-          </button>
-          <button class="howl-welcome-chip" data-prompt="Aiutami a gestire il mio CRM e organizzare i clienti per priorità">
-            <div class="howl-welcome-chip-label">Gestisci i clienti</div>
-            <div class="howl-welcome-chip-sub">CRM, pipeline, follow-up</div>
-          </button>
-          <button class="howl-welcome-chip" data-prompt="Genera un report operativo completo della settimana con le attività principali">
-            <div class="howl-welcome-chip-label">Genera un report</div>
-            <div class="howl-welcome-chip-sub">Brief giornaliero, sintesi</div>
-          </button>
-        </div>
+        <h1 class="howl-welcome-heading" id="howlGreeting">Buongiorno</h1>
       </div>
 
       <div class="howl-messages" id="howlMessages"></div>
@@ -931,14 +947,21 @@
               <div class="howl-model-dropdown" id="howlModelDropdown" role="listbox"></div>
             </div>
             <div class="howl-input-tags">
-              <button class="howl-input-tag" id="howlFileBtn">
-                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.5L6 9.5a3 3 0 01-4.2-4.2l4-4a2 2 0 012.8 2.8L4.4 8.4a1 1 0 01-1.4-1.4L7 3"/></svg>
-                Allega file
+              <button class="howl-attach-icon-btn" id="howlFileBtn" title="Allega file" aria-label="Allega file">
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/></svg>
               </button>
               <input type="file" id="howlFileInput" accept=".txt,.md,.js,.ts,.jsx,.tsx,.css,.html,.json,.csv,.sql,.py" style="display:none" />
             </div>
           </div>
           <span class="howl-disclaimer">Howl può fare errori. Verifica le informazioni critiche.</span>
+        </div>
+
+        <!-- Suggestion chips — visible only in entry state -->
+        <div class="howl-suggestions" id="howlSuggestions">
+          <button class="howl-sugg" data-prompt="Aiutami a scrivere un testo professionale per il mio business">Scrivere</button>
+          <button class="howl-sugg" data-prompt="Spiegami questo concetto in modo semplice e pratico">Imparare</button>
+          <button class="howl-sugg" data-prompt="Aiutami con il codice frontend del mio sito web">Codice</button>
+          <button class="howl-sugg" data-prompt="Come posso migliorare la mia produttività quotidiana?">Vita quotidiana</button>
         </div>
       </div>
     </div>
@@ -1593,7 +1616,11 @@
     resizeTextarea();
     toggleSendBtn();
     threadEl.scrollTop = 0;
-    if (showWelcome) welcome.classList.remove('hidden');
+    if (showWelcome) {
+      welcome.classList.remove('hidden');
+      var suggsEl = document.getElementById('howlSuggestions');
+      if (suggsEl) suggsEl.classList.remove('hidden');
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────
@@ -1612,6 +1639,8 @@
     if (!currentConvoId) {
       welcome.classList.add('hidden');
       messagesEl.classList.add('visible');
+      var suggsEl = document.getElementById('howlSuggestions');
+      if (suggsEl) suggsEl.classList.add('hidden');
     }
 
     convoMessages.push({ role: 'user', content: text });
@@ -2329,11 +2358,60 @@
   renderSkills();
 
   // ─────────────────────────────────────────────────────────────────
+  // DYNAMIC GREETING
+  // ─────────────────────────────────────────────────────────────────
+  function setDynamicGreeting() {
+    var raw = document.getElementById('howlUserName').textContent.trim();
+    var firstName = (raw && raw !== 'Il mio account') ? capFirst(raw.split(/[\s@._]/)[0]) : '';
+    var h = new Date().getHours();
+    var phrases;
+    if      (h >= 5  && h < 9)  phrases = ['Sveglio presto', 'È presto', 'Buon inizio'];
+    else if (h >= 9  && h < 12) phrases = ['Buongiorno', 'Iniziamo', 'Pronti'];
+    else if (h >= 12 && h < 14) phrases = ['Buon pranzo', 'Pausa breve', 'Ricarica'];
+    else if (h >= 14 && h < 18) phrases = ['Focus ora', 'Continuiamo', 'Vai forte'];
+    else if (h >= 18 && h < 21) phrases = ['Buona sera', 'Rientro', 'Ancora qui'];
+    else                         phrases = ['È tardi', 'Notte fonda', 'Ancora sveglio'];
+    var phrase = phrases[h % phrases.length];
+    var el = document.getElementById('howlGreeting');
+    if (el) el.textContent = firstName ? phrase + ' ' + firstName : phrase;
+  }
+  function capFirst(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : ''; }
+
+  // ─────────────────────────────────────────────────────────────────
+  // SIDEBAR COLLAPSE
+  // ─────────────────────────────────────────────────────────────────
+  var SIDEBAR_COLLAPSED_KEY = 'howl_sidebar_collapsed';
+  (function initSidebarCollapse() {
+    var btn = document.getElementById('howlCollapseBtn');
+    if (!btn) return;
+    if (localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1') sidebar.classList.add('collapsed');
+    btn.addEventListener('click', function() {
+      var nowCollapsed = sidebar.classList.toggle('collapsed');
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, nowCollapsed ? '1' : '0');
+    });
+  })();
+
+  // ─────────────────────────────────────────────────────────────────
+  // SUGGESTION CHIPS
+  // ─────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.howl-sugg').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      var prompt = chip.getAttribute('data-prompt');
+      if (!prompt) return;
+      textarea.value = prompt;
+      textarea.style.height = 'auto';
+      textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+      toggleSendBtn();
+      textarea.focus();
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────────────
   // INIT
   // ─────────────────────────────────────────────────────────────────
   updateModelUI();
   tryLoadUser();
-  restoreSession();
+  setDynamicGreeting();
   loadSettingsForm();
   textarea.focus();
 

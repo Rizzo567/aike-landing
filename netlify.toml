@@ -1,7 +1,15 @@
 [build]
   publish = "."
 
+[[edge_functions]]
+  path = "/api/track"
+  function = "analytics"
+
+[[edge_functions]]
+  path = "/api/chat"
+  function = "chat"
+
 [[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 200
+  to = "/404.html"
+  status = 404

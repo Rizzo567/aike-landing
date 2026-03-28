@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Page Not Found | aike automation</title>
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+
+  <style>
+    .error-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: var(--color-bg);
+      text-align: center;
+    }
+
+    .error-inner {
+      max-width: 480px;
+    }
+
+    .error-code {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(5rem, 20vw, 8rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+    }
+
+    .error-heading {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-white);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    .error-body {
+      color: var(--color-text-muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+
+    .error-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.75rem;
+      background: var(--color-primary);
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .error-btn:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    .error-divider {
+      width: 48px;
+      height: 2px;
+      background: rgba(168, 85, 247, 0.35);
+      margin: 0 auto 2rem;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <main class="error-page">
+    <div class="error-inner">
+      <div class="error-code">404</div>
+      <div class="error-divider"></div>
+      <h1 class="error-heading">Page not found</h1>
+      <p class="error-body">
+        The page you're looking for doesn't exist or has been moved.
+      </p>
+      <a href="/" class="error-btn">
+        ← Return to Home
+      </a>
+    </div>
+  </main>
+</body>
+</html>

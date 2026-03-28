@@ -10,13 +10,17 @@ const getHeaderHTML = (b) => `
       <img src="${b}assets/images/logo.png" alt="Aike Logo" class="header__logo">
       <span class="header__brand">aike</span>
     </a>
-    <nav class="header__nav">
+    <nav class="header__nav hide-on-mobile">
       <a href="${b}pages/solutions.html" class="header__link">Solutions</a>
       <a href="${b}pages/pricing.html" class="header__link">Pricing</a>
       <a href="${b}pages/booking.html" class="header__link">Booking</a>
+      <a href="${b}pages/howl.html" class="header__link header__link--howl">Howl <svg width="7" height="7" viewBox="0 0 8 8" fill="none" aria-hidden="true" style="margin-left:2px;opacity:0.5;vertical-align:middle"><circle cx="4" cy="4" r="3" fill="#a855f7"/></svg></a>
     </nav>
     <div class="header__actions">
-      <a id="auth-login-btn" href="${b}pages/login.html" class="btn btn-outline" style="border-color:transparent; padding: 0.5rem 1rem;">Log in</a>
+      <!-- Desktop Log In -->
+      <a href="${b}pages/login.html" class="btn btn-outline auth-btn-login hide-on-mobile" style="border-color:transparent; padding: 0.5rem 1rem;">Log in</a>
+      
+      <!-- Profile Wrapper (Desktop & Mobile) -->
       <div id="auth-profile-wrapper" style="display:none; align-items:center; position:relative;">
         <button id="auth-profile-btn" aria-label="Account menu" aria-haspopup="true" aria-expanded="false" style="width:36px; height:36px; border-radius:50%; background:var(--color-primary); border:2px solid rgba(168,85,247,0.4); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.875rem; font-weight:600; color:#fff; font-family:var(--font-sans);">
           <span id="auth-profile-initial">?</span>
@@ -33,7 +37,26 @@ const getHeaderHTML = (b) => `
           </button>
         </div>
       </div>
-      <a href="${b}pages/booking.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Book a Call</a>
+      
+      <!-- Desktop Book Call -->
+      <a href="${b}pages/booking.html" class="btn btn-primary hide-on-mobile" style="padding: 0.5rem 1.25rem;">Book a Call</a>
+
+      <!-- Mobile Menu Trigger -->
+      <button class="mobile-nav-trigger" id="mobile-menu-trigger" aria-label="Open menu" aria-expanded="false">
+        <span class="mobile-nav-trigger-lines"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Dropdown Panel -->
+  <div class="mobile-nav-panel" id="mobile-nav-panel">
+    <div class="mobile-nav-panel-inner">
+      <a href="${b}pages/solutions.html" class="mobile-nav-link">Solutions</a>
+      <a href="${b}pages/pricing.html" class="mobile-nav-link">Pricing</a>
+      <a href="${b}pages/booking.html" class="mobile-nav-link">Booking</a>
+      <a href="${b}pages/howl.html" class="mobile-nav-link" style="color:var(--color-primary);font-weight:600">Howl</a>
+      <div class="mobile-nav-divider"></div>
+      <a href="${b}pages/login.html" class="mobile-nav-link auth-btn-login" style="color:var(--color-primary)">Log in</a>
     </div>
   </div>
 </header>
@@ -109,6 +132,25 @@ function initHeader() {
       header.classList.remove('scrolled');
     }
   }, { passive: true });
+
+  const trigger = document.getElementById('mobile-menu-trigger');
+  const panel = document.getElementById('mobile-nav-panel');
+  if (trigger && panel) {
+    trigger.addEventListener('click', function() {
+      const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+      if (isExpanded) {
+        trigger.setAttribute('aria-expanded', 'false');
+        panel.classList.remove('open');
+        header.classList.remove('mobile-nav-open');
+        document.body.style.overflow = '';
+      } else {
+        trigger.setAttribute('aria-expanded', 'true');
+        panel.classList.add('open');
+        header.classList.add('mobile-nav-open');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  }
 }
 
 function initScrollReveal() {

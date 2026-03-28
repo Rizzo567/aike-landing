@@ -1126,6 +1126,90 @@
       transition: transform 200ms cubic-bezier(0.16,1,0.3,1), background 200ms ease;
     }
     .howl-toggle.on::after { transform: translateX(18px); background: #fff; }
+
+    /* ── Sidebar footer – needed for popover positioning ── */
+    .howl-sidebar-footer { position: relative; }
+
+    /* ── Sidebar user info (name + plan stacked) ── */
+    .howl-user-info {
+      display: flex; flex-direction: column; gap: 1px;
+      flex: 1; min-width: 0; overflow: hidden;
+    }
+    .howl-user-plan {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: var(--h-purple); opacity: 0.85;
+    }
+    .howl-user-btn-chevron { transition: transform 220ms cubic-bezier(0.16,1,0.3,1); }
+    .howl-user-btn.menu-open .howl-user-btn-chevron { transform: rotate(180deg); }
+
+    /* ── Profile popover menu ── */
+    .howl-profile-menu {
+      position: absolute; bottom: calc(100% + 6px); left: 0; right: 0;
+      background: var(--h-surface-alt);
+      border: 1px solid rgba(255,250,240,0.11);
+      border-radius: 14px; padding: 6px;
+      box-shadow: 0 -12px 40px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
+      opacity: 0; visibility: hidden;
+      transform: translateY(8px) scale(0.97);
+      transition: opacity 180ms ease, transform 200ms cubic-bezier(0.16,1,0.3,1), visibility 0s linear 180ms;
+      z-index: 300; pointer-events: none;
+    }
+    .howl-profile-menu.open {
+      opacity: 1; visibility: visible; transform: translateY(0) scale(1);
+      transition: opacity 180ms ease, transform 200ms cubic-bezier(0.16,1,0.3,1);
+      pointer-events: auto;
+    }
+    .howl-profile-menu-email {
+      padding: 8px 12px 7px;
+      font-size: 0.72rem; color: var(--h-text-dim);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      border-bottom: 1px solid rgba(255,250,240,0.07); margin-bottom: 4px;
+    }
+    .howl-profile-menu-divider {
+      height: 1px; background: rgba(255,250,240,0.07); margin: 4px 2px;
+    }
+    .howl-profile-menu-item {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 9px 11px; border-radius: 9px;
+      background: none; border: none; cursor: pointer; font-family: var(--h-font);
+      font-size: 0.84rem; font-weight: 500; color: var(--h-text-sec);
+      text-align: left; white-space: nowrap;
+      transition: background 120ms ease, color 120ms ease;
+    }
+    .howl-profile-menu-item:hover { background: rgba(255,255,255,0.07); color: var(--h-text); }
+    .howl-profile-menu-item svg { flex-shrink: 0; opacity: 0.6; }
+    .howl-profile-menu-item:hover svg { opacity: 0.9; }
+    .howl-profile-menu-shortcut {
+      margin-left: auto; font-size: 0.69rem; color: var(--h-text-dim);
+      font-weight: 400; letter-spacing: 0.01em; padding-left: 8px;
+    }
+    .howl-profile-menu-item--danger { color: #f87171; }
+    .howl-profile-menu-item--danger:hover { background: rgba(248,113,113,0.08); color: #f87171; }
+    .howl-profile-menu-item--danger svg { opacity: 0.75; }
+
+    /* ── First-time onboarding box ── */
+    .howl-onboarding {
+      max-width: 400px; width: calc(100% - 24px);
+      margin: 0 auto 22px;
+      background: var(--h-surface); border: 1px solid var(--h-border);
+      border-radius: var(--h-r-lg); padding: 18px 20px;
+      animation: howlFadeUp 0.45s cubic-bezier(0.16,1,0.3,1);
+    }
+    .howl-onboarding.hidden { display: none; }
+    .howl-onboarding-q {
+      font-size: 0.875rem; font-weight: 600; color: var(--h-text-sec);
+      margin-bottom: 12px; line-height: 1.4;
+    }
+    .howl-onboarding-opts { display: flex; flex-wrap: wrap; gap: 7px; }
+    .howl-ob-opt {
+      padding: 6px 14px; border-radius: var(--h-r-full);
+      border: 1px solid var(--h-border); background: none;
+      font-family: var(--h-font); font-size: 0.79rem; font-weight: 500;
+      color: var(--h-text-muted); cursor: pointer;
+      transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+    }
+    .howl-ob-opt:hover { border-color: var(--h-purple); color: var(--h-purple); background: var(--h-purple-dim); }
+    .howl-ob-opt.selected { border-color: var(--h-purple); color: var(--h-purple); background: var(--h-purple-dim); }
   </style>
 </head>
 <body>
@@ -1196,11 +1280,50 @@
     </nav>
 
     <div class="howl-sidebar-footer">
-      <button class="howl-user-btn" id="howlUserBtn">
+
+      <!-- ── Profile popover menu (opens upward) ── -->
+      <div class="howl-profile-menu" id="howlProfileMenu" role="menu" aria-label="Menu account">
+        <div class="howl-profile-menu-email" id="howlProfileMenuEmail">—</div>
+
+        <button class="howl-profile-menu-item" data-profile-action="settings" role="menuitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.1 3.1l1.4 1.4M11.5 11.5l1.4 1.4M11.5 3.1l-1.4 1.4M4.5 11.5l-1.4 1.4"/></svg>
+          <span>Impostazioni</span>
+          <span class="howl-profile-menu-shortcut">⌘ ,</span>
+        </button>
+        <button class="howl-profile-menu-item" data-profile-action="usage" role="menuitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="3" height="4" rx="1"/><rect x="6.5" y="6" width="3" height="8" rx="1"/><rect x="11" y="2" width="3" height="12" rx="1"/></svg>
+          <span>Piano e crediti</span>
+        </button>
+
+        <div class="howl-profile-menu-divider"></div>
+
+        <button class="howl-profile-menu-item" data-profile-action="upgrade" role="menuitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3M4 7l4-4 4 4"/></svg>
+          <span>Aggiorna piano</span>
+        </button>
+        <button class="howl-profile-menu-item" data-profile-action="newchat" role="menuitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
+          <span>Nuova chat</span>
+          <span class="howl-profile-menu-shortcut">⌘ K</span>
+        </button>
+
+        <div class="howl-profile-menu-divider"></div>
+
+        <button class="howl-profile-menu-item howl-profile-menu-item--danger" data-profile-action="logout" role="menuitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12l4-4-4-4M14 8H6M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3"/></svg>
+          <span>Esci</span>
+        </button>
+      </div>
+
+      <button class="howl-user-btn" id="howlUserBtn" aria-haspopup="true" aria-expanded="false">
         <div class="howl-user-avatar" id="howlUserAvatar">AK</div>
-        <span class="howl-user-name" id="howlUserName">Il mio account</span>
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-linecap="round" style="flex-shrink:0;margin-left:auto"><polyline points="3 4.5 6 7.5 9 4.5"/></svg>
+        <div class="howl-user-info">
+          <span class="howl-user-name" id="howlUserName">Il mio account</span>
+          <span class="howl-user-plan" id="howlUserPlan">Free</span>
+        </div>
+        <svg class="howl-user-btn-chevron" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-linecap="round" style="flex-shrink:0;margin-left:auto"><polyline points="3 7.5 6 4.5 9 7.5"/></svg>
       </button>
+
     </div>
 
   </aside>
@@ -1236,6 +1359,17 @@
     <div class="howl-thread" id="howlThread" role="log" aria-live="polite">
 
       <div class="howl-welcome" id="howlWelcome">
+        <!-- First-time onboarding — hidden by default, shown only once -->
+        <div class="howl-onboarding hidden" id="howlOnboarding">
+          <p class="howl-onboarding-q">Come ci hai conosciuto?</p>
+          <div class="howl-onboarding-opts">
+            <button class="howl-ob-opt" data-val="social">Social media</button>
+            <button class="howl-ob-opt" data-val="ricerca">Ricerca Google</button>
+            <button class="howl-ob-opt" data-val="amico">Passaparola</button>
+            <button class="howl-ob-opt" data-val="podcast">Podcast / video</button>
+            <button class="howl-ob-opt" data-val="altro">Altro</button>
+          </div>
+        </div>
         <h1 class="howl-welcome-heading" id="howlGreeting">Buongiorno</h1>
       </div>
 
@@ -2140,14 +2274,19 @@
   }
 
   function resetThread(showWelcome) {
+    // Remove every .howl-message element from the thread (they live as direct children of threadEl)
+    Array.from(threadEl.querySelectorAll('.howl-message')).forEach(function(el) { el.remove(); });
     messagesEl.innerHTML = '';
     messagesEl.classList.remove('visible');
     typingEl.classList.remove('visible');
+    // Stop any in-progress animations / requests
+    if (typeof stopThinking === 'function') stopThinking();
+    if (typeof stopWriting  === 'function') stopWriting();
+    isRequesting = false;
     textarea.value = '';
     resizeTextarea();
     toggleSendBtn();
     threadEl.scrollTop = 0;
-    // Hide context pin
     var pin = document.getElementById('howlContextPin');
     if (pin) pin.classList.remove('visible');
     if (showWelcome) {
@@ -2535,6 +2674,39 @@
   // ─────────────────────────────────────────────────────────────────
   // AUTH — read Supabase session
   // ─────────────────────────────────────────────────────────────────
+
+  /**
+   * Extracts a clean first name from an email local-part.
+   * "manuelrizzo474@gmail.com"  → "Manuel"
+   * "andrea.rossi@gmail.com"    → "Andrea"
+   * "m_bianchi99@gmail.com"     → "M"
+   */
+  function parseFirstNameFromEmail(email) {
+    if (!email) return '';
+    var local = email.split('@')[0];
+    // Strip all digits
+    local = local.replace(/\d/g, '');
+    if (!local) return '';
+    // Split on common separators (., _, -, +)
+    var parts = local.split(/[._\-+]/);
+    var name = parts[0];
+    if (!name) return '';
+    // If single compound part > 8 chars (e.g. "manuelrizzo"), find word boundary:
+    // look for pattern [vowel][consonant][different-consonant] — signals end of first word
+    if (name.length > 8 && parts.length === 1) {
+      var isV = function(c) { return c && 'aeiouàèéìòùáéíóúäëïöü'.includes(c.toLowerCase()); };
+      for (var i = 5; i <= Math.min(name.length - 1, 10); i++) {
+        // e.g. "manue|lr|izzo": name[i-2]='e'(V), name[i-1]='l'(C), name[i]='r'(C), l≠r → cut at i
+        if (isV(name[i - 2]) && !isV(name[i - 1]) && !isV(name[i]) && name[i - 1] !== name[i]) {
+          name = name.slice(0, i);
+          break;
+        }
+      }
+      if (name.length > 10) name = name.slice(0, 8);
+    }
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  }
+
   function tryLoadUser() {
     try {
       for (var k in localStorage) {
@@ -2542,12 +2714,26 @@
           var data = JSON.parse(localStorage.getItem(k));
           var email = data && data.user && data.user.email;
           if (!email) break;
-          document.getElementById('howlUserAvatar').textContent = email.slice(0, 2).toUpperCase();
-          document.getElementById('howlUserName').textContent   = email.split('@')[0];
+          var firstName = parseFirstNameFromEmail(email);
+          document.getElementById('howlUserAvatar').textContent = (firstName || email).slice(0, 2).toUpperCase();
+          document.getElementById('howlUserName').textContent   = firstName || email.split('@')[0];
+          var menuEmail = document.getElementById('howlProfileMenuEmail');
+          if (menuEmail) menuEmail.textContent = email;
           break;
         }
       }
     } catch (e) {}
+    updateSidebarPlan();
+  }
+
+  function updateSidebarPlan() {
+    var planEl = document.getElementById('howlUserPlan');
+    if (!planEl) return;
+    try {
+      var c    = JSON.parse(localStorage.getItem('howl_credits_v1') || 'null');
+      var plan = (c && c.plan) || 'free';
+      planEl.textContent = { free: 'Free', basic: 'Basic', pro: 'Pro' }[plan] || 'Free';
+    } catch(e) { planEl.textContent = 'Free'; }
   }
 
   // ─────────────────────────────────────────────────────────────────
@@ -3084,7 +3270,8 @@
   // ─────────────────────────────────────────────────────────────────
   function setDynamicGreeting() {
     var raw = document.getElementById('howlUserName').textContent.trim();
-    var firstName = (raw && raw !== 'Il mio account') ? capFirst(raw.split(/[\s@._]/)[0]) : '';
+    // Name is already clean & capitalized by parseFirstNameFromEmail
+    var firstName = (raw && raw !== 'Il mio account') ? raw.split(/[\s@._]/)[0] : '';
     var h = new Date().getHours();
     var phrases;
     if      (h >= 5  && h < 9)  phrases = ['Sveglio presto', 'È presto', 'Buon inizio'];
@@ -3390,6 +3577,7 @@
     var planInfo = planMap[c.plan] || planMap.free;
     if (planBadge) { planBadge.className = 'howl-usage-plan-badge ' + (c.plan || 'free'); planBadge.textContent = planInfo[0]; }
     if (planNameEl) planNameEl.textContent = planInfo[1];
+    updateSidebarPlan();
   }
 
   document.getElementById('howlCreditWarnCta').addEventListener('click', function () {
@@ -3484,7 +3672,71 @@
     });
   }
 
-  document.getElementById('howlUserBtn').addEventListener('click', function () { openSettings(); });
+  // ─────────────────────────────────────────────────────────────────
+  // PROFILE DROPDOWN MENU
+  // ─────────────────────────────────────────────────────────────────
+  var _profileMenuOpen = false;
+  var profileMenu = document.getElementById('howlProfileMenu');
+  var profileBtn  = document.getElementById('howlUserBtn');
+
+  function openProfileMenu() {
+    _profileMenuOpen = true;
+    profileMenu.classList.add('open');
+    profileBtn.classList.add('menu-open');
+    profileBtn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeProfileMenu() {
+    _profileMenuOpen = false;
+    profileMenu.classList.remove('open');
+    profileBtn.classList.remove('menu-open');
+    profileBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  profileBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    _profileMenuOpen ? closeProfileMenu() : openProfileMenu();
+  });
+
+  // Close on outside click
+  document.addEventListener('click', function(e) {
+    if (_profileMenuOpen && !profileMenu.contains(e.target) && e.target !== profileBtn && !profileBtn.contains(e.target)) {
+      closeProfileMenu();
+    }
+  });
+
+  // Route menu item clicks
+  profileMenu.addEventListener('click', function(e) {
+    var item = e.target.closest('[data-profile-action]');
+    if (!item) return;
+    closeProfileMenu();
+    var action = item.dataset.profileAction;
+    if (action === 'settings') {
+      openSettings('theme');
+    } else if (action === 'usage') {
+      openSettings('usage');
+    } else if (action === 'upgrade') {
+      window.location.href = '../index.html#pricing';
+    } else if (action === 'newchat') {
+      startNewConversation();
+      switchPanel('chat');
+      textarea.focus();
+    } else if (action === 'logout') {
+      (async function() {
+        try {
+          if (window.aikeAuth && window.aikeSupabase) {
+            await window.aikeAuth.signOut();
+          } else {
+            // Fallback: clear Supabase tokens
+            Object.keys(localStorage).forEach(function(k) {
+              if (k.startsWith('sb-')) localStorage.removeItem(k);
+            });
+          }
+        } catch(err) {}
+        window.location.href = '../pages/login.html';
+      })();
+    }
+  });
   document.getElementById('howlSettClose').addEventListener('click', closeSettings);
   settOverlay.addEventListener('click', function (e) { if (e.target === settOverlay) closeSettings(); });
   document.getElementById('howlSettTabs').addEventListener('click', function (e) {
@@ -3525,6 +3777,31 @@
   });
 
   // ─────────────────────────────────────────────────────────────────
+  // FIRST-TIME ONBOARDING
+  // ─────────────────────────────────────────────────────────────────
+  var STORAGE_ONBOARDING = 'howl_onboarded_v1';
+
+  function initOnboarding() {
+    var el = document.getElementById('howlOnboarding');
+    if (!el) return;
+    if (!localStorage.getItem(STORAGE_ONBOARDING)) {
+      el.classList.remove('hidden');
+    }
+    el.querySelectorAll('.howl-ob-opt').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        el.querySelectorAll('.howl-ob-opt').forEach(function(b) { b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        localStorage.setItem(STORAGE_ONBOARDING, JSON.stringify({ source: btn.dataset.val, ts: Date.now() }));
+        // Smooth dismiss
+        el.style.transition  = 'opacity 380ms ease, transform 380ms cubic-bezier(0.16,1,0.3,1)';
+        el.style.opacity     = '0';
+        el.style.transform   = 'translateY(-10px) scale(0.97)';
+        setTimeout(function() { el.classList.add('hidden'); }, 400);
+      });
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────────
   // INIT
   // ─────────────────────────────────────────────────────────────────
   // Apply saved prefs/theme before first paint
@@ -3538,6 +3815,7 @@
   setDynamicGreeting();
   loadSettingsForm();
   updateCreditUI();
+  initOnboarding();
   textarea.focus();
 
 })();

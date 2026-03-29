@@ -528,6 +528,29 @@
   .motion-card { flex: 0 0 100%; }
 }
 
+/* ── Motion section owl mascot ── */
+#aikeMotionSection { position: relative; overflow: visible; }
+
+.motion-section-owl {
+  position: absolute;
+  left: 6vw;
+  top: 50%;
+  transform: translateY(-62%);
+  width: clamp(72px, 8vw, 112px);
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  animation: motionOwlFloat 4s ease-in-out infinite;
+  filter: drop-shadow(0 8px 24px rgba(168, 85, 247, 0.18));
+}
+
+@keyframes motionOwlFloat {
+  0%, 100% { transform: translateY(-62%); }
+  50%       { transform: translateY(-68%); }
+}
+
+@media (max-width: 1100px) { .motion-section-owl { display: none; } }
+
 /* ── Aike Success Stories ── */
 #aikeStories {
   padding: var(--space-xl) 0 var(--space-4xl); /* Tighter top spacing for better continuity */
@@ -629,6 +652,20 @@
   .bundles-grid { grid-template-columns: 1fr; gap: var(--space-xl); }
   .bundle-card--highlight { transform: none; }
   .bundle-card--highlight:hover { transform: translateY(-8px); }
-  .hero__visual { margin-top: var(--space-xl); }
+  .hero__visual { margin-top: var(--space-xl); padding: 10px; }
   .stories-grid { grid-template-columns: 1fr; }
+  
+  /* Mobile Hero Improvements */
+  .hero__main-img {
+    transform: translateY(-20px) scale(0.95); /* Move logo slightly upward and scale slightly to ensure room */
+  }
+  .float-icon--1 { top: 8%; left: 0%; }
+  .float-icon--2 { top: 12%; right: 2%; }
+  .float-icon--3 { top: 38%; left: -5%; }
+  .float-icon--4 { top: 48%; right: -2%; }
+  .float-icon--5 { bottom: 12%; left: 10%; }
+  .float-icon__img {
+    width: 42px; /* Smaller footprint on mobile */
+    height: 42px;
+  }
 }

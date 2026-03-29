@@ -1562,6 +1562,150 @@
       background:rgba(255,255,255,0.06); border-radius:4px;
       padding:2px 6px; flex-shrink:0; white-space:nowrap; margin-left:auto;
     }
+
+    /* ── AI Profile form ── */
+    .howl-ai-profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .howl-ai-profile-field { display: flex; flex-direction: column; gap: 6px; }
+    .howl-ai-profile-label { font-size: 0.77rem; font-weight: 600; color: var(--h-text-muted); }
+    .howl-ai-profile-input {
+      background: var(--h-surface); border: 1px solid var(--h-border);
+      border-radius: var(--h-r-sm); padding: 9px 12px;
+      font-size: 0.85rem; color: var(--h-text); font-family: var(--h-font);
+      transition: border-color 140ms; width: 100%;
+    }
+    .howl-ai-profile-input:focus { border-color: var(--h-purple); outline: none; }
+    .howl-ai-profile-input::placeholder { color: var(--h-text-dim); }
+    .howl-ai-profile-save-row { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+    .howl-ai-profile-save-btn {
+      padding: 7px 18px; font-size: 0.82rem; font-weight: 600;
+      background: var(--h-purple); color: #fff; border: none;
+      border-radius: var(--h-r-sm); cursor: pointer;
+      transition: background 140ms;
+    }
+    .howl-ai-profile-save-btn:hover { background: var(--h-purple-dark); }
+    .howl-ai-profile-saved { font-size: 0.77rem; color: #4ade80; opacity: 0; transition: opacity 300ms; }
+    .howl-ai-profile-saved.show { opacity: 1; }
+    @media (max-width: 600px) { .howl-ai-profile-grid { grid-template-columns: 1fr; } }
+
+    /* ── Image fullscreen ── */
+    .howl-img-fullscreen {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,0.92); backdrop-filter: blur(6px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 200ms;
+    }
+    .howl-img-fullscreen.open { opacity: 1; pointer-events: all; }
+    .howl-img-fullscreen-img { max-width: min(90vw, 800px); max-height: 72vh; border-radius: 10px; object-fit: contain; }
+    .howl-img-fullscreen-bar {
+      display: flex; align-items: center; gap: 12px; margin-top: 16px;
+    }
+    .howl-img-fullscreen-prompt {
+      font-size: 0.82rem; color: rgba(255,255,255,0.5); max-width: 500px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .howl-img-fullscreen-close, .howl-img-fullscreen-dl {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: var(--h-r-sm);
+      font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.06); transition: background 140ms;
+    }
+    .howl-img-fullscreen-close:hover, .howl-img-fullscreen-dl:hover { background: rgba(255,255,255,0.12); }
+    .howl-img-result-card { cursor: pointer; }
+
+    /* ── Onboarding slides ── */
+    .howl-onb-overlay {
+      position: fixed; inset: 0; z-index: 9900;
+      background: rgba(0,0,0,0.88); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 350ms;
+    }
+    .howl-onb-overlay.open { opacity: 1; pointer-events: all; }
+    .howl-onb-card {
+      width: min(560px, calc(100vw - 32px));
+      background: var(--h-sidebar); border: 1px solid var(--h-border);
+      border-radius: 20px; padding: 40px 40px 32px;
+      position: relative; overflow: hidden;
+    }
+    .howl-onb-slides-wrap { overflow: hidden; }
+    .howl-onb-slides { display: flex; transition: transform 420ms cubic-bezier(0.32,0,0.67,0); }
+    .howl-onb-slide { min-width: 100%; }
+    .howl-onb-badge {
+      display: inline-block; font-size: 0.67rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--h-purple); margin-bottom: 10px;
+    }
+    .howl-onb-title {
+      font-size: 1.55rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1.2;
+      color: var(--h-text); margin-bottom: 10px;
+    }
+    .howl-onb-desc { font-size: 0.88rem; color: var(--h-text-muted); line-height: 1.7; margin-bottom: 28px; }
+    .howl-onb-mockup {
+      background: var(--h-surface); border: 1px solid var(--h-border);
+      border-radius: 14px; padding: 18px; margin-bottom: 28px; overflow: hidden;
+    }
+    .howl-onb-mockup-chat { display: flex; flex-direction: column; gap: 12px; }
+    .howl-onb-mock-user {
+      align-self: flex-end; background: var(--h-purple-dim);
+      border: 1px solid rgba(224,112,80,0.2); border-radius: 14px 14px 4px 14px;
+      padding: 9px 14px; font-size: 0.82rem; color: var(--h-text); max-width: 80%;
+      animation: howlFadeUp 0.5s 0.2s both;
+    }
+    .howl-onb-mock-ai {
+      align-self: flex-start; background: var(--h-surface-alt);
+      border: 1px solid var(--h-border); border-radius: 4px 14px 14px 14px;
+      padding: 9px 14px; font-size: 0.82rem; color: var(--h-text-sec); max-width: 86%;
+      animation: howlFadeUp 0.5s 0.45s both;
+    }
+    .howl-onb-mock-models {
+      display: flex; gap: 7px; flex-wrap: wrap;
+      animation: howlFadeUp 0.5s 0.6s both;
+    }
+    .howl-onb-mock-model-chip {
+      padding: 4px 12px; border-radius: 999px; border: 1px solid var(--h-border);
+      font-size: 0.72rem; color: var(--h-text-muted);
+    }
+    .howl-onb-mock-model-chip.active { border-color: var(--h-purple); color: var(--h-purple); background: var(--h-purple-dim); }
+    .howl-onb-skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .howl-onb-skill-chip {
+      background: var(--h-surface-alt); border: 1px solid var(--h-border);
+      border-radius: var(--h-r-sm); padding: 10px 12px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.79rem; color: var(--h-text-sec);
+      animation: howlFadeUp 0.4s both;
+    }
+    .howl-onb-skill-icon { font-size: 1rem; }
+    .howl-onb-img-preview {
+      aspect-ratio: 16/7; background: linear-gradient(135deg, #2a1f1a 0%, #1a1a2e 50%, #1a2a20 100%);
+      border-radius: 10px; overflow: hidden; position: relative;
+      animation: howlFadeUp 0.5s 0.2s both;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .howl-onb-img-glow {
+      width: 180px; height: 180px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(224,112,80,0.3) 0%, transparent 70%);
+      animation: howlPulse 2s ease-in-out infinite;
+    }
+    @keyframes howlPulse { 0%,100%{transform:scale(1);opacity:0.6} 50%{transform:scale(1.15);opacity:1} }
+    .howl-onb-nav {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .howl-onb-dots { display: flex; gap: 7px; align-items: center; }
+    .howl-onb-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--h-border); transition: background 200ms, transform 200ms;
+    }
+    .howl-onb-dot.active { background: var(--h-purple); transform: scale(1.4); }
+    .howl-onb-skip { font-size: 0.78rem; color: var(--h-text-dim); cursor: pointer; background: none; border: none; }
+    .howl-onb-skip:hover { color: var(--h-text-muted); }
+    .howl-onb-next {
+      display: flex; align-items: center; gap: 7px;
+      padding: 9px 20px; border-radius: var(--h-r-full);
+      background: var(--h-purple); color: #fff;
+      font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer;
+      transition: background 140ms, transform 100ms;
+    }
+    .howl-onb-next:hover { background: var(--h-purple-dark); }
+    .howl-onb-next:active { transform: scale(0.97); }
   </style>
 </head>
 <body>
@@ -2352,6 +2496,32 @@
             </div>
           </div>
           <div class="howl-sett-section">
+            <div class="howl-sett-section-title">Profilo AI</div>
+            <p style="font-size:0.82rem;color:var(--h-text-muted);margin-bottom:14px;line-height:1.6">Aiuta Howl a conoscerti meglio. Questi dati vengono aggiunti al contesto di ogni conversazione.</p>
+            <div class="howl-ai-profile-grid">
+              <div class="howl-ai-profile-field">
+                <label class="howl-ai-profile-label">Nome</label>
+                <input class="howl-ai-profile-input" id="aiProfileName" placeholder="Come ti chiami?" maxlength="60" />
+              </div>
+              <div class="howl-ai-profile-field">
+                <label class="howl-ai-profile-label">Ruolo</label>
+                <input class="howl-ai-profile-input" id="aiProfileRole" placeholder="es. CEO, Developer, Designer..." maxlength="80" />
+              </div>
+              <div class="howl-ai-profile-field">
+                <label class="howl-ai-profile-label">Settore</label>
+                <input class="howl-ai-profile-input" id="aiProfileIndustry" placeholder="es. SaaS, E-commerce, Consulenza..." maxlength="80" />
+              </div>
+              <div class="howl-ai-profile-field" style="grid-column:1/-1">
+                <label class="howl-ai-profile-label">Obiettivi principali</label>
+                <textarea class="howl-ai-profile-input" id="aiProfileGoals" placeholder="Cosa stai cercando di raggiungere? Come vuoi che Howl si comporti con te?" rows="3" maxlength="400" style="resize:vertical;min-height:72px"></textarea>
+              </div>
+            </div>
+            <div class="howl-ai-profile-save-row">
+              <button class="howl-ai-profile-save-btn" id="aiProfileSaveBtn">Salva profilo</button>
+              <span class="howl-ai-profile-saved" id="aiProfileSaved">✓ Salvato</span>
+            </div>
+          </div>
+          <div class="howl-sett-section">
             <div class="howl-sett-section-title">Sessione</div>
             <div class="howl-pref-row">
               <div class="howl-pref-info">
@@ -2495,6 +2665,94 @@
     </div><!-- /sett-layout -->
   </div><!-- /sett-panel -->
 </div><!-- /settings overlay -->
+
+<!-- ── Image fullscreen overlay ── -->
+<div class="howl-img-fullscreen" id="imgFullscreen">
+  <img class="howl-img-fullscreen-img" id="imgFullscreenImg" src="" alt="" />
+  <div class="howl-img-fullscreen-bar">
+    <span class="howl-img-fullscreen-prompt" id="imgFullscreenPrompt"></span>
+    <button class="howl-img-fullscreen-dl" id="imgFullscreenDl">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="6" y1="2" x2="6" y2="9"/><polyline points="3 6.5 6 9 9 6.5"/><line x1="2" y1="11" x2="10" y2="11"/></svg>
+      Scarica
+    </button>
+    <button class="howl-img-fullscreen-close" id="imgFullscreenClose">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/></svg>
+      Chiudi
+    </button>
+  </div>
+</div>
+
+<!-- ── Onboarding overlay ── -->
+<div class="howl-onb-overlay" id="howlOnbOverlay">
+  <div class="howl-onb-card">
+    <div class="howl-onb-slides-wrap">
+      <div class="howl-onb-slides" id="howlOnbSlides">
+
+        <!-- Slide 1: Multi-model Chat -->
+        <div class="howl-onb-slide">
+          <div class="howl-onb-badge">Benvenuto in Howl</div>
+          <div class="howl-onb-title">Ogni modello AI,<br>un'unica interfaccia</div>
+          <div class="howl-onb-desc">Claude, GPT-4, Gemini — scegli il migliore per ogni task senza cambiare strumento. Passa da un modello all'altro in un click.</div>
+          <div class="howl-onb-mockup">
+            <div class="howl-onb-mockup-chat">
+              <div class="howl-onb-mock-models">
+                <div class="howl-onb-mock-model-chip active">Claude Sonnet</div>
+                <div class="howl-onb-mock-model-chip">GPT-4o</div>
+                <div class="howl-onb-mock-model-chip">Gemini Flash</div>
+                <div class="howl-onb-mock-model-chip">Gemini Pro</div>
+              </div>
+              <div class="howl-onb-mock-user">Come posso ottimizzare questo funnel?</div>
+              <div class="howl-onb-mock-ai">Analizziamo i 3 punti di attrito principali nel tuo funnel attuale...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2: Skills -->
+        <div class="howl-onb-slide">
+          <div class="howl-onb-badge">Skills Library</div>
+          <div class="howl-onb-title">16 agenti specializzati<br>pronti all'uso</div>
+          <div class="howl-onb-desc">Da Analisi Revenue a Proposta Commerciale, ogni Skill è un esperto di dominio con istruzioni profonde e ottimizzate.</div>
+          <div class="howl-onb-mockup">
+            <div class="howl-onb-skills-grid">
+              <div class="howl-onb-skill-chip" style="animation-delay:0.1s"><span class="howl-onb-skill-icon">📊</span>Analisi Revenue</div>
+              <div class="howl-onb-skill-chip" style="animation-delay:0.2s"><span class="howl-onb-skill-icon">🎯</span>Analisi Competitor</div>
+              <div class="howl-onb-skill-chip" style="animation-delay:0.3s"><span class="howl-onb-skill-icon">✉️</span>Email Professionale</div>
+              <div class="howl-onb-skill-chip" style="animation-delay:0.4s"><span class="howl-onb-skill-icon">💡</span>Brainstorm Prodotto</div>
+              <div class="howl-onb-skill-chip" style="animation-delay:0.5s"><span class="howl-onb-skill-icon">📋</span>Proposta Commerciale</div>
+              <div class="howl-onb-skill-chip" style="animation-delay:0.6s"><span class="howl-onb-skill-icon">🚀</span>Growth Hacking</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3: Image Generation -->
+        <div class="howl-onb-slide">
+          <div class="howl-onb-badge">Generazione immagini</div>
+          <div class="howl-onb-title">Da un'idea<br>a un'immagine reale</div>
+          <div class="howl-onb-desc">DALL·E 3 integrato direttamente in Howl. Genera immagini da testo, scaricale, e ritrovale sempre nella galleria.</div>
+          <div class="howl-onb-mockup">
+            <div class="howl-onb-img-preview">
+              <div class="howl-onb-img-glow"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="howl-onb-nav">
+      <button class="howl-onb-skip" id="howlOnbSkip">Salta</button>
+      <div class="howl-onb-dots" id="howlOnbDots">
+        <div class="howl-onb-dot active" data-onb-dot="0"></div>
+        <div class="howl-onb-dot" data-onb-dot="1"></div>
+        <div class="howl-onb-dot" data-onb-dot="2"></div>
+      </div>
+      <button class="howl-onb-next" id="howlOnbNext">
+        Avanti
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 3 11 8 6 13"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
 
 <script>
 (function () {
@@ -3091,6 +3349,8 @@
     const businessContext = loadBusinessContext();
     const prefs = loadHowlPrefs();
     let finalSkill = buildMemoryContext();
+    const aiProfileCtx = buildAIProfileContext();
+    if (aiProfileCtx) finalSkill = finalSkill ? finalSkill + '\n\n' + aiProfileCtx : aiProfileCtx;
     if (skillContext) finalSkill = finalSkill ? finalSkill + '\n\n' + skillContext : skillContext;
     const densityHint = getDensityHint(prefs.responseDensity);
     if (densityHint) finalSkill = finalSkill ? finalSkill + '\n\n' + densityHint : densityHint;
@@ -3150,6 +3410,8 @@
     const businessContext = loadBusinessContext();
     const prefs = loadHowlPrefs();
     let finalSkill = skillContext || '';
+    const aiProfileCtx = buildAIProfileContext();
+    if (aiProfileCtx) finalSkill = aiProfileCtx + (finalSkill ? '\n\n' + finalSkill : '');
     const densityHint = getDensityHint(prefs.responseDensity);
     if (densityHint) finalSkill = finalSkill ? finalSkill + '\n\n' + densityHint : densityHint;
     if (prefs.language && prefs.language !== 'auto') {
@@ -3464,6 +3726,7 @@
   // ─────────────────────────────────────────────────────────────────
   // PANEL SWITCHING
   // ─────────────────────────────────────────────────────────────────
+  var _imgGalleryLoaded = false;
   function switchPanel(name) {
     activePanel = name;
     document.querySelectorAll('.howl-panel').forEach(function(p) {
@@ -3472,6 +3735,10 @@
     document.querySelectorAll('[data-panel]').forEach(function(btn) {
       btn.classList.toggle('active', btn.dataset.panel === name);
     });
+    if (name === 'image' && !_imgGalleryLoaded) {
+      _imgGalleryLoaded = true;
+      loadImgGallery();
+    }
     if (window.innerWidth <= 820) closeSidebar();
   }
   document.querySelectorAll('[data-panel]').forEach(function(btn) {
@@ -3896,22 +4163,67 @@
     }
   });
 
-  function renderImgResult(url, prompt, model) {
+  function renderImgResult(url, prompt, model, skipSave) {
     var grid = document.getElementById('imgResults');
     var card = document.createElement('div');
     card.className = 'howl-img-result-card';
+    var safePrompt = prompt.slice(0, 80).replace(/"/g,'&quot;');
     card.innerHTML =
-      '<img src="' + url + '" alt="' + prompt.slice(0, 80).replace(/"/g,'&quot;') + '" loading="lazy" />' +
+      '<img src="' + url + '" alt="' + safePrompt + '" loading="lazy" />' +
       '<div class="howl-img-result-footer">' +
         '<span class="howl-img-result-meta">' + model + '</span>' +
-        '<button class="howl-img-result-dl" onclick="downloadImg(\'' + url + '\')">'+
+        '<button class="howl-img-result-dl" onclick="event.stopPropagation();downloadImg(\'' + url + '\')">'+
           '<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="6" y1="2" x2="6" y2="9"/><polyline points="3 6.5 6 9 9 6.5"/><line x1="2" y1="11" x2="10" y2="11"/></svg>'+
           'Scarica'+
         '</button>' +
       '</div>';
+    card.addEventListener('click', function() { openImgFullscreen(url, prompt); });
     grid.insertBefore(card, grid.firstChild);
     document.getElementById('imgEmpty').style.display = 'none';
+    if (!skipSave) saveImgToGallery(url, prompt, model);
   }
+
+  var STORAGE_IMG_GALLERY = 'howl_img_gallery_v1';
+
+  function saveImgToGallery(url, prompt, model) {
+    var gallery = loadImgGallery_raw();
+    gallery.unshift({ url: url, prompt: prompt, model: model, ts: Date.now() });
+    if (gallery.length > 24) gallery = gallery.slice(0, 24);
+    try { localStorage.setItem(STORAGE_IMG_GALLERY, JSON.stringify(gallery)); } catch {}
+  }
+
+  function loadImgGallery_raw() {
+    try { var r = JSON.parse(localStorage.getItem(STORAGE_IMG_GALLERY)); if (Array.isArray(r)) return r; } catch {}
+    return [];
+  }
+
+  function loadImgGallery() {
+    var items = loadImgGallery_raw();
+    if (items.length === 0) return;
+    items.forEach(function(item) {
+      renderImgResult(item.url, item.prompt, item.model, true);
+    });
+  }
+
+  function openImgFullscreen(url, prompt) {
+    var overlay = document.getElementById('imgFullscreen');
+    document.getElementById('imgFullscreenImg').src = url;
+    document.getElementById('imgFullscreenPrompt').textContent = prompt;
+    document.getElementById('imgFullscreenDl').onclick = function() { downloadImg(url); };
+    overlay.classList.add('open');
+  }
+
+  function closeImgFullscreen() {
+    document.getElementById('imgFullscreen').classList.remove('open');
+  }
+
+  document.getElementById('imgFullscreenClose').addEventListener('click', closeImgFullscreen);
+  document.getElementById('imgFullscreen').addEventListener('click', function(e) {
+    if (e.target === this) closeImgFullscreen();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeImgFullscreen();
+  });
 
   function downloadImg(url) {
     var a = document.createElement('a');
@@ -4548,6 +4860,7 @@
     switchSettSection(sec);
     updateCreditUI();
     applyHowlPrefs();
+    loadAIProfileForm();
     // Sync account panel
     var emailEl = document.getElementById('settAccountEmail');
     if (emailEl && window._howlUserEmail) emailEl.textContent = window._howlUserEmail;
@@ -4835,6 +5148,97 @@
   }
 
   // ─────────────────────────────────────────────────────────────────
+  // AI USER PROFILE
+  // ─────────────────────────────────────────────────────────────────
+  var STORAGE_AI_PROFILE = 'howl_ai_profile_v1';
+
+  function loadAIProfile() {
+    try { var r = JSON.parse(localStorage.getItem(STORAGE_AI_PROFILE)); if (r && typeof r === 'object') return r; } catch {}
+    return {};
+  }
+  function saveAIProfile(p) { localStorage.setItem(STORAGE_AI_PROFILE, JSON.stringify(p)); }
+
+  function buildAIProfileContext() {
+    var p = loadAIProfile();
+    var lines = [];
+    if (p.name)     lines.push('Nome utente: ' + p.name);
+    if (p.role)     lines.push('Ruolo: ' + p.role);
+    if (p.industry) lines.push('Settore: ' + p.industry);
+    if (p.goals)    lines.push('Obiettivi / preferenze: ' + p.goals);
+    if (lines.length === 0) return '';
+    return 'PROFILO UTENTE:\n' + lines.join('\n');
+  }
+
+  function loadAIProfileForm() {
+    var p = loadAIProfile();
+    var n = document.getElementById('aiProfileName');
+    var r = document.getElementById('aiProfileRole');
+    var i = document.getElementById('aiProfileIndustry');
+    var g = document.getElementById('aiProfileGoals');
+    if (n) n.value = p.name || '';
+    if (r) r.value = p.role || '';
+    if (i) i.value = p.industry || '';
+    if (g) g.value = p.goals || '';
+  }
+
+  var aiProfileSaveBtn = document.getElementById('aiProfileSaveBtn');
+  var aiProfileSaved   = document.getElementById('aiProfileSaved');
+  if (aiProfileSaveBtn) {
+    aiProfileSaveBtn.addEventListener('click', function() {
+      saveAIProfile({
+        name:     (document.getElementById('aiProfileName').value || '').trim(),
+        role:     (document.getElementById('aiProfileRole').value || '').trim(),
+        industry: (document.getElementById('aiProfileIndustry').value || '').trim(),
+        goals:    (document.getElementById('aiProfileGoals').value || '').trim(),
+      });
+      if (aiProfileSaved) {
+        aiProfileSaved.classList.add('show');
+        setTimeout(function() { aiProfileSaved.classList.remove('show'); }, 2200);
+      }
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // ONBOARDING
+  // ─────────────────────────────────────────────────────────────────
+  var STORAGE_ONB = 'howl_onboarding_v1';
+  var _onbSlide = 0;
+  var _onbTotal = 3;
+
+  function onbGoTo(idx) {
+    _onbSlide = idx;
+    document.getElementById('howlOnbSlides').style.transform = 'translateX(-' + (idx * 100) + '%)';
+    document.querySelectorAll('.howl-onb-dot').forEach(function(d) {
+      d.classList.toggle('active', parseInt(d.dataset.onbDot) === idx);
+    });
+    var nextBtn = document.getElementById('howlOnbNext');
+    if (nextBtn) {
+      if (idx === _onbTotal - 1) {
+        nextBtn.innerHTML = 'Inizia <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 3 11 8 6 13"/></svg>';
+      } else {
+        nextBtn.innerHTML = 'Avanti <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 3 11 8 6 13"/></svg>';
+      }
+    }
+  }
+
+  function closeOnboarding() {
+    localStorage.setItem(STORAGE_ONB, '1');
+    document.getElementById('howlOnbOverlay').classList.remove('open');
+  }
+
+  var howlOnbNext = document.getElementById('howlOnbNext');
+  var howlOnbSkip = document.getElementById('howlOnbSkip');
+  if (howlOnbNext) {
+    howlOnbNext.addEventListener('click', function() {
+      if (_onbSlide < _onbTotal - 1) { onbGoTo(_onbSlide + 1); }
+      else { closeOnboarding(); }
+    });
+  }
+  if (howlOnbSkip) {
+    howlOnbSkip.addEventListener('click', closeOnboarding);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
   // INIT
   // ─────────────────────────────────────────────────────────────────
   // Apply saved prefs/theme before first paint
@@ -4850,6 +5254,13 @@
   updateCreditUI();
   applyLanguage(_initPrefs.language || 'auto');
   textarea.focus();
+
+  // Show onboarding on first visit
+  if (!localStorage.getItem(STORAGE_ONB)) {
+    setTimeout(function() {
+      document.getElementById('howlOnbOverlay').classList.add('open');
+    }, 700);
+  }
 
 })();
 </script>

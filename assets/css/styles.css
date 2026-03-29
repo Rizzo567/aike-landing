@@ -392,14 +392,13 @@ p {
   transform: scaleX(1);
 }
 
-/* Howl nav link — subtle purple accent */
+/* Howl nav link — same as other links */
 .header__link--howl {
-  color: var(--color-primary);
-  opacity: 0.88;
+  color: var(--color-text-muted);
+  opacity: 1;
 }
 .header__link--howl:hover {
-  color: var(--color-primary);
-  opacity: 1;
+  color: var(--color-white);
 }
 
 .header__actions {

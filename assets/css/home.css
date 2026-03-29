@@ -563,6 +563,13 @@
   .owl-deco { width: clamp(100px, 22vw, 150px); opacity: 0.12; }
 }
 
+/* ── Homepage new sections responsive ── */
+@media (max-width: 800px) {
+  #howItWorks .container > div[style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
+  #howItWorks [aria-hidden="true"][style*="position:absolute"] { display: none; }
+  #meetHowl .container > div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+}
+
 /* ── Aike Success Stories ── */
 #aikeStories {
   padding: var(--space-xl) 0 var(--space-4xl); /* Tighter top spacing for better continuity */

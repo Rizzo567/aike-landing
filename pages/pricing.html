@@ -4,29 +4,150 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pricing | aike automation</title>
-  <meta name="description" content="Transparent pricing for production-ready business automation systems." />
-  
+  <meta name="description" content="Transparent pricing for production-ready business automation and Howl AI credits." />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
-  
+
   <link rel="stylesheet" href="../assets/css/styles.css?v=5" />
   <link rel="stylesheet" href="../assets/css/components.css?v=5" />
   <link rel="stylesheet" href="../assets/css/sections.css?v=5" />
   <link rel="stylesheet" href="../assets/css/home.css?v=5" />
+
+  <style>
+    /* ── Credits system section ── */
+    .credits-section {
+      padding: var(--space-4xl) 0;
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+    }
+    .credits-header {
+      text-align: center; max-width: 600px; margin: 0 auto 3.5rem;
+    }
+    .credits-header h2 {
+      font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 800;
+      color: var(--color-white); margin-bottom: 0.75rem; letter-spacing: -0.025em;
+    }
+    .credits-header p { color: var(--color-text-muted); font-size: 1.05rem; line-height: 1.65; }
+    .credits-badge {
+      display: inline-block; padding: 5px 14px; border-radius: 20px;
+      background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2);
+      color: var(--color-primary); font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem;
+    }
+
+    /* Credits explanation grid */
+    .credits-explain {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3.5rem;
+    }
+    @media (max-width: 768px) { .credits-explain { grid-template-columns: 1fr; } }
+    .credits-explain-card {
+      background: var(--color-surface-alt); border: 1px solid var(--color-border);
+      border-radius: 16px; padding: 1.5rem;
+    }
+    .credits-explain-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(168,85,247,0.1); color: var(--color-primary);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;
+    }
+    .credits-explain-title { font-weight: 700; color: var(--color-white); margin-bottom: 0.5rem; font-size: 0.95rem; }
+    .credits-explain-desc { font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.6; }
+
+    /* Model costs table */
+    .credits-table-wrap {
+      background: var(--color-surface-alt); border: 1px solid var(--color-border);
+      border-radius: 20px; overflow: hidden; margin-bottom: 3.5rem;
+    }
+    .credits-table-header {
+      padding: 1.25rem 1.75rem; border-bottom: 1px solid var(--color-border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .credits-table-header-title { font-weight: 700; color: var(--color-white); font-size: 0.95rem; }
+    .credits-table-header-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+    .credits-table { width: 100%; border-collapse: collapse; }
+    .credits-table th {
+      padding: 0.75rem 1.75rem; text-align: left; font-size: 0.72rem; font-weight: 600;
+      color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.07em;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .credits-table th:last-child { text-align: right; }
+    .credits-table td {
+      padding: 1rem 1.75rem; font-size: 0.88rem; color: var(--color-text-muted);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .credits-table tr:last-child td { border-bottom: none; }
+    .credits-table td:first-child { color: var(--color-white); font-weight: 500; }
+    .credits-table td:last-child { text-align: right; }
+    .credit-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+    }
+    .credit-pill--1 { background: rgba(74,222,128,0.1); color: #4ade80; }
+    .credit-pill--2 { background: rgba(168,85,247,0.1); color: var(--color-primary); }
+    .credit-pill--3 { background: rgba(251,191,36,0.1); color: #fbbf24; }
+    .credits-table .model-badge {
+      display: inline-block; padding: 2px 8px; border-radius: 6px;
+      background: rgba(255,255,255,0.06); font-size: 0.72rem; color: var(--color-text-muted);
+      margin-left: 6px;
+    }
+
+    /* Credits plan comparison */
+    .credits-plans {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;
+    }
+    @media (max-width: 768px) { .credits-plans { grid-template-columns: 1fr; } }
+    .credits-plan-card {
+      background: var(--color-surface-alt); border: 1px solid var(--color-border);
+      border-radius: 16px; padding: 1.5rem; position: relative;
+    }
+    .credits-plan-card--pro {
+      border-color: rgba(168,85,247,0.35); background: rgba(168,85,247,0.05);
+    }
+    .credits-plan-name { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--color-white); margin-bottom: 0.4rem; }
+    .credits-plan-amount {
+      font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 800;
+      color: var(--color-primary); line-height: 1; margin-bottom: 0.25rem;
+    }
+    .credits-plan-sub { font-size: 0.78rem; color: var(--color-text-muted); margin-bottom: 1.25rem; }
+    .credits-bar-wrap { background: rgba(255,255,255,0.06); border-radius: 99px; height: 6px; margin-bottom: 1rem; overflow: hidden; }
+    .credits-bar { height: 100%; border-radius: 99px; background: var(--color-primary); }
+    .credits-plan-detail { font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.55; }
+    .credits-plan-detail strong { color: var(--color-white); font-weight: 600; }
+    .credits-reset { font-size: 0.72rem; color: var(--color-text-muted); margin-top: 0.75rem; display: flex; align-items: center; gap: 5px; }
+
+    /* FAQ section */
+    .pricing-faq {
+      padding: var(--space-4xl) 0;
+      border-top: 1px solid var(--color-border);
+    }
+    .pricing-faq-header { text-align: center; margin-bottom: 3rem; }
+    .pricing-faq-header h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 800; color: var(--color-white); letter-spacing: -0.025em; }
+    .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+    @media (max-width: 700px) { .faq-grid { grid-template-columns: 1fr; } }
+    .faq-item {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: 14px; padding: 1.5rem;
+    }
+    .faq-q { font-weight: 700; color: var(--color-white); margin-bottom: 0.6rem; font-size: 0.92rem; }
+    .faq-a { font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.65; }
+  </style>
 </head>
 <body>
   <div class="page-wrapper">
     <div id="navbar-placeholder"></div>
 
     <main class="main-content">
-      <!-- Intro -->
-      <section class="page-hero" style="background: var(--color-background); padding-top: var(--space-4xl); padding-bottom: var(--space-2xl); text-align: center;">
+
+      <!-- Hero -->
+      <section class="page-hero" style="padding-top: var(--space-4xl); padding-bottom: var(--space-2xl); text-align: center;">
         <div class="container">
-          <div class="hero__badge" data-reveal style="margin: 0 auto 1.5rem;">Investment Tiers</div>
-          <h1 class="hero__title" data-reveal style="transition-delay: 0.1s;">Invest in <span class="hero__title-highlight">infrastructure</span></h1>
-          <p class="hero__subtitle" data-reveal style="transition-delay: 0.2s; max-width: 600px; margin: 0 auto 2rem;">
-            We don't sell software subscriptions. We build permanent operational assets for your business. Choose the tier that matches your scaling phase.
+          <div class="hero__badge" data-reveal style="margin: 0 auto 1.5rem;">Transparent Pricing</div>
+          <h1 class="hero__title" data-reveal style="transition-delay: 0.1s;">
+            Invest in <span class="hero__title-highlight">infrastructure</span>
+          </h1>
+          <p class="hero__subtitle" data-reveal style="transition-delay: 0.2s; max-width: 580px; margin: 0 auto 2rem;">
+            Choose the plan that matches your scale. Every tier includes access to Howl, your AI operator — with a monthly credit allocation for each AI interaction.
           </p>
         </div>
       </section>
@@ -40,40 +161,46 @@
             <!-- Basic -->
             <div class="bundle-card" data-reveal>
               <h3 class="bundle-card__title">Basic</h3>
-              <p class="bundle-card__target">For focused teams beginning to automate their manual tasks.</p>
-              <div style="font-size: 2.5rem; font-weight: 700; font-family: 'Outfit', sans-serif; margin: 1.5rem 0; color: var(--color-white);">€14 <span style="font-size:1rem; color:var(--color-text-muted); font-weight:500;">/month</span></div>
-              <ul class="bundle-card__features" style="opacity: 0.9;">
-                <li><span>✓</span> Basic standard workflows</li>
-                <li><span>✓</span> Initial CRM configuration</li>
-                <li><span>✓</span> 1 Core Integration</li>
+              <p class="bundle-card__target">For teams taking their first step toward automation.</p>
+              <div style="font-size: 2.5rem; font-weight: 700; font-family: 'Outfit', sans-serif; margin: 1.5rem 0; color: var(--color-white);">
+                €14 <span style="font-size:1rem; color:var(--color-text-muted); font-weight:500;">/month</span>
+              </div>
+              <ul class="bundle-card__features" style="opacity:0.9;">
+                <li><span>✓</span> 30 Howl AI credits / month</li>
+                <li><span>✓</span> Core workflow templates</li>
+                <li><span>✓</span> 1 CRM integration</li>
                 <li><span>✓</span> Email support</li>
               </ul>
-              <button onclick="window.aikeCheckout.basic(this)" class="btn btn-outline bundle-card__btn" style="text-align:center; width:100%; cursor:pointer;">Get started</button>
+              <button onclick="window.aikeCheckout.basic(this)" class="btn btn-outline bundle-card__btn" style="width:100%; cursor:pointer;">Get started</button>
             </div>
 
-            <!-- Pro (Recommended) -->
-            <div class="bundle-card bundle-card--highlight" data-reveal style="transition-delay: 0.15s;">
+            <!-- Pro -->
+            <div class="bundle-card bundle-card--highlight" data-reveal style="transition-delay:0.15s;">
               <h3 class="bundle-card__title">Pro</h3>
-              <p class="bundle-card__target">For scaling businesses needing advanced capabilities and volume.</p>
-              <div style="font-size: 2.5rem; font-weight: 700; font-family: 'Outfit', sans-serif; margin: 1.5rem 0; color: var(--color-white);">€49 <span style="font-size:1rem; color:rgba(255,255,255,0.5); font-weight:500;">/month</span></div>
+              <p class="bundle-card__target">For scaling businesses that need power and volume.</p>
+              <div style="font-size: 2.5rem; font-weight: 700; font-family: 'Outfit', sans-serif; margin: 1.5rem 0; color: var(--color-white);">
+                €49 <span style="font-size:1rem; color:rgba(255,255,255,0.5); font-weight:500;">/month</span>
+              </div>
               <ul class="bundle-card__features">
+                <li><span>✓</span> 300 Howl AI credits / month</li>
                 <li><span>✓</span> Up to 5 custom workflows</li>
                 <li><span>✓</span> Full pipeline automation</li>
                 <li><span>✓</span> Calendar & Booking sync</li>
-                <li><span>✓</span> Premium API webhooks</li>
-                <li><span>✓</span> Priority support</li>
+                <li><span>✓</span> Priority 24/7 support</li>
               </ul>
-              <button onclick="window.aikeCheckout.pro(this)" class="btn btn-primary bundle-card__btn" style="text-align:center; width:100%; cursor:pointer;">Get started →</button>
+              <button onclick="window.aikeCheckout.pro(this)" class="btn btn-primary bundle-card__btn" style="width:100%; cursor:pointer;">Get started →</button>
             </div>
 
             <!-- Custom -->
-            <div class="bundle-card" data-reveal style="transition-delay: 0.3s;">
+            <div class="bundle-card" data-reveal style="transition-delay:0.3s;">
               <h3 class="bundle-card__title">Custom</h3>
-              <p class="bundle-card__target">For mature operations requiring maximum control and orchestration.</p>
-              <div style="font-size: 2.5rem; font-weight: 700; font-family: 'Outfit', sans-serif; margin: 1.5rem 0; color: var(--color-white);">Custom <span style="font-size:1rem; color:var(--color-text-muted); font-weight:500;">pricing</span></div>
-              <ul class="bundle-card__features" style="opacity: 0.9;">
+              <p class="bundle-card__target">For mature operations at maximum scale.</p>
+              <div style="font-size: 2.5rem; font-weight: 700; font-family: 'Outfit', sans-serif; margin: 1.5rem 0; color: var(--color-white);">
+                Custom <span style="font-size:1rem; color:var(--color-text-muted); font-weight:500;">pricing</span>
+              </div>
+              <ul class="bundle-card__features" style="opacity:0.9;">
+                <li><span>✓</span> 1,000+ Howl AI credits / month</li>
                 <li><span>✓</span> Unlimited tailored workflows</li>
-                <li><span>✓</span> Deep multi-platform sync</li>
                 <li><span>✓</span> Custom AI agent training</li>
                 <li><span>✓</span> Enterprise-grade security</li>
                 <li><span>✓</span> Dedicated success manager</li>
@@ -83,21 +210,172 @@
           </div>
         </div>
       </section>
-      
-      <!-- FAQ or Value Prop -->
-      <section style="padding: var(--space-4xl) 0; text-align: center; border-top: 1px solid var(--color-border); background: var(--color-surface);">
-         <div class="container" data-reveal>
-           <h2 style="font-size: 2rem; margin-bottom: 1rem; color:var(--color-white); font-family: 'Outfit';">Why one-time pricing?</h2>
-           <p style="color: var(--color-text-muted); font-size: 1.1rem; max-width: 650px; margin: 0 auto; line-height: 1.6;">
-             Most SaaS platforms charge endless recurring subscriptions for empty shells that you still have to build yourself. We build and deploy functioning, high-yield operational assets directly into your workspace. You own the architecture forever.
-           </p>
-         </div>
+
+      <!-- Credits System -->
+      <section class="credits-section">
+        <div class="container">
+          <div class="credits-header" data-reveal>
+            <div class="credits-badge">Howl Credits</div>
+            <h2>Understanding your credits</h2>
+            <p>Credits are the fuel for Howl — your AI operator. Every time you ask Howl a question, generate an image, or run an advanced model, a small number of credits is consumed. They reset monthly with your plan.</p>
+          </div>
+
+          <!-- How credits work -->
+          <div class="credits-explain" data-reveal>
+            <div class="credits-explain-card">
+              <div class="credits-explain-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              </div>
+              <div class="credits-explain-title">Credits reset monthly</div>
+              <p class="credits-explain-desc">Your full credit balance is restored on the same day each month. Unused credits do not roll over — fresh slate, every cycle.</p>
+            </div>
+            <div class="credits-explain-card">
+              <div class="credits-explain-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+              <div class="credits-explain-title">Cost depends on the model</div>
+              <p class="credits-explain-desc">Light models (Gemini Flash) cost 1–2 credits per message. More powerful models (Claude, GPT-4.1) cost 3. You choose the right power level.</p>
+            </div>
+            <div class="credits-explain-card">
+              <div class="credits-explain-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+              </div>
+              <div class="credits-explain-title">Track usage in real time</div>
+              <p class="credits-explain-desc">Howl shows your remaining credits in the dashboard. You'll always know how much is left before making any high-value request.</p>
+            </div>
+          </div>
+
+          <!-- Model cost table -->
+          <div class="credits-table-wrap" data-reveal>
+            <div class="credits-table-header">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              <div>
+                <div class="credits-table-header-title">Credit cost per model</div>
+                <div class="credits-table-header-sub">Per message sent to Howl</div>
+              </div>
+            </div>
+            <table class="credits-table">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Category</th>
+                  <th>Best for</th>
+                  <th>Credits / msg</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Gemini 2.5 Flash <span class="model-badge">Fast</span></td>
+                  <td>Google</td>
+                  <td>Quick tasks, summaries, drafts</td>
+                  <td><span class="credit-pill credit-pill--1">● 1 credit</span></td>
+                </tr>
+                <tr>
+                  <td>GPT-4o <span class="model-badge">Balanced</span></td>
+                  <td>OpenAI</td>
+                  <td>Versatile reasoning and writing</td>
+                  <td><span class="credit-pill credit-pill--2">● 2 credits</span></td>
+                </tr>
+                <tr>
+                  <td>GPT-4.1 <span class="model-badge">Advanced</span></td>
+                  <td>OpenAI</td>
+                  <td>Complex coding and analysis</td>
+                  <td><span class="credit-pill credit-pill--3">● 3 credits</span></td>
+                </tr>
+                <tr>
+                  <td>Gemini 2.5 Pro <span class="model-badge">Advanced</span></td>
+                  <td>Google</td>
+                  <td>Deep reasoning, long context</td>
+                  <td><span class="credit-pill credit-pill--3">● 3 credits</span></td>
+                </tr>
+                <tr>
+                  <td>Claude Sonnet <span class="model-badge">Premium</span></td>
+                  <td>Anthropic</td>
+                  <td>Nuance, strategy, depth</td>
+                  <td><span class="credit-pill credit-pill--3">● 3 credits</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Credits per plan -->
+          <div class="credits-plans" data-reveal>
+            <div class="credits-plan-card">
+              <div class="credits-plan-name">Basic</div>
+              <div class="credits-plan-amount">30</div>
+              <div class="credits-plan-sub">credits per month</div>
+              <div class="credits-bar-wrap"><div class="credits-bar" style="width:10%"></div></div>
+              <div class="credits-plan-detail">
+                <strong>~30 messages</strong> with fast models, or<br>
+                <strong>~10 messages</strong> with premium models.
+              </div>
+              <div class="credits-reset">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 8A6 6 0 1 1 2 8"/><polyline points="2 2 2 8 8 8"/></svg>
+                Resets monthly
+              </div>
+            </div>
+            <div class="credits-plan-card credits-plan-card--pro">
+              <div class="credits-plan-name">Pro</div>
+              <div class="credits-plan-amount">300</div>
+              <div class="credits-plan-sub">credits per month</div>
+              <div class="credits-bar-wrap"><div class="credits-bar" style="width:55%"></div></div>
+              <div class="credits-plan-detail">
+                <strong>~300 messages</strong> with fast models, or<br>
+                <strong>~100 messages</strong> with premium models.
+              </div>
+              <div class="credits-reset">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 8A6 6 0 1 1 2 8"/><polyline points="2 2 2 8 8 8"/></svg>
+                Resets monthly
+              </div>
+            </div>
+            <div class="credits-plan-card">
+              <div class="credits-plan-name">Custom</div>
+              <div class="credits-plan-amount">1,000+</div>
+              <div class="credits-plan-sub">credits per month</div>
+              <div class="credits-bar-wrap"><div class="credits-bar" style="width:100%"></div></div>
+              <div class="credits-plan-detail">
+                <strong>Unlimited-scale</strong> usage tailored to your team size and workflow volume.
+              </div>
+              <div class="credits-reset">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 8A6 6 0 1 1 2 8"/><polyline points="2 2 2 8 8 8"/></svg>
+                Custom reset schedule
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="pricing-faq">
+        <div class="container">
+          <div class="pricing-faq-header" data-reveal>
+            <h2>Common questions</h2>
+          </div>
+          <div class="faq-grid" data-reveal>
+            <div class="faq-item">
+              <div class="faq-q">What happens when I run out of credits?</div>
+              <p class="faq-a">Howl will notify you when you're running low. You won't be cut off abruptly — you'll see your remaining balance in real time and can upgrade or wait for the monthly reset.</p>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Can I use any AI model I want?</div>
+              <p class="faq-a">Yes. All plans have access to the full model library — Gemini Flash, GPT-4o, GPT-4.1, Gemini Pro, and Claude Sonnet. You choose per message, based on what the task requires.</p>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Do unused credits carry over?</div>
+              <p class="faq-a">No. Credits reset monthly. This keeps the system lean and predictable — you always start fresh with your full allocation.</p>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Is this a subscription or one-time payment?</div>
+              <p class="faq-a">The subscription covers your monthly credit allocation and Aike infrastructure access. The automation architecture we build for you is a permanent asset you own forever.</p>
+            </div>
+          </div>
+        </div>
       </section>
 
     </main>
-
     <div id="footer-placeholder"></div>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="../assets/js/config.js"></script>
   <script src="../assets/js/auth.js"></script>

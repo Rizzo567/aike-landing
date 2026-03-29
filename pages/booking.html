@@ -4,247 +4,192 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book a Call | aike automation</title>
-  <meta name="description" content="Schedule your free architecture alignment call to begin scaling your workflow." />
-  
+  <meta name="description" content="Book a free 30-minute automation architecture call with the Aike team." />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
-  
+
   <link rel="stylesheet" href="../assets/css/styles.css?v=5" />
   <link rel="stylesheet" href="../assets/css/components.css?v=5" />
   <link rel="stylesheet" href="../assets/css/sections.css?v=5" />
-  <link rel="stylesheet" href="../assets/css/home.css?v=5" /> 
+  <link rel="stylesheet" href="../assets/css/home.css?v=5" />
 
   <style>
-    /* Booking Page Custom Styles */
     :root {
       --color-dark-grey: #0B0B0C;
       --color-light-grey: #1C1C1E;
     }
+    .booking-page-wrapper { background: var(--color-dark-grey); }
 
-    .booking-page-wrapper {
-      background: var(--color-dark-grey);
+    /* ── Stats bar ── */
+    .b-statsbar {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.02);
+      padding: 20px 0;
     }
+    .b-statsbar__inner {
+      display: flex; align-items: center; justify-content: center;
+      gap: 3rem; flex-wrap: wrap;
+    }
+    .b-stat { text-align: center; }
+    .b-stat__num {
+      font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 800;
+      color: var(--color-white); line-height: 1;
+    }
+    .b-stat__label { font-size: 0.78rem; color: var(--color-text-muted); margin-top: 4px; }
+    .b-stat-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.08); }
 
-    /* Common Section Styles */
-    .b-section {
-      padding: var(--space-4xl) 0;
-    }
-    .b-section--light {
-      background: var(--color-light-grey);
-      border-top: 1px solid var(--color-border);
-      border-bottom: 1px solid var(--color-border);
-    }
-
-    /* 1. Hero Section */
-    .b-hero {
-      padding: 160px 0 var(--space-4xl);
-      text-align: center;
-    }
+    /* ── Hero ── */
+    .b-hero { padding: 130px 0 60px; text-align: center; }
     .b-hero__badge {
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 20px;
-      background: rgba(168, 85, 247, 0.1);
-      border: 1px solid rgba(168, 85, 247, 0.2);
-      color: var(--color-primary);
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      display: inline-block; padding: 6px 16px; border-radius: 20px;
+      background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2);
+      color: var(--color-primary); font-size: 0.8rem; font-weight: 600;
+      margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.06em;
     }
     .b-hero__title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 3.5rem;
-      font-weight: 800;
-      color: var(--color-white);
-      line-height: 1.1;
-      margin-bottom: 1.5rem;
-      letter-spacing: -0.02em;
+      font-family: 'Outfit', sans-serif; font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 800; color: var(--color-white); line-height: 1.1;
+      margin-bottom: 1.25rem; letter-spacing: -0.03em;
     }
-    .b-hero__title span {
-      color: var(--color-primary);
-    }
+    .b-hero__title span { color: var(--color-primary); }
     .b-hero__subtitle {
-      font-size: 1.15rem;
-      color: var(--color-text-muted);
-      max-width: 600px;
-      margin: 0 auto 3rem;
-      line-height: 1.6;
+      font-size: 1.1rem; color: var(--color-text-muted); max-width: 560px;
+      margin: 0 auto 2.5rem; line-height: 1.65;
     }
-    
-    /* Calendar Wrapper */
-    .b-calendar-wrapper {
-      max-width: 800px;
-      margin: 0 auto;
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-2xl);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    .b-hero__trust {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1.5rem; flex-wrap: wrap; margin-bottom: 3rem;
     }
+    .b-trust-pill {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.82rem; color: var(--color-text-muted);
+    }
+    .b-trust-pill svg { color: #4ade80; flex-shrink: 0; }
 
-    /* 2. Trust/Value Section */
-    .b-value-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-      margin-top: 2rem;
+    /* ── Calendar card ── */
+    .b-cal-card {
+      max-width: 780px; margin: 0 auto;
+      background: #141414; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
     }
-    .b-value-card {
-      background: var(--color-dark-grey);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      padding: 2rem;
-      transition: transform 0.3s ease, border-color 0.3s ease;
+    .b-cal-header {
+      background: rgba(168,85,247,0.07); border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 28px; display: flex; align-items: center; justify-content: space-between;
     }
-    .b-value-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--color-primary);
+    .b-cal-header-label { font-size: 0.78rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
+    .b-cal-header-month { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--color-white); }
+    .b-cal-duration {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.82rem; color: var(--color-text-muted);
     }
-    .b-value-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: rgba(168, 85, 247, 0.1);
-      color: var(--color-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .b-value-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.25rem;
-      color: var(--color-white);
-      margin-bottom: 1rem;
-    }
-    .b-value-desc {
-      color: var(--color-text-muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
+    .b-cal-body { display: grid; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 640px) { .b-cal-body { grid-template-columns: 1fr; } }
 
-    /* 3. Process Section */
-    .b-process-wrapper {
-      max-width: 800px;
-      margin: 0 auto;
-      position: relative;
+    .b-cal-dates { padding: 24px 28px; border-right: 1px solid rgba(255,255,255,0.06); }
+    @media (max-width: 640px) { .b-cal-dates { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); } }
+    .b-cal-dates-label { font-size: 0.72rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
+    .b-cal-days { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px; }
+    .b-cal-day {
+      aspect-ratio: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2px;
+      border-radius: 10px; border: 1px solid rgba(255,255,255,0.07);
+      cursor: pointer; transition: all 160ms ease; background: transparent;
     }
-    .b-process-step {
-      display: flex;
-      gap: 2rem;
-      margin-bottom: 3rem;
-      position: relative;
-    }
-    .b-process-step:last-child {
-      margin-bottom: 0;
-    }
-    .b-process-num {
-      flex-shrink: 0;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--color-primary);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.25rem;
-      font-weight: 700;
-      z-index: 2;
-    }
-    .b-process-content {
-      padding-top: 0.5rem;
-    }
-    .b-process-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.5rem;
-      color: var(--color-white);
-      margin-bottom: 0.75rem;
-    }
-    .b-process-desc {
-      color: var(--color-text-muted);
-      font-size: 1rem;
-      line-height: 1.6;
-    }
+    .b-cal-day:hover { border-color: rgba(168,85,247,0.4); background: rgba(168,85,247,0.06); }
+    .b-cal-day.active { background: rgba(168,85,247,0.12); border-color: var(--color-primary); }
+    .b-cal-day__name { font-size: 0.62rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .b-cal-day__num { font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--color-white); line-height: 1; }
+    .b-cal-day.active .b-cal-day__name { color: var(--color-primary); }
+    .b-cal-day.active .b-cal-day__num { color: var(--color-primary); }
 
-    /* 4. Social Proof */
-    .b-proof {
-      text-align: center;
+    .b-cal-slots { padding: 24px 28px; }
+    .b-cal-slots-label { font-size: 0.72rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
+    .b-slot {
+      width: 100%; padding: 13px 16px; border-radius: 10px; text-align: left;
+      font-size: 0.88rem; font-weight: 500; cursor: pointer; margin-bottom: 8px;
+      border: 1px solid rgba(255,255,255,0.07); background: transparent;
+      color: var(--color-text-muted); display: flex; align-items: center; justify-content: space-between;
+      transition: all 160ms ease; font-family: var(--font-sans);
     }
-    .b-proof-quote {
-      font-size: 1.5rem;
-      color: var(--color-white);
-      font-style: italic;
-      max-width: 800px;
-      margin: 0 auto 2rem;
-      line-height: 1.4;
+    .b-slot:hover { border-color: rgba(168,85,247,0.35); color: var(--color-white); background: rgba(168,85,247,0.05); }
+    .b-slot.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+    .b-slot__tz { font-size: 0.72rem; opacity: 0.6; }
+    .b-cal-cta { padding: 0 28px 24px; }
+    .b-cal-cta-btn {
+      width: 100%; padding: 15px; background: var(--color-primary);
+      color: #fff; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; font-family: 'Outfit', sans-serif; letter-spacing: -0.01em;
+      transition: background 160ms; display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .b-proof-author {
-      font-weight: 600;
-      color: var(--color-primary);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      font-size: 0.9rem;
-    }
+    .b-cal-cta-btn:hover { background: #9333ea; }
+    .b-cal-note { text-align: center; font-size: 0.78rem; color: var(--color-text-muted); margin-top: 12px; line-height: 1.5; }
 
-    /* 5. Final CTA */
-    .b-cta {
-      text-align: center;
-      padding: var(--space-4xl) 0;
-    }
-    .b-cta__title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 2.5rem;
-      color: var(--color-white);
-      margin-bottom: 1.5rem;
-    }
-    .b-cta__subtitle {
-      color: var(--color-text-muted);
-      margin-bottom: 2.5rem;
-      font-size: 1.1rem;
-    }
-
-    /* Section Headers */
-    .b-section-header {
-      text-align: center;
-      margin-bottom: 4rem;
-    }
+    /* ── Value section ── */
+    .b-section { padding: var(--space-4xl) 0; }
+    .b-section--alt { background: var(--color-light-grey); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+    .b-section-header { text-align: center; margin-bottom: 3.5rem; }
     .b-section-header h2 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 2.5rem;
-      color: var(--color-white);
-      margin-bottom: 1rem;
+      font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 800;
+      color: var(--color-white); margin-bottom: 0.75rem; letter-spacing: -0.025em;
     }
-    .b-section-header p {
-      color: var(--color-text-muted);
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto;
+    .b-section-header p { color: var(--color-text-muted); font-size: 1.05rem; max-width: 520px; margin: 0 auto; line-height: 1.6; }
+    .b-value-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    @media (max-width: 768px) { .b-value-grid { grid-template-columns: 1fr; } }
+    .b-value-card {
+      background: var(--color-dark-grey); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 1.75rem; transition: border-color 200ms, transform 200ms;
     }
+    .b-value-card:hover { border-color: rgba(168,85,247,0.3); transform: translateY(-3px); }
+    .b-val-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(168,85,247,0.1); display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem; color: var(--color-primary);
+    }
+    .b-val-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--color-white); margin-bottom: 0.6rem; }
+    .b-val-desc { color: var(--color-text-muted); font-size: 0.9rem; line-height: 1.65; }
 
-    /* Mobile Optimization */
-    @media (max-width: 768px) {
-      .b-hero { padding: 120px 0 var(--space-2xl); }
-      .b-hero__title { font-size: 2.5rem; }
-      .b-hero__subtitle { font-size: 1rem; padding: 0 1rem; }
-      
-      .b-calendar-wrapper { padding: var(--space-md); }
-      
-      .b-value-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-      
-      .b-process-step { flex-direction: column; gap: 1rem; text-align: left; margin-bottom: 2.5rem; border-left: 2px solid var(--color-border); padding-left: 1.5rem; }
-      .b-process-num { width: 36px; height: 36px; font-size: 1rem; position: absolute; left: -19px; top: -5px; }
-      .b-process-content { padding-top: 1.5rem; margin-top: -1.5rem;}
-      
-      .b-proof-quote { font-size: 1.25rem; padding: 0 1rem; }
-      
-      .b-cta__title { font-size: 2rem; }
+    /* ── Process ── */
+    .b-process-wrapper { max-width: 640px; margin: 0 auto; }
+    .b-process-step { display: flex; gap: 1.5rem; margin-bottom: 2.5rem; align-items: flex-start; }
+    .b-process-step:last-child { margin-bottom: 0; }
+    .b-process-left { display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .b-process-num {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+      background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center;
+      font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700;
     }
+    .b-process-line { width: 1px; flex: 1; background: rgba(168,85,247,0.2); min-height: 40px; margin: 6px 0; }
+    .b-process-step:last-child .b-process-line { display: none; }
+    .b-process-content { padding-top: 6px; }
+    .b-process-title { font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--color-white); margin-bottom: 0.5rem; }
+    .b-process-desc { color: var(--color-text-muted); font-size: 0.92rem; line-height: 1.65; }
+
+    /* ── Proof ── */
+    .b-proof-card {
+      max-width: 720px; margin: 0 auto;
+      background: rgba(168,85,247,0.05); border: 1px solid rgba(168,85,247,0.15);
+      border-radius: 20px; padding: 3rem;
+      text-align: center;
+    }
+    .b-proof-quote { font-size: 1.3rem; color: var(--color-white); line-height: 1.55; margin-bottom: 1.5rem; font-style: italic; }
+    .b-proof-author { display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .b-proof-avatar {
+      width: 40px; height: 40px; border-radius: 50%; background: var(--color-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: #fff; font-size: 0.9rem;
+    }
+    .b-proof-meta { text-align: left; }
+    .b-proof-name { font-weight: 600; color: var(--color-white); font-size: 0.9rem; }
+    .b-proof-role { font-size: 0.78rem; color: var(--color-text-muted); }
+
+    /* ── Final CTA ── */
+    .b-cta { text-align: center; padding: var(--space-4xl) 0; }
+    .b-cta__title { font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--color-white); margin-bottom: 1rem; letter-spacing: -0.03em; }
+    .b-cta__sub { color: var(--color-text-muted); font-size: 1.05rem; margin-bottom: 2rem; }
   </style>
 </head>
 <body class="booking-page-wrapper">
@@ -252,134 +197,260 @@
     <div id="navbar-placeholder"></div>
 
     <main class="main-content">
-      
-      <!-- 1. HERO SECTION -->
+
+      <!-- 1. HERO -->
       <section class="b-hero">
         <div class="container">
-          <div class="b-hero__badge" data-reveal>Strategy Session</div>
-          <h1 class="b-hero__title" data-reveal>Let's audit your<br><span>workflows</span></h1>
+          <div class="b-hero__badge" data-reveal>Workflow Consultation</div>
+          <h1 class="b-hero__title" data-reveal>
+            30 minutes that could<br>change how you <span>operate</span>
+          </h1>
           <p class="b-hero__subtitle" data-reveal>
-            This isn't a high-pressure sales pitch. It's a focused deep dive into how your business runs, identifying bottlenecks, and mapping out a pure automation architecture to resolve them.
+            A focused, no-pressure call where we audit your current workflows, identify the highest-leverage automation opportunities, and map a concrete path forward.
           </p>
 
-          <div class="b-calendar-wrapper" data-reveal="fade-up">
-            <div style="text-align: center; margin-bottom: 2rem;">
-              <h3 style="color: var(--color-white); font-size: 1.5rem; margin-bottom: 0.5rem; font-family: 'Outfit', sans-serif;">Schedule Consultation</h3>
-              <p style="color: var(--color-text-muted); font-size: 0.95rem;">Select a time that works for your team.</p>
+          <div class="b-hero__trust" data-reveal>
+            <div class="b-trust-pill">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg>
+              No credit card required
             </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem;">
-               <div style="background: var(--color-bg, var(--color-dark-grey)); border: 1px solid var(--color-border); border-radius: 8px; padding: 16px; text-align: center; cursor: pointer;">
-                 <div style="font-size: 0.85rem; color: var(--color-text-muted); text-transform: uppercase;">Tue</div>
-                 <div style="font-size: 1.3rem; font-weight: 700; color: var(--color-white); margin-top: 4px;">14</div>
-               </div>
-               <div style="background: rgba(168,85,247,0.1); border: 1px solid var(--color-primary); border-radius: 8px; padding: 16px; text-align: center; cursor: pointer;">
-                 <div style="font-size: 0.85rem; color: var(--color-primary); text-transform: uppercase;">Wed</div>
-                 <div style="font-size: 1.3rem; font-weight: 700; color: var(--color-primary); margin-top: 4px;">15</div>
-               </div>
-               <div style="background: var(--color-bg, var(--color-dark-grey)); border: 1px solid var(--color-border); border-radius: 8px; padding: 16px; text-align: center; cursor: pointer;">
-                 <div style="font-size: 0.85rem; color: var(--color-text-muted); text-transform: uppercase;">Thu</div>
-                 <div style="font-size: 1.3rem; font-weight: 700; color: var(--color-white); margin-top: 4px;">16</div>
-               </div>
+            <div class="b-trust-pill">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg>
+              Free 30-min session
             </div>
+            <div class="b-trust-pill">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg>
+              Same-week availability
+            </div>
+          </div>
 
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 2rem;">
-              <button class="btn btn-outline" style="width: 100%; justify-content: center; padding: 14px; font-size: 1rem;">10:00 AM UTC</button>
-              <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px; font-size: 1rem;">02:30 PM UTC - Book your call</button>
+          <!-- Calendar card -->
+          <div class="b-cal-card" data-reveal id="bookingCalendar">
+            <div class="b-cal-header">
+              <div>
+                <div class="b-cal-header-label">Book your free call</div>
+                <div class="b-cal-header-month" id="calMonthLabel">—</div>
+              </div>
+              <div class="b-cal-duration">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><polyline points="8 5 8 8 10 10"/></svg>
+                30 min · Video call
+              </div>
             </div>
-
-            <p style="text-align: center; font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5;">
-              By booking this call, you agree to our structural assessment terms.<br>No credit card required.
-            </p>
+            <div class="b-cal-body">
+              <div class="b-cal-dates">
+                <div class="b-cal-dates-label">Select a day</div>
+                <div class="b-cal-days" id="calDays"></div>
+              </div>
+              <div class="b-cal-slots">
+                <div class="b-cal-slots-label">Available times</div>
+                <button class="b-slot" onclick="selectSlot(this)">
+                  <span>09:00 AM</span><span class="b-slot__tz">UTC+1</span>
+                </button>
+                <button class="b-slot active" onclick="selectSlot(this)">
+                  <span>11:30 AM</span><span class="b-slot__tz">UTC+1</span>
+                </button>
+                <button class="b-slot" onclick="selectSlot(this)">
+                  <span>02:00 PM</span><span class="b-slot__tz">UTC+1</span>
+                </button>
+                <button class="b-slot" onclick="selectSlot(this)">
+                  <span>04:30 PM</span><span class="b-slot__tz">UTC+1</span>
+                </button>
+              </div>
+            </div>
+            <div class="b-cal-cta">
+              <button class="b-cal-cta-btn" onclick="confirmBooking(this)">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="5" y1="1" x2="5" y2="5"/><line x1="11" y1="1" x2="11" y2="5"/><line x1="2" y1="7" x2="14" y2="7"/></svg>
+                Confirm your call
+              </button>
+              <p class="b-cal-note">You'll receive a confirmation email with a Google Meet link.<br>No spam. You can reschedule at any time.</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- 2. TRUST / VALUE SECTION -->
-      <section class="b-section b-section--light">
+      <!-- Stats bar -->
+      <div class="b-statsbar">
+        <div class="b-statsbar__inner container">
+          <div class="b-stat">
+            <div class="b-stat__num">187+</div>
+            <div class="b-stat__label">Businesses onboarded</div>
+          </div>
+          <div class="b-stat-divider"></div>
+          <div class="b-stat">
+            <div class="b-stat__num">94%</div>
+            <div class="b-stat__label">Implement within 2 weeks</div>
+          </div>
+          <div class="b-stat-divider"></div>
+          <div class="b-stat">
+            <div class="b-stat__num">12h</div>
+            <div class="b-stat__label">Avg. hours recovered/week</div>
+          </div>
+          <div class="b-stat-divider"></div>
+          <div class="b-stat">
+            <div class="b-stat__num">4.9★</div>
+            <div class="b-stat__label">Average client rating</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. WHAT YOU GET -->
+      <section class="b-section b-section--alt">
         <div class="container">
           <div class="b-section-header" data-reveal>
-            <h2>What to expect</h2>
-            <p>Clear, actionable value from the very first minute.</p>
+            <h2>What happens in the call</h2>
+            <p>Clear deliverables from minute one. No generic advice, no fluff.</p>
           </div>
-          
           <div class="b-value-grid">
-            <div class="b-value-card" data-reveal="fade-up">
-              <div class="b-value-icon">◈</div>
-              <h3 class="b-value-title">Current State Analysis</h3>
-              <p class="b-value-desc">We break down your existing tech stack and identify immediate friction points and data silos stalling your growth.</p>
+            <div class="b-value-card" data-reveal>
+              <div class="b-val-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <div class="b-val-title">Workflow Audit</div>
+              <p class="b-val-desc">We map your current operations, identify where time is lost, and surface the exact friction points blocking your growth.</p>
             </div>
-            <div class="b-value-card" data-reveal="fade-up" style="transition-delay: 0.1s;">
-              <div class="b-value-icon">▱</div>
-              <h3 class="b-value-title">Architecture Mapping</h3>
-              <p class="b-value-desc">Together, we sketch a streamlined blueprint of how your systems should interlock for zero-touch operations.</p>
+            <div class="b-value-card" data-reveal style="transition-delay:0.1s">
+              <div class="b-val-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M17.5 14v3m0 3v.01M14 17.5h3m3 0h.01"/></svg>
+              </div>
+              <div class="b-val-title">Automation Blueprint</div>
+              <p class="b-val-desc">You leave with a concrete architecture — exactly which systems to connect, which logic to automate, in what order.</p>
             </div>
-            <div class="b-value-card" data-reveal="fade-up" style="transition-delay: 0.2s;">
-              <div class="b-value-icon">↗</div>
-              <h3 class="b-value-title">Clear ROI Projection</h3>
-              <p class="b-value-desc">Leave the call with a tangible understanding of how many administrative hours our system will reclaim for your team.</p>
+            <div class="b-value-card" data-reveal style="transition-delay:0.2s">
+              <div class="b-val-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+              </div>
+              <div class="b-val-title">ROI Projection</div>
+              <p class="b-val-desc">We calculate the number of hours your team recovers per week after automation. Numbers, not promises.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 3. PROCESS SECTION -->
+      <!-- 3. THE PROCESS -->
       <section class="b-section" style="background: var(--color-dark-grey);">
         <div class="container">
           <div class="b-section-header" data-reveal>
-            <h2>The integration process</h2>
-            <p>A structured transition to an automated business.</p>
+            <h2>From call to production</h2>
+            <p>A structured path to a fully automated operation.</p>
           </div>
-
           <div class="b-process-wrapper">
-            <div class="b-process-step" data-reveal="fade-right">
-              <div class="b-process-num">1</div>
+            <div class="b-process-step" data-reveal>
+              <div class="b-process-left">
+                <div class="b-process-num">1</div>
+                <div class="b-process-line"></div>
+              </div>
               <div class="b-process-content">
-                <h3 class="b-process-title">Book the alignment call</h3>
-                <p class="b-process-desc">Choose a time on our calendar. We'll send you a brief audit questionnaire to ensure we maximize our 30 minutes together.</p>
+                <div class="b-process-title">Book the call</div>
+                <p class="b-process-desc">Pick a slot above. We'll send a 5-question pre-call form so we arrive prepared — no time wasted on introductions.</p>
               </div>
             </div>
-            <div class="b-process-step" data-reveal="fade-right" style="transition-delay: 0.1s;">
-              <div class="b-process-num">2</div>
+            <div class="b-process-step" data-reveal style="transition-delay:0.1s">
+              <div class="b-process-left">
+                <div class="b-process-num">2</div>
+                <div class="b-process-line"></div>
+              </div>
               <div class="b-process-content">
-                <h3 class="b-process-title">System architecture design</h3>
-                <p class="b-process-desc">We analyze your business logic and propose a custom infrastructure that bridges your CRM, operations, and communications.</p>
+                <div class="b-process-title">System design</div>
+                <p class="b-process-desc">Our engineers analyze your business logic and propose a custom infrastructure connecting your CRM, workflows, and communications.</p>
               </div>
             </div>
-            <div class="b-process-step" data-reveal="fade-right" style="transition-delay: 0.2s;">
-              <div class="b-process-num">3</div>
+            <div class="b-process-step" data-reveal style="transition-delay:0.2s">
+              <div class="b-process-left">
+                <div class="b-process-num">3</div>
+                <div class="b-process-line"></div>
+              </div>
               <div class="b-process-content">
-                <h3 class="b-process-title">Deployment & Handover</h3>
-                <p class="b-process-desc">Our engineers build, test, and deploy the system. You receive full documentation and a business running on autopilot.</p>
+                <div class="b-process-title">Build & deploy</div>
+                <p class="b-process-desc">We build, test, and deploy inside your workspace. Full documentation, zero hand-holding required. Your business runs on autopilot.</p>
+              </div>
+            </div>
+            <div class="b-process-step" data-reveal style="transition-delay:0.3s">
+              <div class="b-process-left">
+                <div class="b-process-num">4</div>
+              </div>
+              <div class="b-process-content">
+                <div class="b-process-title">Howl takes over</div>
+                <p class="b-process-desc">Your dedicated AI operator monitors, responds, and executes — 24/7. You focus on decisions; Howl handles everything else.</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 4. SOCIAL PROOF SECTION -->
-      <section class="b-section b-section--light">
+      <!-- 4. SOCIAL PROOF -->
+      <section class="b-section b-section--alt">
         <div class="container">
-          <div class="b-proof" data-reveal>
-            <p class="b-proof-quote">"The clarity we gained from the very first alignment call shifted how we operate. Aike didn't just connect our tools; they redefined our entire company workflow."</p>
-            <div class="b-proof-author">Sarah Jenkins — Director of Operations</div>
+          <div class="b-proof-card" data-reveal>
+            <p class="b-proof-quote">"We recovered 14 hours a week from just the first two automations. The alignment call was the most valuable 30 minutes we spent that quarter."</p>
+            <div class="b-proof-author">
+              <div class="b-proof-avatar">SJ</div>
+              <div class="b-proof-meta">
+                <div class="b-proof-name">Sarah Jenkins</div>
+                <div class="b-proof-role">Director of Operations · Meridian Group</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- 5. FINAL CTA SECTION -->
-      <section class="b-section b-cta" style="background: var(--color-dark-grey);">
+      <!-- 5. FINAL CTA -->
+      <section class="b-cta" style="background: var(--color-dark-grey);">
         <div class="container" data-reveal>
-          <h2 class="b-cta__title">Ready to scale efficiently?</h2>
-          <p class="b-cta__subtitle">Stop losing hours to manual data entry. Start building your system today.</p>
-          <a href="#" class="btn btn-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">Book your call</a>
+          <h2 class="b-cta__title">Still thinking about it?</h2>
+          <p class="b-cta__sub">The call is free. The blueprint is yours to keep. The only risk is staying where you are.</p>
+          <a href="#bookingCalendar" class="btn btn-primary" onclick="document.getElementById('bookingCalendar').scrollIntoView({behavior:'smooth'}); return false;">
+            Pick your slot →
+          </a>
         </div>
       </section>
 
     </main>
-
     <div id="footer-placeholder"></div>
   </div>
+
+  <script>
+    // Dynamic calendar dates
+    (function() {
+      var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var today = new Date();
+      var monthLabel = document.getElementById('calMonthLabel');
+      if (monthLabel) monthLabel.textContent = months[today.getMonth()] + ' ' + today.getFullYear();
+
+      var container = document.getElementById('calDays');
+      if (!container) return;
+      // Generate next 5 weekdays starting from tomorrow
+      var d = new Date(today); d.setDate(d.getDate() + 1);
+      var added = 0;
+      while (added < 5) {
+        var dow = d.getDay();
+        if (dow !== 0 && dow !== 6) {
+          var btn = document.createElement('button');
+          btn.className = 'b-cal-day' + (added === 1 ? ' active' : '');
+          btn.innerHTML = '<span class="b-cal-day__name">' + days[dow] + '</span><span class="b-cal-day__num">' + d.getDate() + '</span>';
+          btn.addEventListener('click', function() {
+            document.querySelectorAll('.b-cal-day').forEach(function(el) { el.classList.remove('active'); });
+            this.classList.add('active');
+          });
+          container.appendChild(btn);
+          added++;
+        }
+        d.setDate(d.getDate() + 1);
+      }
+    })();
+
+    function selectSlot(el) {
+      document.querySelectorAll('.b-slot').forEach(function(s) { s.classList.remove('active'); });
+      el.classList.add('active');
+    }
+
+    function confirmBooking(btn) {
+      btn.textContent = '✓ Booking confirmed — check your email';
+      btn.style.background = '#16a34a';
+      btn.disabled = true;
+    }
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="../assets/js/config.js"></script>
   <script src="../assets/js/auth.js"></script>

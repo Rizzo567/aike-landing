@@ -1706,6 +1706,168 @@
     }
     .howl-onb-next:hover { background: var(--h-purple-dark); }
     .howl-onb-next:active { transform: scale(0.97); }
+
+    /* ══════════════════════════════════════════════════════════════
+       FIX 1 — WELCOME CENTERED LAYOUT
+    ══════════════════════════════════════════════════════════════ */
+    #panel-chat.howl-welcome-active {
+      justify-content: center;
+      overflow: hidden;
+    }
+    #panel-chat.howl-welcome-active .howl-thread {
+      flex: 0 0 auto;
+      overflow: visible;
+      padding: 0 20px 8px;
+    }
+    #panel-chat.howl-welcome-active .howl-input-area {
+      padding-bottom: max(36px, env(safe-area-inset-bottom, 36px));
+      flex-shrink: 0;
+    }
+    #panel-chat.howl-welcome-active .howl-context-pin { display: none !important; }
+
+    /* ══════════════════════════════════════════════════════════════
+       FIX 2 — PROJECT CARD DELETE BUTTON
+    ══════════════════════════════════════════════════════════════ */
+    .howl-project-card { position: relative; overflow: visible; }
+    .howl-proj-delete-btn {
+      position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+      width: 24px; height: 24px; border-radius: 6px;
+      background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--h-text-dim); opacity: 0; flex-shrink: 0;
+      transition: opacity 150ms ease, background 140ms ease, color 140ms ease;
+      font-family: var(--h-font);
+    }
+    .howl-project-card:hover .howl-proj-delete-btn { opacity: 1; }
+    .howl-proj-delete-btn:hover { background: rgba(255,69,58,0.12); color: #f87171; }
+
+    /* ══════════════════════════════════════════════════════════════
+       FIX 4 — CODE MODEL SELECTOR
+    ══════════════════════════════════════════════════════════════ */
+    .howl-code-model-wrap { position: relative; flex-shrink: 0; }
+    .howl-code-model-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px; border-radius: var(--h-r-full);
+      border: 1px solid var(--h-border); background: none;
+      font-size: 0.77rem; font-weight: 500; color: var(--h-text-muted);
+      font-family: var(--h-font); cursor: pointer;
+      transition: border-color 150ms, color 150ms, background 150ms;
+      white-space: nowrap;
+    }
+    .howl-code-model-pill:hover { border-color: rgba(168,85,247,0.28); color: var(--h-text-sec); background: rgba(168,85,247,0.05); }
+    .howl-code-model-pill.open { border-color: rgba(168,85,247,0.40); color: var(--h-text); background: rgba(168,85,247,0.07); }
+    .howl-code-model-pill .howl-model-chevron { opacity: 0.5; transition: transform 180ms ease; }
+    .howl-code-model-pill.open .howl-model-chevron { transform: rotate(180deg); }
+    .howl-code-model-dropdown {
+      position: absolute; bottom: calc(100% + 8px); left: 0;
+      background: #1a1a1c; border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px; padding: 5px; min-width: 190px; z-index: 200;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(168,85,247,0.07);
+      opacity: 0; visibility: hidden; transform: translateY(6px);
+      transition: opacity 150ms ease, transform 150ms ease, visibility 0s linear 150ms;
+    }
+    .howl-code-model-dropdown.open {
+      opacity: 1; visibility: visible; transform: translateY(0);
+      transition: opacity 150ms ease, transform 150ms ease;
+    }
+    .howl-code-model-option {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 11px; border-radius: 8px;
+      width: 100%; background: none; border: none;
+      font-family: var(--h-font); cursor: pointer;
+      transition: background 120ms ease;
+    }
+    .howl-code-model-option:hover { background: rgba(255,255,255,0.07); }
+    .howl-code-model-option.selected { background: var(--h-purple-dim); }
+    .howl-code-model-option-name { font-size: 0.83rem; font-weight: 500; color: var(--h-text-sec); text-align: left; }
+    .howl-code-model-option.selected .howl-code-model-option-name { color: var(--h-text); }
+    .howl-code-model-option-provider { font-size: 0.7rem; color: var(--h-text-dim); }
+
+    /* ══════════════════════════════════════════════════════════════
+       FIX 5 — IMPROVED IMAGE RESULT CARDS
+    ══════════════════════════════════════════════════════════════ */
+    .howl-img-result-card {
+      background: var(--h-surface); border: 1px solid var(--h-border);
+      border-radius: 18px; overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+      transition: border-color 180ms ease, transform 200ms cubic-bezier(0.16,1,0.3,1), box-shadow 200ms ease;
+    }
+    .howl-img-result-card:hover {
+      border-color: rgba(255,255,255,0.16); transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+    .howl-img-result-card img {
+      width: 100%; aspect-ratio: 1; object-fit: cover; display: block;
+      transition: transform 320ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .howl-img-result-card:hover img { transform: scale(1.025); }
+    .howl-img-result-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.18); border-top: 1px solid var(--h-border-sub);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       FIX 6 — DROPDOWN MENU POLISH
+    ══════════════════════════════════════════════════════════════ */
+    .howl-model-dropdown { min-width: 220px; }
+    .howl-profile-menu { min-width: 220px; }
+
+    /* ══════════════════════════════════════════════════════════════
+       FIX 7 — TOP ACTION BAR IMPROVEMENTS
+    ══════════════════════════════════════════════════════════════ */
+    .howl-panel-header {
+      background: rgba(0,0,0,0.1);
+      gap: 14px;
+    }
+    .howl-code-header { background: rgba(0,0,0,0.10); }
+    .howl-skills-bar  { background: rgba(0,0,0,0.10); }
+    .howl-panel-header .howl-btn-primary,
+    .howl-code-header .howl-btn-secondary,
+    .howl-code-header .howl-btn-ghost {
+      font-size: 0.79rem; letter-spacing: 0.01em;
+    }
+    .howl-projects-listcol-header {
+      background: rgba(0,0,0,0.08);
+      border-bottom: 1px solid var(--h-border);
+      padding: 12px 14px;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       FIX 8 — SIDEBAR COLLAPSE ALIGNMENT
+    ══════════════════════════════════════════════════════════════ */
+    .howl-sidebar.collapsed .howl-nav { padding: 12px 4px; align-items: center; }
+    .howl-sidebar.collapsed .howl-nav-group { align-items: center; width: 100%; }
+    .howl-sidebar.collapsed .howl-nav-item { padding: 9px 0; width: 44px; justify-content: center; gap: 0; }
+    .howl-sidebar.collapsed .howl-nav-item--new { width: 44px; padding: 9px 0; }
+    .howl-sidebar.collapsed .hn-icon { width: 16px; height: 16px; opacity: 0.7; }
+    .howl-sidebar.collapsed .howl-user-btn { width: 44px; padding: 9px 0; }
+    .howl-sidebar.collapsed .howl-user-avatar { flex-shrink: 0; }
+
+    /* ══════════════════════════════════════════════════════════════
+       FIX 10 — SHORTCUTS SETTINGS SECTION
+    ══════════════════════════════════════════════════════════════ */
+    .howl-shortcut-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid var(--h-border-sub);
+    }
+    .howl-shortcut-row:last-child { border-bottom: none; }
+    .howl-shortcut-info { display: flex; flex-direction: column; gap: 2px; }
+    .howl-shortcut-label { font-size: 0.84rem; color: var(--h-text-sec); font-weight: 500; }
+    .howl-shortcut-desc { font-size: 0.74rem; color: var(--h-text-dim); }
+    .howl-shortcut-key {
+      display: inline-flex; align-items: center; gap: 4px;
+      flex-shrink: 0;
+    }
+    .howl-kbd {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 3px 7px; background: var(--h-surface-alt);
+      border: 1px solid rgba(255,255,255,0.1); border-bottom: 2px solid rgba(255,255,255,0.08);
+      border-radius: 6px; font-size: 0.73rem; font-weight: 600;
+      color: var(--h-text-muted); font-family: var(--h-font);
+      min-width: 24px; text-align: center; line-height: 1.6;
+    }
+    .howl-shortcut-separator { font-size: 0.7rem; color: var(--h-text-dim); }
   </style>
 </head>
 <body>
@@ -2130,9 +2292,35 @@
       <div class="howl-input-inner">
         <div class="howl-input-shell">
           <textarea class="howl-textarea" id="codeTextarea" placeholder="Incolla il tuo codice o descrivi cosa vuoi fare..." rows="1"></textarea>
-          <button class="howl-send-btn" id="codeSendBtn" disabled>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="13" x2="8" y2="3"/><polyline points="4 7 8 3 12 7"/></svg>
-          </button>
+          <div class="howl-input-controls">
+            <!-- Code model selector -->
+            <div class="howl-code-model-wrap" id="codeModelWrap">
+              <button class="howl-code-model-pill" id="codeModelPill" aria-haspopup="listbox" aria-expanded="false">
+                <span class="howl-model-dot" id="codeModelDot" style="background:#d4a843;width:6px;height:6px;border-radius:50%;flex-shrink:0;"></span>
+                <span id="codeModelLabel">Claude</span>
+                <svg class="howl-model-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="2 3.5 5 6.5 8 3.5"/></svg>
+              </button>
+              <div class="howl-code-model-dropdown" id="codeModelDropdown" role="listbox">
+                <button class="howl-code-model-option selected" data-code-model="claude-sonnet-4-6" role="option">
+                  <span class="howl-model-option-dot" style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:#d4a843;"></span>
+                  <div style="display:flex;flex-direction:column;gap:1px;text-align:left;">
+                    <span class="howl-code-model-option-name">Claude Sonnet 4.6</span>
+                    <span class="howl-code-model-option-provider">Anthropic</span>
+                  </div>
+                </button>
+                <button class="howl-code-model-option" data-code-model="gpt-4.1" role="option">
+                  <span class="howl-model-option-dot" style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:#1fa37f;"></span>
+                  <div style="display:flex;flex-direction:column;gap:1px;text-align:left;">
+                    <span class="howl-code-model-option-name">GPT-4.1</span>
+                    <span class="howl-code-model-option-provider">OpenAI</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+            <button class="howl-send-btn" id="codeSendBtn" style="margin-left:auto;" disabled>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="13" x2="8" y2="3"/><polyline points="4 7 8 3 12 7"/></svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -2424,6 +2612,11 @@
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="4" cy="8" r="2.5"/><circle cx="12" cy="4" r="2.5"/><circle cx="12" cy="12" r="2.5"/><path d="M6.3 7l3.5-2M6.3 9l3.5 2"/></svg>
           Connettori
         </button>
+        <div class="howl-sett-nav-divider"></div>
+        <button class="howl-sett-navitem" data-ssec="scorciatoie">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="2" y="3" width="12" height="10" rx="2"/><line x1="2" y1="7" x2="14" y2="7"/><line x1="5" y1="7" x2="5" y2="13"/></svg>
+          Scorciatoie
+        </button>
       </nav>
 
       <!-- ── Content pane ── -->
@@ -2658,6 +2851,92 @@
               <div class="howl-sett-placeholder-title">Connettori in arrivo</div>
               <div class="howl-sett-placeholder-desc">Prossimamente potrai collegare Howl a Notion, Google Drive, Slack e altri strumenti del tuo flusso di lavoro.</div>
             </div>
+          </div>
+        </div>
+
+        <!-- ── SCORCIATOIE ── -->
+        <div class="howl-sett-page hidden" id="howlSsecScorciatoie">
+          <div class="howl-sett-section">
+            <div class="howl-sett-section-title">Navigazione</div>
+            <div class="howl-shortcut-row">
+              <div class="howl-shortcut-info">
+                <span class="howl-shortcut-label">Nuova chat</span>
+                <span class="howl-shortcut-desc">Inizia una nuova conversazione</span>
+              </div>
+              <div class="howl-shortcut-key">
+                <span class="howl-kbd">⌘</span><span class="howl-shortcut-separator">+</span><span class="howl-kbd">K</span>
+              </div>
+            </div>
+            <div class="howl-shortcut-row">
+              <div class="howl-shortcut-info">
+                <span class="howl-shortcut-label">Apri impostazioni</span>
+                <span class="howl-shortcut-desc">Apre il pannello impostazioni</span>
+              </div>
+              <div class="howl-shortcut-key">
+                <span class="howl-kbd">⌘</span><span class="howl-shortcut-separator">+</span><span class="howl-kbd">,</span>
+              </div>
+            </div>
+            <div class="howl-shortcut-row">
+              <div class="howl-shortcut-info">
+                <span class="howl-shortcut-label">Invia messaggio</span>
+                <span class="howl-shortcut-desc">Invia il messaggio corrente</span>
+              </div>
+              <div class="howl-shortcut-key">
+                <span class="howl-kbd">↵ Enter</span>
+              </div>
+            </div>
+            <div class="howl-shortcut-row">
+              <div class="howl-shortcut-info">
+                <span class="howl-shortcut-label">Nuova riga nel messaggio</span>
+                <span class="howl-shortcut-desc">Inserisce un'interruzione di riga</span>
+              </div>
+              <div class="howl-shortcut-key">
+                <span class="howl-kbd">⇧ Shift</span><span class="howl-shortcut-separator">+</span><span class="howl-kbd">↵</span>
+              </div>
+            </div>
+          </div>
+          <div class="howl-sett-section">
+            <div class="howl-sett-section-title">Chat e pannelli</div>
+            <div class="howl-shortcut-row">
+              <div class="howl-shortcut-info">
+                <span class="howl-shortcut-label">Vai a Chat</span>
+                <span class="howl-shortcut-desc">Passa al pannello chat principale</span>
+              </div>
+              <div class="howl-shortcut-key">
+                <span class="howl-kbd">⌘</span><span class="howl-shortcut-separator">+</span><span class="howl-kbd">1</span>
+              </div>
+            </div>
+            <div class="howl-shortcut-row">
+              <div class="howl-shortcut-info">
+                <span class="howl-shortcut-label">Vai a Progetti</span>
+                <span class="howl-shortcut-desc">Passa al pannello progetti</span>
+              </div>
+              <div class="howl-shortcut-key">
+                <span class="howl-kbd">⌘</span><span class="howl-shortcut-separator">+</span><span class="howl-kbd">2</span>
+              </div>
+            </div>
+            <div class="howl-shortcut-row">
+              <div class="howl-shortcut-info">
+                <span class="howl-shortcut-label">Vai a Codice</span>
+                <span class="howl-shortcut-desc">Passa al pannello codice</span>
+              </div>
+              <div class="howl-shortcut-key">
+                <span class="howl-kbd">⌘</span><span class="howl-shortcut-separator">+</span><span class="howl-kbd">3</span>
+              </div>
+            </div>
+            <div class="howl-shortcut-row">
+              <div class="howl-shortcut-info">
+                <span class="howl-shortcut-label">Chiudi finestra / overlay</span>
+                <span class="howl-shortcut-desc">Chiude modale o impostazioni aperte</span>
+              </div>
+              <div class="howl-shortcut-key">
+                <span class="howl-kbd">Esc</span>
+              </div>
+            </div>
+          </div>
+          <div class="howl-sett-placeholder" style="margin-top:8px;">
+            <div class="howl-sett-placeholder-title">Scorciatoie personalizzate</div>
+            <div class="howl-sett-placeholder-desc">La personalizzazione delle scorciatoie da tastiera sarà disponibile in un aggiornamento futuro.</div>
           </div>
         </div>
 
@@ -3021,6 +3300,7 @@
     resetThread(false);
     welcome.classList.add('hidden');
     messagesEl.classList.add('visible');
+    document.getElementById('panel-chat').classList.remove('howl-welcome-active');
 
     c.messages.forEach(function (m) {
       renderMessage(m.role, m.content);
@@ -3134,6 +3414,22 @@
       closeSidebar();
       closeModelDropdown();
     }
+    // ⌘K / Ctrl+K — new chat
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      startNewConversation();
+      switchPanel('chat');
+      textarea.focus();
+    }
+    // ⌘, / Ctrl+, — settings
+    if ((e.metaKey || e.ctrlKey) && e.key === ',') {
+      e.preventDefault();
+      openSettings('generale');
+    }
+    // ⌘1-3 — panel shortcuts
+    if ((e.metaKey || e.ctrlKey) && e.key === '1') { e.preventDefault(); switchPanel('chat'); }
+    if ((e.metaKey || e.ctrlKey) && e.key === '2') { e.preventDefault(); switchPanel('projects'); }
+    if ((e.metaKey || e.ctrlKey) && e.key === '3') { e.preventDefault(); switchPanel('code'); }
   });
 
   // ─────────────────────────────────────────────────────────────────
@@ -3217,6 +3513,7 @@
       welcome.classList.remove('hidden');
       var suggsEl = document.getElementById('howlSuggestions');
       if (suggsEl) suggsEl.classList.remove('hidden');
+      document.getElementById('panel-chat').classList.add('howl-welcome-active');
     }
   }
 
@@ -3235,6 +3532,7 @@
         messagesEl.classList.add('visible');
         var suggsEl2 = document.getElementById('howlSuggestions');
         if (suggsEl2) suggsEl2.classList.add('hidden');
+        document.getElementById('panel-chat').classList.remove('howl-welcome-active');
       }
       convoMessages.push({ role: 'user', content: text });
       renderMessage('user', text);
@@ -3278,6 +3576,7 @@
       messagesEl.classList.add('visible');
       var suggsEl = document.getElementById('howlSuggestions');
       if (suggsEl) suggsEl.classList.add('hidden');
+      document.getElementById('panel-chat').classList.remove('howl-welcome-active');
     }
 
     convoMessages.push({ role: 'user', content: messageContent });
@@ -3853,6 +4152,17 @@
     saveProjects(ps);
   }
 
+  function deleteProject(id) {
+    var ps = loadProjects().filter(function(p) { return p.id !== id; });
+    saveProjects(ps);
+    if (currentProjectId === id) {
+      currentProjectId = null;
+      document.getElementById('projectDetailView').style.display = 'none';
+      document.getElementById('projectsEmptyDetail').style.display = 'flex';
+    }
+    renderProjectList();
+  }
+
   function renderProjectList() {
     var list = document.getElementById('projectsList');
     var ps = loadProjects();
@@ -3862,7 +4172,7 @@
       return;
     }
     ps.slice().reverse().forEach(function(p) {
-      var card = document.createElement('button');
+      var card = document.createElement('div');
       card.className = 'howl-project-card' + (p.id === currentProjectId ? ' active' : '');
       card.dataset.id = p.id;
       var dl = p.deadline ? new Date(p.deadline).toLocaleDateString('it-IT',{day:'numeric',month:'short'}) : '';
@@ -3871,8 +4181,19 @@
         '<span class="howl-project-card-meta">' +
           '<span class="howl-status-badge ' + p.status + '">' + STATUS_LABELS[p.status] + '</span>' +
           (dl ? '<span class="howl-project-card-deadline">' + dl + '</span>' : '') +
-        '</span>';
-      card.addEventListener('click', function() { openProject(p.id); });
+        '</span>' +
+        '<button class="howl-proj-delete-btn" data-del-id="' + p.id + '" title="Elimina progetto" aria-label="Elimina progetto">' +
+          '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/></svg>' +
+        '</button>';
+      card.addEventListener('click', function(e) {
+        if (e.target.closest('.howl-proj-delete-btn')) return;
+        openProject(p.id);
+      });
+      var delBtn = card.querySelector('.howl-proj-delete-btn');
+      delBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (confirm('Eliminare "' + p.name + '"?')) deleteProject(p.id);
+      });
       list.appendChild(card);
     });
   }
@@ -3895,13 +4216,18 @@
     pm.innerHTML = '';
     (p.messages || []).forEach(function(m) { renderProjectMessage(m.role, m.content); });
     document.getElementById('projectThread').scrollTop = 999999;
-    // Track dirty
-    ['projNameInput','projStatusSelect','projGoalInput','projDeadlineInput'].forEach(function(fid) {
-      document.getElementById(fid).addEventListener('input', showProjSave, { once: true });
-    });
+    // NOTE: dirty listeners are attached once at init — no { once:true } needed
   }
 
   function showProjSave() { document.getElementById('projSaveRow').style.display = 'flex'; }
+
+  // Attach project dirty-state listeners once (persistent — not { once:true })
+  ;(function() {
+    ['projNameInput','projGoalInput','projDeadlineInput'].forEach(function(fid) {
+      document.getElementById(fid).addEventListener('input', showProjSave);
+    });
+    document.getElementById('projStatusSelect').addEventListener('change', showProjSave);
+  })();
 
   document.getElementById('projSaveBtn').addEventListener('click', function() {
     if (!currentProjectId) return;
@@ -4002,6 +4328,44 @@
   // CODE PANEL
   // ─────────────────────────────────────────────────────────────────
   var CODE_SKILL = 'Sei nel pannello Codice di Howl. Aiuta con codice frontend per siti web (HTML, CSS, JavaScript). Fornisci sempre codice corretto e ben formattato in blocchi di codice. Sii tecnico e preciso.';
+  var codeCurrentModel = 'claude-sonnet-4-6'; // default for code panel
+
+  // Code model selector
+  ;(function() {
+    var codePill = document.getElementById('codeModelPill');
+    var codeDD   = document.getElementById('codeModelDropdown');
+    if (!codePill || !codeDD) return;
+
+    codePill.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var isOpen = codeDD.classList.contains('open');
+      codeDD.classList.toggle('open', !isOpen);
+      codePill.classList.toggle('open', !isOpen);
+    });
+
+    codeDD.addEventListener('click', function(e) {
+      var opt = e.target.closest('[data-code-model]');
+      if (!opt) return;
+      codeCurrentModel = opt.dataset.codeModel;
+      var nameEl = opt.querySelector('.howl-code-model-option-name');
+      var shortName = codeCurrentModel === 'claude-sonnet-4-6' ? 'Claude' : 'GPT-4.1';
+      var dotColor  = codeCurrentModel === 'claude-sonnet-4-6' ? '#d4a843' : '#1fa37f';
+      document.getElementById('codeModelLabel').textContent = shortName;
+      document.getElementById('codeModelDot').style.background = dotColor;
+      codeDD.querySelectorAll('.howl-code-model-option').forEach(function(o) {
+        o.classList.toggle('selected', o.dataset.codeModel === codeCurrentModel);
+      });
+      codeDD.classList.remove('open');
+      codePill.classList.remove('open');
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!codePill.contains(e.target) && !codeDD.contains(e.target)) {
+        codeDD.classList.remove('open');
+        codePill.classList.remove('open');
+      }
+    });
+  })();
   var codeTextarea = document.getElementById('codeTextarea');
   var codeSendBtn  = document.getElementById('codeSendBtn');
   function codeToggleSend() {
@@ -4074,7 +4438,7 @@
     ct.classList.add('visible');
     document.getElementById('codeThread').scrollTop = 999999;
     try {
-      var content = await callHowlAPI(codeMessages, currentModel, CODE_SKILL);
+      var content = await callHowlAPI(codeMessages, codeCurrentModel, CODE_SKILL);
       ct.classList.remove('visible');
       codeMessages.push({ role: 'assistant', content: content });
       renderCodeMessage('assistant', content);
@@ -5020,10 +5384,18 @@
     _profileMenuOpen = true;
     // Position fixed relative to the button, escaping sidebar overflow:hidden
     var rect = profileBtn.getBoundingClientRect();
+    var isCollapsed = sidebar.classList.contains('collapsed');
     profileMenu.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
-    profileMenu.style.left   = rect.left + 'px';
-    profileMenu.style.width  = rect.width + 'px';
-    profileMenu.style.right  = '';
+    profileMenu.style.width  = '';
+    profileMenu.style.minWidth = '220px';
+    if (isCollapsed) {
+      // When sidebar is collapsed, anchor menu to the right of the sidebar
+      profileMenu.style.left  = (rect.right + 10) + 'px';
+      profileMenu.style.right = '';
+    } else {
+      profileMenu.style.left  = rect.left + 'px';
+      profileMenu.style.right = '';
+    }
     profileMenu.classList.add('open');
     profileBtn.classList.add('menu-open');
     profileBtn.setAttribute('aria-expanded', 'true');

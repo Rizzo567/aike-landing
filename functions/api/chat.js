@@ -164,15 +164,20 @@ export async function onRequest({ request, env }) {
               if (row.used + cost > limit) {
                 return jsonResponse({ error: 'Crediti esauriti. Aggiorna il piano per continuare.', code: 'CREDITS_EXHAUSTED' }, 402);
               }
-              // Deduct
-              await fetch(`${supabaseUrl2}/rest/v1/user_credits?user_id=eq.${userId}`, {
+              // Deduct with optimistic locking — filter on current used value to prevent race conditions
+              const patchR = await fetch(`${supabaseUrl2}/rest/v1/user_credits?user_id=eq.${userId}&used=eq.${row.used}`, {
                 method: 'PATCH',
                 headers: {
                   'apikey': serviceKey2, 'Authorization': `Bearer ${serviceKey2}`,
-                  'Content-Type': 'application/json', 'Prefer': 'return=minimal',
+                  'Content-Type': 'application/json', 'Prefer': 'return=representation',
                 },
                 body: JSON.stringify({ used: row.used + cost, updated_at: new Date().toISOString() }),
               });
+              const updated = await patchR.json();
+              if (!Array.isArray(updated) || updated.length === 0) {
+                // Concurrent request already modified credits — reject to prevent double-spend
+                return jsonResponse({ error: 'Richiesta concorrente rilevata. Riprova.', code: 'CONCURRENT_REQUEST' }, 409);
+              }
             }
           }
         }

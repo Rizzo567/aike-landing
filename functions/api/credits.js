@@ -115,14 +115,22 @@ export async function onRequest({ request, env }) {
       });
     }
 
-    await fetch(`${supabaseUrl}/rest/v1/user_credits?user_id=eq.${userId}`, {
+    // Deduct with optimistic locking — filter on current used value to prevent race conditions
+    const patchR = await fetch(`${supabaseUrl}/rest/v1/user_credits?user_id=eq.${userId}&used=eq.${row2.used}`, {
       method: 'PATCH',
       headers: {
         'apikey': serviceKey, 'Authorization': `Bearer ${serviceKey}`,
-        'Content-Type': 'application/json', 'Prefer': 'return=minimal',
+        'Content-Type': 'application/json', 'Prefer': 'return=representation',
       },
       body: JSON.stringify({ used: row2.used + cost, updated_at: new Date().toISOString() }),
     });
+
+    const updated = await patchR.json();
+    if (!Array.isArray(updated) || updated.length === 0) {
+      return new Response(JSON.stringify({ error: 'Richiesta concorrente rilevata. Riprova.', code: 'CONCURRENT_REQUEST' }), {
+        status: 409, headers: { ...corsH, 'Content-Type': 'application/json' },
+      });
+    }
 
     return new Response(JSON.stringify({ ok: true, remaining: total - row2.used - cost }), {
       status: 200, headers: { ...corsH, 'Content-Type': 'application/json' },

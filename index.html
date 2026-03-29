@@ -304,9 +304,12 @@
               </a>
 
               <!-- CARD 4 -->
-              <a href="#" class="card motion-card">
+              <a href="#" class="card motion-card motion-card--placeholder">
                 <div class="motion-card__media">
-                  <video class="motion-card__video-placeholder" width="100%" height="100%" preload="metadata" aria-label="Video placeholder"></video>
+                  <div class="motion-card__placeholder-visual">
+                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><rect x="6" y="7" width="5" height="4" rx="1"/><rect x="13" y="7" width="5" height="2" rx="1"/><rect x="13" y="11" width="3" height="2" rx="1"/></svg>
+                    <span>Presentazione</span>
+                  </div>
                 </div>
                 <div class="motion-card__content">
                   <h3>Presentazione <span class="arrow">→</span></h3>
@@ -341,65 +344,72 @@
       <section class="section bg-dark" id="aikeStories" aria-labelledby="stories-heading">
         <div class="container">
           <div class="section-header section-header--center" data-reveal>
-            <div class="stories-kicker">Success stories</div>
-            <h2 id="stories-heading" class="section-title">Automation success stories</h2>
-            <p class="section-subtitle">Go beyond the hype and see how real teams ship faster with AI + automation. Practical wins, measurable outcomes.</p>
+            <h2 id="stories-heading" class="section-title">Automation Success<br><span class="stories-title-gradient">Stories</span></h2>
           </div>
 
           <div class="stories-grid">
             <!-- STORY CARD 1 -->
-            <article class="card story-card" data-reveal style="transition-delay: 0s;">
+            <a href="pages/stories.html#story-marketing" class="card story-card" data-reveal style="transition-delay: 0s;">
               <div class="story-card__media">
-                <div class="story-card__thumb" aria-label="Success story image placeholder">
-                  <div class="story-card__image-placeholder">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <div class="story-card__thumb story-card__thumb--1">
+                  <div class="story-card__visual">
+                    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                   </div>
                 </div>
               </div>
               <div class="story-card__content">
-                <div class="story-card__meta">
-                  <span>Dec 9, 2024</span> &bull; <span>5m read</span>
+                <div class="story-card__tag">Marketing Agency</div>
+                <h3 class="story-card__title">Growing without losing control</h3>
+                <p class="story-card__summary">A 12-person agency automated client reporting, lead nurturing, and onboarding flows — cutting 18 hours of manual work per week without adding headcount.</p>
+                <div class="story-card__result">
+                  <span>18h/week saved</span>
+                  <span>3× faster onboarding</span>
                 </div>
-                <h3 class="story-card__title">Go from lead to booked call with zero manual follow-up</h3>
                 <div class="story-card__cta">Read story <span class="arrow">→</span></div>
               </div>
-            </article>
+            </a>
 
             <!-- STORY CARD 2 -->
-            <article class="card story-card" data-reveal style="transition-delay: 0.1s;">
+            <a href="pages/stories.html#story-manufacturing" class="card story-card" data-reveal style="transition-delay: 0.1s;">
               <div class="story-card__media">
-                <div class="story-card__thumb" aria-label="Success story image placeholder">
-                  <div class="story-card__image-placeholder">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <div class="story-card__thumb story-card__thumb--2">
+                  <div class="story-card__visual">
+                    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
                   </div>
                 </div>
               </div>
               <div class="story-card__content">
-                <div class="story-card__meta">
-                  <span>Mar 26, 2025</span> &bull; <span>4m read</span>
+                <div class="story-card__tag">Manufacturing</div>
+                <h3 class="story-card__title">From manual ops to a real system</h3>
+                <p class="story-card__summary">Orders, suppliers, and QA checks scattered across spreadsheets and WhatsApp. Aike connected every tool and automated the ops layer — errors down 70% in the first month.</p>
+                <div class="story-card__result">
+                  <span>70% fewer errors</span>
+                  <span>4× faster orders</span>
                 </div>
-                <h3 class="story-card__title">AI support that resolves faster without losing control</h3>
                 <div class="story-card__cta">Read story <span class="arrow">→</span></div>
               </div>
-            </article>
+            </a>
 
             <!-- STORY CARD 3 -->
-            <article class="card story-card" data-reveal style="transition-delay: 0.2s;">
+            <a href="pages/stories.html#story-founder" class="card story-card" data-reveal style="transition-delay: 0.2s;">
               <div class="story-card__media">
-                <div class="story-card__thumb" aria-label="Success story image placeholder">
-                  <div class="story-card__image-placeholder">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <div class="story-card__thumb story-card__thumb--3">
+                  <div class="story-card__visual">
+                    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
                   </div>
                 </div>
               </div>
               <div class="story-card__content">
-                <div class="story-card__meta">
-                  <span>Sep 30, 2025</span> &bull; <span>4m read</span>
+                <div class="story-card__tag">Founder</div>
+                <h3 class="story-card__title">Removing the founder bottleneck</h3>
+                <p class="story-card__summary">Every decision, every approval, every reply ran through one person. Aike built a routing system that handles routine tasks autonomously — freeing 25+ hours per week for strategic work.</p>
+                <div class="story-card__result">
+                  <span>25h/week freed</span>
+                  <span>Backlog cleared in 2w</span>
                 </div>
-                <h3 class="story-card__title">Meetings book themselves, pipelines stay warm automatically</h3>
                 <div class="story-card__cta">Read story <span class="arrow">→</span></div>
               </div>
-            </article>
+            </a>
           </div>
         </div>
       </section>

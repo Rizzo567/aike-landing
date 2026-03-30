@@ -110,10 +110,25 @@
 
       <!-- ── 2. Pricing / Bundles ──────────────────────────────── -->
       <section class="bundles-section bg-transition-target" aria-labelledby="pricing-heading">
-        <div class="container">
+        <!-- Atmosphere effects -->
+        <div class="bundles-bg-orb" aria-hidden="true"></div>
+        <div class="bundles-bg-grid" aria-hidden="true"></div>
+
+        <div class="container" style="position:relative;z-index:2;">
           <div class="section-header" data-reveal style="text-align: center; max-width: 600px; margin: 0 auto;">
             <h2 id="pricing-heading" style="font-size: 2.5rem; margin-bottom: 1rem;">Choose your automation path</h2>
             <p style="color: var(--color-text-muted);">Three tailored bundles for different stages of growth.</p>
+          </div>
+
+          <!-- Billing Toggle -->
+          <div class="pricing-toggle-wrap" data-reveal>
+            <div class="pricing-toggle" id="pricingToggle" role="group" aria-label="Billing period">
+              <span class="pricing-toggle__pill" id="pricingPill" aria-hidden="true"></span>
+              <button class="toggle-btn active" id="btnMonthly" onclick="window.aikePricing.setMonthly()" aria-pressed="true">Monthly</button>
+              <button class="toggle-btn" id="btnYearly" onclick="window.aikePricing.setYearly()" aria-pressed="false">
+                Yearly <span class="toggle-save-badge">Save 30%</span>
+              </button>
+            </div>
           </div>
 
           <div class="bundles-grid">
@@ -121,21 +136,33 @@
             <div class="bundle-card" data-reveal style="transition-delay: 0s;">
               <h3 class="bundle-card__title">Basic</h3>
               <p class="bundle-card__target">For focused teams beginning to automate their manual tasks.</p>
-              <div style="font-size: 2.5rem; font-weight: 700; font-family: 'Outfit', sans-serif; margin: 1.5rem 0; color: var(--color-white);">€14 <span style="font-size:1rem; color:var(--color-text-muted); font-weight:500;">/month</span></div>
+              <div class="bundle-card__price-wrap">
+                <div class="bundle-card__price">
+                  <span class="bundle-card__price-amount" id="priceBasic">€14</span>
+                  <span class="bundle-card__price-period" id="periodBasic">/month</span>
+                </div>
+                <p class="bundle-card__billed-note" id="billedBasic">€119/yr · billed annually</p>
+              </div>
               <ul class="bundle-card__features">
                 <li><span>✓</span> Basic workflows & templates</li>
                 <li><span>✓</span> Standard AI responses</li>
                 <li><span>✓</span> Email support</li>
                 <li><span>✓</span> 1,000 tasks/month</li>
               </ul>
-              <button onclick="window.aikeCheckout.basic(this)" class="btn btn-outline bundle-card__btn" style="width:100%; cursor:pointer;">Get started</button>
+              <button id="checkoutBasic" onclick="window.aikeCheckout.basic(this)" class="btn btn-outline bundle-card__btn" style="width:100%; cursor:pointer;">Get started</button>
             </div>
 
             <!-- Pro (Recommended) -->
             <div class="bundle-card bundle-card--highlight" data-reveal style="transition-delay: 0.15s;">
               <h3 class="bundle-card__title">Pro</h3>
               <p class="bundle-card__target">For scaling businesses needing advanced capabilities and volume.</p>
-              <div style="font-size: 2.5rem; font-weight: 700; font-family: 'Outfit', sans-serif; margin: 1.5rem 0; color: var(--color-white);">€49 <span style="font-size:1rem; color:rgba(255,255,255,0.5); font-weight:500;">/month</span></div>
+              <div class="bundle-card__price-wrap">
+                <div class="bundle-card__price">
+                  <span class="bundle-card__price-amount" id="pricePro">€49</span>
+                  <span class="bundle-card__price-period" id="periodPro">/month</span>
+                </div>
+                <p class="bundle-card__billed-note" id="billedPro">€399/yr · billed annually</p>
+              </div>
               <ul class="bundle-card__features">
                 <li><span>✓</span> Premium integrations</li>
                 <li><span>✓</span> Custom logic & API access</li>
@@ -143,14 +170,20 @@
                 <li><span>✓</span> 10,000 tasks/month</li>
                 <li><span>✓</span> Advanced analytics</li>
               </ul>
-              <button onclick="window.aikeCheckout.pro(this)" class="btn btn-primary bundle-card__btn" style="width:100%; cursor:pointer;">Get started →</button>
+              <button id="checkoutPro" onclick="window.aikeCheckout.pro(this)" class="btn btn-primary bundle-card__btn" style="width:100%; cursor:pointer;">Get started →</button>
             </div>
 
             <!-- Custom -->
             <div class="bundle-card" data-reveal style="transition-delay: 0.3s;">
               <h3 class="bundle-card__title">Custom</h3>
               <p class="bundle-card__target">For mature operations requiring maximum control and orchestration.</p>
-              <div style="font-size: 2.5rem; font-weight: 700; font-family: 'Outfit', sans-serif; margin: 1.5rem 0; color: var(--color-white);">Custom <span style="font-size:1rem; color:var(--color-text-muted); font-weight:500;">pricing</span></div>
+              <div class="bundle-card__price-wrap">
+                <div class="bundle-card__price">
+                  <span class="bundle-card__price-amount">Custom</span>
+                  <span class="bundle-card__price-period">pricing</span>
+                </div>
+                <p class="bundle-card__billed-note" style="visibility:hidden;">Contact us</p>
+              </div>
               <ul class="bundle-card__features">
                 <li><span>✓</span> Unlimited tailored workflows</li>
                 <li><span>✓</span> Dedicated success manager</li>
@@ -163,6 +196,9 @@
           </div>
         </div>
       </section>
+
+      <!-- ── BACKGROUND TRANSITION ──────────────────────────────── -->
+      <div class="pixel-transition-vibe" aria-hidden="true"></div>
 
       <!-- ── AIKE SITES ──────────────────────────────────────────── -->
       <section class="section bg-dark aike-sites-section" id="aikeSites" aria-labelledby="sites-heading">
@@ -204,6 +240,9 @@
 
         </div>
       </section>
+
+      <!-- ── BACKGROUND TRANSITION ──────────────────────────────── -->
+      <div class="pixel-transition" aria-hidden="true"></div>
 
       <!-- ── MEET OWL ──────────────────────────────────────────── -->
       <section class="section bg-dark" id="meetOwl" style="padding: var(--space-4xl) 0; background:var(--color-surface); border-top:1px solid var(--color-border);">
@@ -437,6 +476,93 @@
   <script src="assets/js/stripe-checkout.js"></script>
   <script src="assets/js/bundle.js"></script>
   <script src="assets/js/stacked-panels.js"></script>
+
+  <!-- Pricing toggle logic -->
+  <script>
+  (function () {
+    'use strict';
+
+    var PRICES = {
+      basic: { monthly: '€14',    yearly: '€9.92'  },
+      pro:   { monthly: '€49',    yearly: '€33.25' }
+    };
+    var BILLED = {
+      basic: '€119/yr · billed annually',
+      pro:   '€399/yr · billed annually'
+    };
+
+    function movePill(targetBtn) {
+      var pill = document.getElementById('pricingPill');
+      if (!pill || !targetBtn) return;
+      pill.style.left   = targetBtn.offsetLeft + 'px';
+      pill.style.width  = targetBtn.offsetWidth + 'px';
+      pill.style.height = targetBtn.offsetHeight + 'px';
+    }
+
+    function flipPrice(el, newVal) {
+      el.classList.add('price-flip');
+      setTimeout(function () {
+        el.textContent = newVal;
+        el.classList.remove('price-flip');
+      }, 140);
+    }
+
+    function updatePrices(yearly) {
+      var priceBasic  = document.getElementById('priceBasic');
+      var pricePro    = document.getElementById('pricePro');
+      var periodBasic = document.getElementById('periodBasic');
+      var periodPro   = document.getElementById('periodPro');
+      var billedBasic = document.getElementById('billedBasic');
+      var billedPro   = document.getElementById('billedPro');
+      var btnBasic    = document.getElementById('checkoutBasic');
+      var btnPro      = document.getElementById('checkoutPro');
+
+      if (priceBasic)  flipPrice(priceBasic, yearly ? PRICES.basic.yearly : PRICES.basic.monthly);
+      if (pricePro)    flipPrice(pricePro,   yearly ? PRICES.pro.yearly   : PRICES.pro.monthly);
+      if (periodBasic) periodBasic.textContent = yearly ? '/mo' : '/month';
+      if (periodPro)   periodPro.textContent   = yearly ? '/mo' : '/month';
+      if (billedBasic) billedBasic.style.visibility = yearly ? 'visible' : 'hidden';
+      if (billedPro)   billedPro.style.visibility   = yearly ? 'visible' : 'hidden';
+
+      if (btnBasic) btnBasic.setAttribute('onclick', yearly ? 'window.aikeCheckout.basicYearly(this)' : 'window.aikeCheckout.basic(this)');
+      if (btnPro)   btnPro.setAttribute('onclick',   yearly ? 'window.aikeCheckout.proYearly(this)'   : 'window.aikeCheckout.pro(this)');
+    }
+
+    window.aikePricing = {
+      setMonthly: function () {
+        var bm = document.getElementById('btnMonthly');
+        var by = document.getElementById('btnYearly');
+        if (bm) { bm.classList.add('active');    bm.setAttribute('aria-pressed', 'true');  }
+        if (by) { by.classList.remove('active'); by.setAttribute('aria-pressed', 'false'); }
+        movePill(bm);
+        updatePrices(false);
+      },
+      setYearly: function () {
+        var bm = document.getElementById('btnMonthly');
+        var by = document.getElementById('btnYearly');
+        if (by) { by.classList.add('active');    by.setAttribute('aria-pressed', 'true');  }
+        if (bm) { bm.classList.remove('active'); bm.setAttribute('aria-pressed', 'false'); }
+        movePill(by);
+        updatePrices(true);
+      },
+      init: function () {
+        var bm = document.getElementById('btnMonthly');
+        movePill(bm);
+        // billed notes hidden by default (monthly view)
+        var bb = document.getElementById('billedBasic');
+        var bp = document.getElementById('billedPro');
+        if (bb) bb.style.visibility = 'hidden';
+        if (bp) bp.style.visibility = 'hidden';
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { setTimeout(window.aikePricing.init, 60); });
+    } else {
+      setTimeout(window.aikePricing.init, 60);
+    }
+  })();
+  </script>
 </body>
 
 </html>

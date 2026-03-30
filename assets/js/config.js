@@ -16,7 +16,7 @@ window.AIKE_CONFIG = {
     proPriceId: 'price_1TFHYz0vGzVFnco6MPM8vVf8',
     basicPaymentLink: 'https://buy.stripe.com/7sYeV57bvcHedjU4R68og02',
     proPaymentLink: 'https://buy.stripe.com/9B64granHePm4No4R68og01',
-    basicYearlyPaymentLink: '',   // TODO: add Stripe yearly price link for Basic (€119/yr)
-    proYearlyPaymentLink: ''      // TODO: add Stripe yearly price link for Pro (€399/yr)
+    basicYearlyPaymentLink: 'https://buy.stripe.com/bJe7sDeDX8qY5Rs97m8og03',
+    proYearlyPaymentLink: 'https://buy.stripe.com/eVq4grbrL7mU0x8fvK8og04'
   }
 };

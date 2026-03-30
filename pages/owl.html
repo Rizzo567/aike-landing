@@ -438,6 +438,8 @@
     /* ── Panel system ── */
     .owl-panel { display:none; flex-direction:column; flex:1; min-height:0; overflow:hidden; }
     .owl-panel.active-panel { display:flex; }
+    #panel-chat { position:relative; }
+    #owlParticlesBg { position:absolute; inset:0; z-index:0; pointer-events:none; display:block; }
 
     /* ── Shared panel components ── */
     .owl-panel-header {
@@ -2044,6 +2046,9 @@
 
   <!-- ═══ PANEL: CHAT ═══ -->
   <div class="owl-panel active-panel" id="panel-chat">
+
+    <!-- Particle background canvas -->
+    <canvas id="owlParticlesBg" aria-hidden="true"></canvas>
 
     <!-- Context pin — appears when current user question scrolls off screen -->
     <div class="owl-context-pin" id="owlContextPin">
@@ -5634,6 +5639,231 @@
     }, 700);
   }
 
+})();
+</script>
+
+<!-- ── Particle Background ── -->
+<script>
+(function () {
+  'use strict';
+
+  var canvas = document.getElementById('owlParticlesBg');
+  var panel  = document.getElementById('panel-chat');
+  if (!canvas || !panel) return;
+  var ctx = canvas.getContext('2d');
+
+  // ── Config ──────────────────────────────────────────────────
+  var DENSITY        = 0.00030;  // particles per px²
+  var MIN_PARTICLES  = 120;
+  var MAX_PARTICLES  = 500;
+  var MOUSE_RADIUS   = 160;
+  var REPULSION      = 7.5;
+  var SPRING         = 0.055;
+  var DAMPING        = 0.87;
+  var CONNECT_DIST   = 130;
+  var DRIFT_SPEED    = 0.06;     // how fast origin wanders
+  var DRIFT_RANGE    = 55;       // max px origin drifts from start
+  // ────────────────────────────────────────────────────────────
+
+  var W = 0, H = 0;
+  var particles = [];
+  var mouse = { x: -9999, y: -9999, active: false };
+  var frameId;
+  var accent = { r: 168, g: 85, b: 247 };
+
+  // ── Helpers ──────────────────────────────────────────────────
+  function hexToRgb(hex) {
+    hex = hex.trim().replace('#', '');
+    if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    return {
+      r: parseInt(hex.slice(0,2), 16),
+      g: parseInt(hex.slice(2,4), 16),
+      b: parseInt(hex.slice(4,6), 16)
+    };
+  }
+
+  function readAccent() {
+    var v = getComputedStyle(document.documentElement).getPropertyValue('--h-purple').trim();
+    if (v) { try { accent = hexToRgb(v); } catch(e) {} }
+  }
+
+  // ── Particle ─────────────────────────────────────────────────
+  function mkParticle() {
+    var sx = Math.random() * W;
+    var sy = Math.random() * H;
+    return {
+      // current position
+      x: sx, y: sy,
+      // velocity
+      vx: 0, vy: 0,
+      // "home" origin (slowly wanders)
+      ox: sx, oy: sy,
+      // home start (used to bound drift)
+      hx: sx, hy: sy,
+      // drift phase offsets
+      phaseX: Math.random() * Math.PI * 2,
+      phaseY: Math.random() * Math.PI * 2,
+      phaseSpeedX: (Math.random() * 0.4 + 0.15) * 0.01,
+      phaseSpeedY: (Math.random() * 0.4 + 0.15) * 0.01,
+      // visuals
+      size:    Math.random() * 1.8 + 0.4,
+      isAccent: Math.random() > 0.72
+    };
+  }
+
+  // ── Resize ───────────────────────────────────────────────────
+  function resize() {
+    var rect = panel.getBoundingClientRect();
+    W = Math.floor(rect.width)  || window.innerWidth;
+    H = Math.floor(rect.height) || window.innerHeight;
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  // ── Init ─────────────────────────────────────────────────────
+  function init() {
+    resize();
+    readAccent();
+    var count = Math.round(W * H * DENSITY);
+    count = Math.max(MIN_PARTICLES, Math.min(count, MAX_PARTICLES));
+    particles = [];
+    for (var i = 0; i < count; i++) particles.push(mkParticle());
+  }
+
+  // ── Animation loop ───────────────────────────────────────────
+  function frame(ts) {
+    frameId = requestAnimationFrame(frame);
+    ctx.clearRect(0, 0, W, H);
+
+    var r = accent.r, g = accent.g, b = accent.b;
+
+    // ── 1. Pulsing radial glow in centre ──
+    var pulse = Math.sin(ts * 0.0007) * 0.03 + 0.06;
+    var cx = W * 0.5, cy = H * 0.5;
+    var grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * 0.65);
+    grad.addColorStop(0, 'rgba(' + r + ',' + g + ',' + b + ',' + pulse + ')');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── 2. Update particle physics ──
+    var i, p, mdx, mdy, md, mf;
+    for (i = 0; i < particles.length; i++) {
+      p = particles[i];
+
+      // Wander origin with sin/cos drift
+      p.phaseX += p.phaseSpeedX;
+      p.phaseY += p.phaseSpeedY;
+      p.ox = p.hx + Math.cos(p.phaseX) * DRIFT_RANGE;
+      p.oy = p.hy + Math.sin(p.phaseY) * DRIFT_RANGE;
+
+      // Mouse repulsion
+      if (mouse.active) {
+        mdx = p.x - mouse.x;
+        mdy = p.y - mouse.y;
+        md  = Math.sqrt(mdx * mdx + mdy * mdy);
+        if (md < MOUSE_RADIUS && md > 0.5) {
+          mf = ((MOUSE_RADIUS - md) / MOUSE_RADIUS);
+          mf = mf * mf; // quadratic falloff
+          p.vx += (mdx / md) * mf * REPULSION;
+          p.vy += (mdy / md) * mf * REPULSION;
+        }
+      }
+
+      // Spring back to wandering origin
+      p.vx += (p.ox - p.x) * SPRING;
+      p.vy += (p.oy - p.y) * SPRING;
+
+      // Damping + integrate
+      p.vx *= DAMPING;
+      p.vy *= DAMPING;
+      p.x  += p.vx;
+      p.y  += p.vy;
+    }
+
+    // ── 3. Draw connection lines ──
+    var j, p2, dx, dy, dist, alpha;
+    ctx.lineWidth = 0.6;
+    for (i = 0; i < particles.length; i++) {
+      p = particles[i];
+      for (j = i + 1; j < particles.length; j++) {
+        p2   = particles[j];
+        dx   = p.x - p2.x;
+        dy   = p.y - p2.y;
+        dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CONNECT_DIST) {
+          alpha = (1 - dist / CONNECT_DIST) * 0.18;
+          ctx.strokeStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // ── 4. Draw particles ──
+    for (i = 0; i < particles.length; i++) {
+      p = particles[i];
+      var vel     = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+      var base    = p.isAccent ? 0.75 : 0.38;
+      var opacity = Math.min(base + vel * 0.06, 1.0);
+      var cr = p.isAccent ? r : 255;
+      var cg = p.isAccent ? g : 255;
+      var cb = p.isAccent ? b : 255;
+
+      // Soft glow halo
+      if (p.size > 1.2) {
+        var gr2 = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3.5);
+        gr2.addColorStop(0, 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (opacity * 0.25) + ')');
+        gr2.addColorStop(1, 'rgba(' + cr + ',' + cg + ',' + cb + ',0)');
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = gr2;
+        ctx.fill();
+      }
+
+      // Core dot
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + opacity + ')';
+      ctx.fill();
+    }
+  }
+
+  // ── Mouse events ─────────────────────────────────────────────
+  panel.addEventListener('mousemove', function (e) {
+    var rect    = panel.getBoundingClientRect();
+    mouse.x     = e.clientX - rect.left;
+    mouse.y     = e.clientY - rect.top;
+    mouse.active = true;
+  }, { passive: true });
+
+  panel.addEventListener('mouseleave', function () {
+    mouse.active = false;
+  });
+
+  // ── Theme change observer ────────────────────────────────────
+  new MutationObserver(function () {
+    readAccent();
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // ── Window resize ────────────────────────────────────────────
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      cancelAnimationFrame(frameId);
+      init();
+      frameId = requestAnimationFrame(frame);
+    }, 120);
+  });
+
+  // ── Start ────────────────────────────────────────────────────
+  init();
+  frameId = requestAnimationFrame(frame);
 })();
 </script>
 </body>

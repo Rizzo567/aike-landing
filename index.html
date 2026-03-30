@@ -254,7 +254,7 @@
         <div class="container">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3xl);align-items:center;">
             <div data-reveal>
-              <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;color:var(--color-white);line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.25rem;">Your AI operator.<br><span style="color:var(--color-primary);">Always on.</span></h2>
+              <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;color:var(--color-white);line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.25rem;">Your AI operator.<br><span class="always-on-wrap" id="alwaysOnWrap">Always on.<svg class="always-on-underline" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path id="alwaysOnPath" d="M 0,10 Q 75,0 150,10 Q 225,20 300,10"/></svg></span></h2>
               <p style="color:var(--color-text-muted);font-size:1rem;line-height:1.7;margin-bottom:2rem;">Owl is not a chatbot. It's a multi-model AI operator that lives inside your workspace — switching between Claude, GPT-4, and Gemini depending on what the task demands. Sharp, direct, and unrestricted.</p>
               <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:2rem;">
                 <div style="display:flex;align-items:flex-start;gap:12px;">
@@ -616,6 +616,68 @@
       document.addEventListener('DOMContentLoaded', tryInitGlobe);
     } else {
       tryInitGlobe();
+    }
+  })();
+  </script>
+
+  <!-- Always On — animated wavy underline -->
+  <script>
+  (function () {
+    var PATH_DEFAULT = 'M 0,10 Q 75,0 150,10 Q 225,20 300,10';
+    var PATH_HOVER   = 'M 0,10 Q 75,20 150,10 Q 225,0 300,10';
+    var tweenId = null;
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    // Tween between two numeric arrays
+    function tweenPath(pathEl, fromNums, toNums, duration) {
+      if (tweenId) cancelAnimationFrame(tweenId);
+      var start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        var t = Math.min((ts - start) / duration, 1);
+        var ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // easeInOut
+        var d = 'M 0,10 Q 75,' + lerp(fromNums[0], toNums[0], ease).toFixed(2) +
+                ' 150,10 Q 225,' + lerp(fromNums[1], toNums[1], ease).toFixed(2) + ' 300,10';
+        pathEl.setAttribute('d', d);
+        if (t < 1) tweenId = requestAnimationFrame(step);
+      }
+      tweenId = requestAnimationFrame(step);
+    }
+
+    function getCurrentNums(pathEl) {
+      var d = pathEl.getAttribute('d');
+      var m = d.match(/Q 75,([\d.-]+).*Q 225,([\d.-]+)/);
+      return m ? [parseFloat(m[1]), parseFloat(m[2])] : [0, 20];
+    }
+
+    function init() {
+      var wrap = document.getElementById('alwaysOnWrap');
+      var path = document.getElementById('alwaysOnPath');
+      if (!wrap || !path) return;
+
+      // Draw-on when section scrolls into view
+      var observer = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) {
+          path.classList.add('aon-drawn');
+          observer.disconnect();
+        }
+      }, { threshold: 0.6 });
+      observer.observe(wrap);
+
+      // Hover morph
+      wrap.addEventListener('mouseenter', function () {
+        tweenPath(path, getCurrentNums(path), [20, 0], 800);
+      });
+      wrap.addEventListener('mouseleave', function () {
+        tweenPath(path, getCurrentNums(path), [0, 20], 800);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
     }
   })();
   </script>

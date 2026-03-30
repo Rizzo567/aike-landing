@@ -20,6 +20,12 @@
   <link rel="stylesheet" href="assets/css/components.css?v=5" />
   <link rel="stylesheet" href="assets/css/home.css?v=5" />
   <link rel="stylesheet" href="assets/css/sections.css?v=5" />
+  <style>
+    @keyframes pulse-expand {
+      0%   { transform: scale(0.3); opacity: 0.8; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+  </style>
 </head>
 
 <body>
@@ -275,22 +281,10 @@
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="6 3 11 8 6 13"/></svg>
               </a>
             </div>
-            <div data-reveal style="transition-delay:0.15s;">
-              <!-- Owl UI mockup -->
-              <div style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
-                <div style="background:rgba(168,85,247,0.06);border-bottom:1px solid rgba(255,255,255,0.06);padding:14px 18px;display:flex;align-items:center;gap:10px;">
-                  <img src="assets/images/logoimpressionato.png" style="width:28px;height:28px;object-fit:contain;" alt="Owl">
-                  <span style="font-weight:700;color:var(--color-white);font-size:0.9rem;">Owl</span>
-                  <span style="margin-left:auto;font-size:0.72rem;color:var(--color-text-muted);background:rgba(255,255,255,0.05);padding:3px 10px;border-radius:20px;">Claude Sonnet</span>
-                </div>
-                <div style="padding:18px;display:flex;flex-direction:column;gap:14px;min-height:220px;">
-                  <div style="align-self:flex-end;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.2);border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:0.82rem;color:var(--color-white);max-width:80%;">Analyze our Q1 revenue and find the top growth opportunity.</div>
-                  <div style="align-self:flex-start;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:4px 14px 14px 14px;padding:10px 14px;font-size:0.82rem;color:var(--color-text-muted);max-width:86%;line-height:1.6;">Based on the data: MRR grew 18% but churn at 11% is eroding it. Your highest-leverage move is a 72h post-trial engagement sequence — estimated +€4,200/month in recovered revenue.</div>
-                  <div style="display:flex;gap:7px;flex-wrap:wrap;">
-                    <span style="padding:4px 12px;border-radius:20px;border:1px solid rgba(168,85,247,0.25);font-size:0.72rem;color:var(--color-primary);">Draft the sequence →</span>
-                    <span style="padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);font-size:0.72rem;color:var(--color-text-muted);">Show full analysis</span>
-                  </div>
-                </div>
+            <div data-reveal style="transition-delay:0.15s; display:flex; align-items:center; justify-content:center;">
+              <div id="owl-globe-wrap" style="width:100%; max-width:420px; aspect-ratio:1/1; position:relative;">
+                <canvas id="owl-globe" style="width:100%;height:100%;cursor:grab;opacity:0;transition:opacity 1.2s ease;border-radius:50%;touch-action:none;display:block;"></canvas>
+                <!-- pulse markers injected by JS -->
               </div>
             </div>
           </div>
@@ -465,6 +459,146 @@
     <!-- Footer (injected by components.js) -->
     <div id="footer-placeholder"></div>
   </div>
+
+  <!-- Cobe globe (Meet Owl section) -->
+  <script src="https://cdn.jsdelivr.net/npm/cobe@0.6.3/dist/cobe.umd.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    // Approximate 2D percentage positions on the globe canvas for each city
+    // based on a rough equirectangular projection at default rotation
+    var MARKERS = [
+      { lat: 51.51,  lng: -0.13,  top: '28%', left: '48%' },  // London
+      { lat: 40.71,  lng: -74.01, top: '34%', left: '24%' },  // New York
+      { lat: 35.68,  lng: 139.65, top: '36%', left: '82%' },  // Tokyo
+      { lat: -33.87, lng: 151.21, top: '68%', left: '86%' }   // Sydney
+    ];
+
+    function injectPulseMarkers(wrap) {
+      MARKERS.forEach(function (m) {
+        var marker = document.createElement('div');
+        marker.style.cssText = [
+          'position:absolute',
+          'top:' + m.top,
+          'left:' + m.left,
+          'width:12px',
+          'height:12px',
+          'transform:translate(-50%,-50%)',
+          'pointer-events:none'
+        ].join(';');
+
+        // Two expanding rings
+        [0, 0.7].forEach(function (delay) {
+          var ring = document.createElement('span');
+          ring.style.cssText = [
+            'position:absolute',
+            'inset:0',
+            'border-radius:50%',
+            'border:2px solid #33ccdd',
+            'animation:pulse-expand 2s ' + delay + 's ease-out infinite',
+            'opacity:0'
+          ].join(';');
+          marker.appendChild(ring);
+        });
+
+        // Center dot
+        var dot = document.createElement('span');
+        dot.style.cssText = [
+          'position:absolute',
+          'top:50%',
+          'left:50%',
+          'width:5px',
+          'height:5px',
+          'border-radius:50%',
+          'background:#33ccdd',
+          'transform:translate(-50%,-50%)',
+          'box-shadow:0 0 6px #33ccdd'
+        ].join(';');
+        marker.appendChild(dot);
+
+        wrap.appendChild(marker);
+      });
+    }
+
+    function initGlobe() {
+      var canvas = document.getElementById('owl-globe');
+      var wrap   = document.getElementById('owl-globe-wrap');
+      if (!canvas || !wrap || typeof window.createGlobe !== 'function') return;
+
+      injectPulseMarkers(wrap);
+
+      var phi      = 0;
+      var theta    = 0.3;
+      var isDragging    = false;
+      var lastPointerX  = 0;
+      var lastPointerY  = 0;
+
+      var globe = window.createGlobe(canvas, {
+        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+        width:  canvas.offsetWidth  * Math.min(window.devicePixelRatio || 1, 2),
+        height: canvas.offsetHeight * Math.min(window.devicePixelRatio || 1, 2),
+        phi: phi,
+        theta: theta,
+        dark: 1,
+        diffuse: 1.5,
+        mapSamples: 16000,
+        mapBrightness: 10,
+        baseColor: [0.5, 0.5, 0.5],
+        markerColor: [0.2, 0.8, 0.9],
+        glowColor: [0.05, 0.05, 0.05],
+        markers: MARKERS.map(function (m) {
+          return { location: [m.lat, m.lng], size: 0.05 };
+        }),
+        onRender: function (state) {
+          if (!isDragging) phi += 0.003;
+          state.phi   = phi;
+          state.theta = theta;
+        }
+      });
+
+      // Fade canvas in after init
+      requestAnimationFrame(function () {
+        canvas.style.opacity = '1';
+      });
+
+      // Drag-to-rotate
+      canvas.addEventListener('pointerdown', function (e) {
+        isDragging   = true;
+        lastPointerX = e.clientX;
+        lastPointerY = e.clientY;
+        canvas.style.cursor = 'grabbing';
+        canvas.setPointerCapture(e.pointerId);
+      });
+
+      canvas.addEventListener('pointermove', function (e) {
+        if (!isDragging) return;
+        var dx = e.clientX - lastPointerX;
+        var dy = e.clientY - lastPointerY;
+        phi        -= dx * 0.005;
+        theta      = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, theta - dy * 0.005));
+        lastPointerX = e.clientX;
+        lastPointerY = e.clientY;
+      });
+
+      canvas.addEventListener('pointerup', function () {
+        isDragging = false;
+        canvas.style.cursor = 'grab';
+      });
+
+      canvas.addEventListener('pointercancel', function () {
+        isDragging = false;
+        canvas.style.cursor = 'grab';
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initGlobe);
+    } else {
+      initGlobe();
+    }
+  })();
+  </script>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>

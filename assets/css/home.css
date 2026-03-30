@@ -1048,3 +1048,30 @@
     display: block;
   }
 }
+
+/* ── Shimmer text — Automation Success ────────────────────── */
+.shimmer-aike {
+  display: inline;
+  background: linear-gradient(
+    to right,
+    #ffffff 0%,
+    #ffffff 20%,
+    #c084fc 44%,
+    #f0abfc 50%,
+    #c084fc 56%,
+    #ffffff 80%,
+    #ffffff 100%
+  );
+  background-size: 250% 100%;
+  background-position: 200% center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: aike-shimmer 2.2s linear 1s infinite;
+}
+
+@keyframes aike-shimmer {
+  0%   { background-position: 220% center; }
+  100% { background-position: -80% center; }
+}

@@ -61,7 +61,7 @@
                   <input type="email" placeholder="your@email.com" class="hero__input" aria-label="Email address"
                     required>
                 </div>
-                <button type="submit" class="hero__submit">Book your call 🚀</button>
+                <button type="submit" class="hero__submit" data-glow><span class="hero__submit-text">Book your call 🚀</span></button>
               </div>
 
               <div class="hero__social-proof">
@@ -208,42 +208,42 @@
 
       <!-- ── TECH MARQUEE ──────────────────────────────────────── -->
       <div class="aike-marquee-section" aria-label="Integrations">
-        <div class="aike-marquee-wrap">
-          <div class="aike-marquee-track">
+        <div class="aike-marquee-outer">
+          <div class="marquee-scroller">
             <!-- first set -->
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Claude AI</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>GPT-4o</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Gemini</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Notion</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Stripe</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Google Workspace</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Slack</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>HubSpot</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Figma</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Make</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Airtable</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Linear</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Shopify</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Zapier</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>n8n</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Supabase</span>
+            <div class="marquee-item">Claude AI</div>
+            <div class="marquee-item">GPT-4o</div>
+            <div class="marquee-item">Gemini</div>
+            <div class="marquee-item">Notion</div>
+            <div class="marquee-item">Stripe</div>
+            <div class="marquee-item">Google Workspace</div>
+            <div class="marquee-item">Slack</div>
+            <div class="marquee-item">HubSpot</div>
+            <div class="marquee-item">Figma</div>
+            <div class="marquee-item">Make</div>
+            <div class="marquee-item">Airtable</div>
+            <div class="marquee-item">Linear</div>
+            <div class="marquee-item">Shopify</div>
+            <div class="marquee-item">Zapier</div>
+            <div class="marquee-item">n8n</div>
+            <div class="marquee-item">Supabase</div>
             <!-- duplicate for seamless loop -->
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Claude AI</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>GPT-4o</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Gemini</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Notion</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Stripe</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Google Workspace</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Slack</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>HubSpot</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Figma</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Make</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Airtable</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Linear</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Shopify</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Zapier</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>n8n</span>
-            <span class="aike-marquee-item"><span class="aike-marquee-dot"></span>Supabase</span>
+            <div class="marquee-item">Claude AI</div>
+            <div class="marquee-item">GPT-4o</div>
+            <div class="marquee-item">Gemini</div>
+            <div class="marquee-item">Notion</div>
+            <div class="marquee-item">Stripe</div>
+            <div class="marquee-item">Google Workspace</div>
+            <div class="marquee-item">Slack</div>
+            <div class="marquee-item">HubSpot</div>
+            <div class="marquee-item">Figma</div>
+            <div class="marquee-item">Make</div>
+            <div class="marquee-item">Airtable</div>
+            <div class="marquee-item">Linear</div>
+            <div class="marquee-item">Shopify</div>
+            <div class="marquee-item">Zapier</div>
+            <div class="marquee-item">n8n</div>
+            <div class="marquee-item">Supabase</div>
           </div>
         </div>
       </div>
@@ -677,6 +677,21 @@
     }
 
     window.addEventListener('load', tryInit);
+  })();
+  </script>
+
+  <!-- Spotlight glow — pointer tracker -->
+  <script>
+  (function () {
+    document.addEventListener('pointermove', function (e) {
+      var els = document.querySelectorAll('[data-glow]');
+      for (var i = 0; i < els.length; i++) {
+        els[i].style.setProperty('--x', e.clientX.toFixed(1));
+        els[i].style.setProperty('--y', e.clientY.toFixed(1));
+        els[i].style.setProperty('--xp', (e.clientX / window.innerWidth).toFixed(3));
+        els[i].style.setProperty('--yp', (e.clientY / window.innerHeight).toFixed(3));
+      }
+    });
   })();
   </script>
 

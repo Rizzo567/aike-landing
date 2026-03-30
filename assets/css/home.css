@@ -110,21 +110,85 @@
 .hero__input::placeholder { color: #888; }
 
 .hero__submit {
-  border-radius: 8px; /* Reference rounded button */
+  border-radius: 8px;
   padding: 12px 20px;
   font-weight: 700;
   font-size: 0.95rem;
-  border: none;
   cursor: pointer;
   background: #9333ea;
   color: var(--color-white);
   transition: background 0.2s, transform 0.2s;
   white-space: nowrap;
+  /* spotlight setup */
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid rgba(168, 85, 247, 0.35);
+  isolation: isolate;
 }
 
 .hero__submit:hover {
   background: #a855f7;
   transform: translateY(-2px);
+}
+
+/* Text above the spotlight overlay */
+.hero__submit-text {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Inner spotlight that follows cursor */
+.hero__submit[data-glow]::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: radial-gradient(
+    180px 180px at
+    calc(var(--x, -999px) * 1px)
+    calc(var(--y, -999px) * 1px),
+    rgba(255, 255, 255, 0.22) 0%,
+    transparent 80%
+  );
+  background-attachment: fixed;
+  z-index: 0;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.hero__submit[data-glow]:hover::before {
+  opacity: 1;
+}
+
+/* Glowing border that follows cursor */
+.hero__submit[data-glow]::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 9.5px;
+  background-image: radial-gradient(
+    120px 120px at
+    calc(var(--x, -999px) * 1px)
+    calc(var(--y, -999px) * 1px),
+    hsl(calc(280 + var(--xp, 0) * 60) 100% 78% / 0.9),
+    transparent 100%
+  );
+  background-attachment: fixed;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  padding: 1.5px;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hero__submit[data-glow]:hover::after {
+  opacity: 1;
 }
 
 /* Reference Social Proof Avatars */
@@ -1079,55 +1143,48 @@
 }
 
 /* ── Tech Marquee ──────────────────────────────────────────── */
-.aike-marquee-section {
-  background: var(--color-surface);
-  padding: 28px 0;
-  overflow: hidden;
-}
-
-.aike-marquee-wrap {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-}
-
-.aike-marquee-track {
-  display: flex;
-  align-items: center;
-  width: max-content;
-  animation: aike-marquee-scroll 30s linear infinite;
-}
-
-.aike-marquee-track:hover {
-  animation-play-state: paused;
-}
-
-@keyframes aike-marquee-scroll {
+@keyframes marquee-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
 
-.aike-marquee-item {
+.aike-marquee-section {
+  background: #0b0b0c;
+  padding: 28px 0;
+  overflow: hidden;
+}
+
+.aike-marquee-outer {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 36px;
-  white-space: nowrap;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.35);
-  letter-spacing: 0.02em;
-  transition: color 0.2s ease;
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 
-.aike-marquee-item:hover {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.aike-marquee-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: rgba(168, 85, 247, 0.5);
+.marquee-scroller {
+  display: flex;
   flex-shrink: 0;
+  animation: marquee-scroll 20s linear infinite;
+}
+
+.aike-marquee-outer:hover .marquee-scroller {
+  animation-play-state: paused;
+}
+
+.marquee-item {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0 2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+  cursor: default;
+}
+
+.marquee-item:hover {
+  color: rgba(255, 255, 255, 0.75);
 }

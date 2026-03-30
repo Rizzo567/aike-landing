@@ -335,22 +335,94 @@
     }
     .owl-input-shell {
       display: flex; flex-direction: column;
-      background: rgba(42,40,37,0.78); border: 1px solid var(--h-border);
-      border-radius: 18px; padding: 14px 14px 10px 18px; gap: 10px;
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      background: rgba(18,18,18,0.62); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 22px; padding: 14px 14px 10px 16px; gap: 10px;
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       transition: border-color 200ms ease, box-shadow 200ms ease;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.28);
     }
-    [data-theme="midnight"] .owl-input-shell { background: rgba(19,19,46,0.78); }
-    [data-theme="ash"]      .owl-input-shell { background: rgba(30,30,28,0.78); }
-    [data-theme="void"]     .owl-input-shell { background: rgba(28,28,30,0.78); }
+    [data-theme="midnight"] .owl-input-shell { background: rgba(12,12,38,0.62); }
+    [data-theme="ash"]      .owl-input-shell { background: rgba(20,20,18,0.62); }
+    [data-theme="void"]     .owl-input-shell { background: rgba(16,16,18,0.62); }
     .owl-input-shell:focus-within {
-      border-color: rgba(255,255,255,0.13);
-      box-shadow: none;
+      border-color: rgba(168,85,247,0.18);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.32), 0 0 0 1px rgba(168,85,247,0.08);
     }
     .owl-input-controls {
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
     }
-    .owl-input-controls .owl-send-btn { margin-left: auto; }
+    .owl-input-left  { display: flex; align-items: center; gap: 2px; min-width: 0; flex: 1; }
+    .owl-input-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    /* Mode toggle buttons (Search / Think / Canvas) */
+    .owl-mode-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 28px; padding: 0 8px; border-radius: 99px;
+      border: 1px solid transparent; background: transparent;
+      font-family: var(--h-font); font-size: 0.73rem; font-weight: 500;
+      color: var(--h-text-dim); cursor: pointer; white-space: nowrap;
+      transition: all 150ms ease; flex-shrink: 0;
+    }
+    .owl-mode-btn:hover { color: var(--h-text-muted); }
+    .owl-mode-lbl { display: none; }
+    .owl-mode-btn.active .owl-mode-lbl { display: inline; }
+    .owl-mode-btn[data-mode="search"].active {
+      border-color: rgba(30,174,219,0.35); background: rgba(30,174,219,0.1); color: #1EAEDB;
+    }
+    .owl-mode-btn[data-mode="think"].active {
+      border-color: rgba(139,92,246,0.35); background: rgba(139,92,246,0.1); color: #8B5CF6;
+    }
+    .owl-mode-btn[data-mode="canvas"].active {
+      border-color: rgba(249,115,22,0.35); background: rgba(249,115,22,0.1); color: #F97316;
+    }
+
+    /* Controls divider */
+    .owl-ctrl-divider {
+      width: 1.5px; height: 18px; border-radius: 2px; flex-shrink: 0; margin: 0 1px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.10), transparent);
+    }
+
+    /* Image previews */
+    .owl-img-previews { display: none; flex-wrap: wrap; gap: 8px; margin-bottom: 2px; }
+    .owl-img-previews.has-files { display: flex; }
+    .owl-img-thumb {
+      position: relative; width: 58px; height: 58px;
+      border-radius: 10px; overflow: hidden; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .owl-img-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .owl-img-thumb-remove {
+      position: absolute; top: 3px; right: 3px;
+      width: 17px; height: 17px; border-radius: 50%;
+      background: rgba(0,0,0,0.75); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; color: #fff;
+      font-size: 9px; line-height: 1; padding: 0;
+    }
+
+    /* Voice recording UI */
+    .owl-voice-ui {
+      display: none; align-items: center; gap: 10px;
+      padding: 4px 0; min-height: 44px;
+    }
+    .owl-voice-ui.recording { display: flex; }
+    .owl-voice-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #ef4444;
+      flex-shrink: 0; animation: owl-pulse-dot 1s ease-in-out infinite;
+    }
+    @keyframes owl-pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.25} }
+    .owl-voice-timer {
+      font-size: 0.78rem; font-family: monospace;
+      color: rgba(255,255,255,0.65); flex-shrink: 0; min-width: 36px;
+    }
+    .owl-voice-bars {
+      display: flex; align-items: center; gap: 2px; flex: 1; height: 30px;
+    }
+    .owl-voice-bar {
+      width: 2px; border-radius: 2px; background: rgba(255,255,255,0.35);
+      animation: owl-bar-pulse var(--bd,0.6s) ease-in-out infinite alternate;
+      animation-delay: var(--bdl,0s);
+    }
+    @keyframes owl-bar-pulse { from{height:15%} to{height:85%} }
     .owl-textarea {
       flex: 1; resize: none; font-family: var(--h-font);
       font-size: 0.9rem; color: var(--h-text); background: none;
@@ -2099,31 +2171,76 @@
         </div>
 
         <div class="owl-input-shell" id="owlInputShell">
+
+          <!-- Image previews — shown when image files are attached -->
+          <div class="owl-img-previews" id="owlImgPreviews"></div>
+
+          <!-- Textarea — hidden during voice recording -->
           <textarea
             class="owl-textarea" id="owlTextarea"
             placeholder="Scrivi a Owl..."
             rows="1" autocomplete="off" spellcheck="false"
             aria-label="Messaggio per Owl"
           ></textarea>
-          <div class="owl-input-controls">
-            <div class="owl-model-wrap" id="owlModelWrap">
-              <button class="owl-model-pill" id="owlModelPill" aria-haspopup="listbox" aria-expanded="false">
-                <span class="owl-model-dot" id="owlModelDot"></span>
-                <span id="owlModelLabel">Claude Sonnet 4.6</span>
-                <svg class="owl-model-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="2 3.5 5 6.5 8 3.5"/></svg>
-              </button>
-              <div class="owl-model-dropdown" id="owlModelDropdown" role="listbox"></div>
-            </div>
-            <button class="owl-attach-icon-btn" id="owlFileBtn" title="Allega file" aria-label="Allega file">
-              <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/></svg>
-            </button>
-            <input type="file" id="owlFileInput" accept=".txt,.md,.js,.ts,.jsx,.tsx,.css,.html,.json,.csv,.sql,.py,.jpg,.jpeg,.png,.webp,.gif,.pdf" style="display:none" />
-            <button class="owl-send-btn" id="owlSendBtn" aria-label="Invia" disabled>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="8" y1="13" x2="8" y2="3"/><polyline points="4 7 8 3 12 7"/>
-              </svg>
-            </button>
+
+          <!-- Voice recording UI — shown during recording -->
+          <div class="owl-voice-ui" id="owlVoiceUi">
+            <span class="owl-voice-dot"></span>
+            <span class="owl-voice-timer" id="owlVoiceTimer">00:00</span>
+            <div class="owl-voice-bars" id="owlVoiceBars"></div>
           </div>
+
+          <!-- Controls row -->
+          <div class="owl-input-controls">
+
+            <!-- LEFT: attach + mode toggles -->
+            <div class="owl-input-left">
+              <button class="owl-attach-icon-btn" id="owlFileBtn" title="Allega file" aria-label="Allega file">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              </button>
+
+              <div class="owl-ctrl-divider"></div>
+
+              <button class="owl-mode-btn" id="owlSearchBtn" data-mode="search" title="Cerca nel web" aria-pressed="false">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span class="owl-mode-lbl">Search</span>
+              </button>
+
+              <div class="owl-ctrl-divider"></div>
+
+              <button class="owl-mode-btn" id="owlThinkBtn" data-mode="think" title="Ragionamento profondo" aria-pressed="false">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="12" r="10"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span class="owl-mode-lbl">Think</span>
+              </button>
+
+              <div class="owl-ctrl-divider"></div>
+
+              <button class="owl-mode-btn" id="owlCanvasBtn" data-mode="canvas" title="Canvas" aria-pressed="false">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                <span class="owl-mode-lbl">Canvas</span>
+              </button>
+            </div>
+
+            <!-- RIGHT: model selector + send -->
+            <div class="owl-input-right">
+              <div class="owl-model-wrap" id="owlModelWrap">
+                <button class="owl-model-pill" id="owlModelPill" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="owl-model-dot" id="owlModelDot"></span>
+                  <span id="owlModelLabel">Claude Sonnet 4.6</span>
+                  <svg class="owl-model-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="2 3.5 5 6.5 8 3.5"/></svg>
+                </button>
+                <div class="owl-model-dropdown" id="owlModelDropdown" role="listbox"></div>
+              </div>
+              <button class="owl-send-btn" id="owlSendBtn" aria-label="Invia" disabled>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="8" y1="13" x2="8" y2="3"/><polyline points="4 7 8 3 12 7"/>
+                </svg>
+              </button>
+            </div>
+
+          </div>
+
+          <input type="file" id="owlFileInput" accept=".txt,.md,.js,.ts,.jsx,.tsx,.css,.html,.json,.csv,.sql,.py,.jpg,.jpeg,.png,.webp,.gif,.pdf" style="display:none" />
         </div>
 
         <!-- Active skill banner -->
@@ -5873,6 +5990,158 @@
       frameId = requestAnimationFrame(frame);
     });
   });
+})();
+</script>
+
+<!-- ── Prompt bar: mode toggles + voice recording + image previews ── -->
+<script>
+(function () {
+  var textarea   = document.getElementById('owlTextarea');
+  var voiceUi    = document.getElementById('owlVoiceUi');
+  var voiceTimer = document.getElementById('owlVoiceTimer');
+  var voiceBars  = document.getElementById('owlVoiceBars');
+  var imgPreviews = document.getElementById('owlImgPreviews');
+
+  if (!textarea) return;
+
+  // ── Mode toggles ────────────────────────────────────────────
+  var MODES = {
+    search: { btn: null, placeholder: 'Cerca nel web...', color: '#1EAEDB' },
+    think:  { btn: null, placeholder: 'Ragiona in profondità...', color: '#8B5CF6' },
+    canvas: { btn: null, placeholder: 'Crea su canvas...', color: '#F97316' },
+  };
+  var DEFAULT_PLACEHOLDER = 'Scrivi a Owl...';
+  var activeMode = null;
+
+  Object.keys(MODES).forEach(function (key) {
+    var id = { search: 'owlSearchBtn', think: 'owlThinkBtn', canvas: 'owlCanvasBtn' }[key];
+    MODES[key].btn = document.getElementById(id);
+    if (!MODES[key].btn) return;
+    MODES[key].btn.addEventListener('click', function () {
+      if (activeMode === key) {
+        // deactivate
+        MODES[key].btn.classList.remove('active');
+        MODES[key].btn.setAttribute('aria-pressed', 'false');
+        activeMode = null;
+        textarea.placeholder = DEFAULT_PLACEHOLDER;
+      } else {
+        // deactivate previous
+        if (activeMode && MODES[activeMode].btn) {
+          MODES[activeMode].btn.classList.remove('active');
+          MODES[activeMode].btn.setAttribute('aria-pressed', 'false');
+        }
+        // activate
+        MODES[key].btn.classList.add('active');
+        MODES[key].btn.setAttribute('aria-pressed', 'true');
+        activeMode = key;
+        textarea.placeholder = MODES[key].placeholder;
+        textarea.focus();
+      }
+    });
+  });
+
+  // ── Image previews from file input ─────────────────────────
+  var fileInput = document.getElementById('owlFileInput');
+  if (fileInput && imgPreviews) {
+    var _origChange = fileInput.onchange;
+    fileInput.addEventListener('change', function () {
+      var file = fileInput.files && fileInput.files[0];
+      if (file && file.type.startsWith('image/')) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          imgPreviews.innerHTML = '';
+          var thumb = document.createElement('div');
+          thumb.className = 'owl-img-thumb';
+          var img = document.createElement('img');
+          img.src = e.target.result;
+          img.alt = file.name;
+          var removeBtn = document.createElement('button');
+          removeBtn.className = 'owl-img-thumb-remove';
+          removeBtn.innerHTML = '×';
+          removeBtn.title = 'Rimuovi';
+          removeBtn.addEventListener('click', function (ev) {
+            ev.stopPropagation();
+            imgPreviews.innerHTML = '';
+            imgPreviews.classList.remove('has-files');
+            fileInput.value = '';
+            // trigger owlAttachDismiss logic if exists
+            var dismiss = document.getElementById('owlAttachDismiss');
+            if (dismiss) dismiss.click();
+          });
+          thumb.appendChild(img);
+          thumb.appendChild(removeBtn);
+          imgPreviews.appendChild(thumb);
+          imgPreviews.classList.add('has-files');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    // Clear preview when attach pill dismissed
+    var attachDismiss = document.getElementById('owlAttachDismiss');
+    if (attachDismiss) {
+      attachDismiss.addEventListener('click', function () {
+        imgPreviews.innerHTML = '';
+        imgPreviews.classList.remove('has-files');
+      });
+    }
+  }
+
+  // ── Voice recording ─────────────────────────────────────────
+  if (!voiceUi || !voiceTimer || !voiceBars) return;
+
+  // Inject 28 animated bars
+  for (var i = 0; i < 28; i++) {
+    var bar = document.createElement('div');
+    bar.className = 'owl-voice-bar';
+    var dur = (0.4 + Math.random() * 0.5).toFixed(2);
+    var del = (i * 0.04).toFixed(2);
+    bar.style.cssText = '--bd:' + dur + 's;--bdl:' + del + 's;height:30%';
+    voiceBars.appendChild(bar);
+  }
+
+  var isRecording = false;
+  var timerInterval = null;
+  var seconds = 0;
+
+  function formatTime(s) {
+    var m = Math.floor(s / 60);
+    return (m < 10 ? '0' : '') + m + ':' + (s % 60 < 10 ? '0' : '') + (s % 60);
+  }
+
+  function startRecording() {
+    isRecording = true;
+    seconds = 0;
+    voiceTimer.textContent = '00:00';
+    textarea.style.display = 'none';
+    voiceUi.classList.add('recording');
+    timerInterval = setInterval(function () {
+      seconds++;
+      voiceTimer.textContent = formatTime(seconds);
+    }, 1000);
+  }
+
+  function stopRecording() {
+    isRecording = false;
+    clearInterval(timerInterval);
+    voiceUi.classList.remove('recording');
+    textarea.style.display = '';
+    textarea.focus();
+  }
+
+  // Mic: click send button when textarea is empty and not recording
+  var sendBtn = document.getElementById('owlSendBtn');
+  if (sendBtn) {
+    sendBtn.addEventListener('click', function (e) {
+      // Only intercept when button is disabled (no content) and not already loading
+      if (!sendBtn.disabled) return; // let existing handler run
+      if (textarea.value.trim() === '') {
+        e.stopImmediatePropagation();
+        if (isRecording) stopRecording();
+        else startRecording();
+      }
+    }, true); // capture phase so we can intercept before existing handler
+  }
+
 })();
 </script>
 </body>

@@ -615,9 +615,45 @@
 
 /* ── Homepage new sections responsive ── */
 @media (max-width: 800px) {
-  #howItWorks .container > div[style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
-  #howItWorks [aria-hidden="true"][style*="position:absolute"] { display: none; }
   #meetHowl .container > div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+}
+
+/* ── Aike Sites Section ── */
+.aike-sites-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border-top: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.aike-sites-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3xl);
+  align-items: center;
+  padding-top: var(--space-4xl);
+  padding-bottom: var(--space-4xl);
+  width: 100%;
+}
+
+.aike-sites__panels {
+  height: 620px;
+  position: relative;
+  perspective: 900px;
+  cursor: crosshair;
+}
+
+@media (max-width: 900px) {
+  .aike-sites-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+  .aike-sites__panels {
+    height: 360px;
+    order: -1;
+  }
 }
 
 /* ── Aike Success Stories ── */

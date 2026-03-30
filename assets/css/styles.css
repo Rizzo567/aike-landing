@@ -392,12 +392,12 @@ p {
   transform: scaleX(1);
 }
 
-/* Howl nav link — same as other links */
-.header__link--howl {
+/* Owl nav link — same as other links */
+.header__link--owl {
   color: var(--color-text-muted);
   opacity: 1;
 }
-.header__link--howl:hover {
+.header__link--owl:hover {
   color: var(--color-white);
 }
 

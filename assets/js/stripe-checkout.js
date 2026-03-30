@@ -39,9 +39,30 @@
       + '&client_reference_id=' + encodeURIComponent(user.id);
   }
 
+  function checkoutYearly(plan) {
+    var user = getStoredUser();
+
+    if (!user) {
+      var inPages = window.location.pathname.includes('/pages/');
+      window.location.href = inPages ? 'signup.html' : 'pages/signup.html';
+      return;
+    }
+
+    // Fall back to monthly link until yearly Stripe links are configured
+    var link = plan === 'pro'
+      ? (window.AIKE_CONFIG.stripe.proYearlyPaymentLink || window.AIKE_CONFIG.stripe.proPaymentLink)
+      : (window.AIKE_CONFIG.stripe.basicYearlyPaymentLink || window.AIKE_CONFIG.stripe.basicPaymentLink);
+
+    window.location.href = link
+      + '?prefilled_email=' + encodeURIComponent(user.email)
+      + '&client_reference_id=' + encodeURIComponent(user.id);
+  }
+
   window.aikeCheckout = {
-    basic: function () { checkout('basic'); },
-    pro:   function () { checkout('pro'); }
+    basic:       function () { checkout('basic'); },
+    pro:         function () { checkout('pro'); },
+    basicYearly: function () { checkoutYearly('basic'); },
+    proYearly:   function () { checkoutYearly('pro'); }
   };
 
 })();

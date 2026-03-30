@@ -615,7 +615,7 @@
 
 /* ── Homepage new sections responsive ── */
 @media (max-width: 800px) {
-  #meetHowl .container > div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+  #meetOwl .container > div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
 }
 
 /* ── Aike Sites Section ── */

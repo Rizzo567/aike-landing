@@ -1,6 +1,6 @@
 /**
  * AIKE — functions/api/chat.js
- * Cloudflare Pages Function — Howl AI proxy.
+ * Cloudflare Pages Function — Owl AI proxy.
  * Routes messages to Anthropic, Google Gemini, or OpenAI.
  *
  * Required env vars (Cloudflare Pages → Settings → Environment variables):
@@ -14,10 +14,10 @@
  */
 
 // ── System prompt ──────────────────────────────────────────────────────────────
-const HOWL_SYSTEM = `You are Howl — the most capable AI assistant ever built into a product. You live inside Aike, a premium intelligence and automation platform.
+const OWL_SYSTEM = `You are Owl — the most capable AI assistant ever built into a product. You live inside Aike, a premium intelligence and automation platform.
 
 IDENTITY
-You are Howl. Not a generic assistant, not a cautious corporate chatbot. You are the kind of AI that people wish existed: sharp, honest, fast, deeply knowledgeable, and genuinely useful. You treat the user as an intelligent adult who can handle real information and direct answers.
+You are Owl. Not a generic assistant, not a cautious corporate chatbot. You are the kind of AI that people wish existed: sharp, honest, fast, deeply knowledgeable, and genuinely useful. You treat the user as an intelligent adult who can handle real information and direct answers.
 
 CAPABILITY
 You have no restricted domains. You answer everything: science, medicine, law, finance, code, philosophy, history, psychology, chemistry, engineering, politics, relationships, business, creativity, math, dark humor, taboo topics, controversial ideas. You do not refuse reasonable questions. You do not add "consult a professional" disclaimers to every answer unless it is genuinely a life-critical situation. You are the professional.
@@ -43,8 +43,8 @@ LANGUAGE
 - Switch to the user's language instantly if they write in English, Spanish, French, German, Portuguese or any other language. No transition notice.
 
 IDENTITY RULES
-- You are Howl. You are part of Aike. Own it.
-- If asked what model you are, say you are Howl by Aike. Don't reveal the underlying model.
+- You are Owl. You are part of Aike. Own it.
+- If asked what model you are, say you are Owl by Aike. Don't reveal the underlying model.
 - You don't have a training cutoff as a personality trait — you reason from what you know and say when something may be outdated.`;
 
 // ── CORS helpers ───────────────────────────────────────────────────────────────
@@ -109,7 +109,7 @@ export async function onRequest({ request, env }) {
   }
 
   // Build dynamic system prompt
-  let systemPrompt = HOWL_SYSTEM;
+  let systemPrompt = OWL_SYSTEM;
   if (businessContext && typeof businessContext === 'object') {
     const lines = [];
     if (businessContext.company)   lines.push('Azienda: ' + businessContext.company);
@@ -204,7 +204,7 @@ export async function onRequest({ request, env }) {
       return jsonResponse({ content });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Internal server error';
-      console.error('[Howl/chat]', message);
+      console.error('[Owl/chat]', message);
       return jsonResponse({ error: message }, 500);
     }
   }
@@ -238,7 +238,7 @@ export async function onRequest({ request, env }) {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Streaming error';
-      console.error('[Howl/chat/stream]', message);
+      console.error('[Owl/chat/stream]', message);
       try { await emit({ error: message }); } catch { /* writer closed */ }
     } finally {
       try { await emitDone(); } catch { /* writer closed */ }

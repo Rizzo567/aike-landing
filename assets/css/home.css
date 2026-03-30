@@ -298,6 +298,7 @@
   background-repeat: repeat-x;
   background-position: bottom;
   margin-top: -90px;
+  margin-bottom: -1px;
   position: relative;
   z-index: 10;
   image-rendering: pixelated;
@@ -591,6 +592,7 @@
   background-repeat: repeat-x;
   background-position: bottom;
   margin-top: -90px;
+  margin-bottom: -1px;
   position: relative;
   z-index: 10;
   image-rendering: pixelated;
@@ -1074,4 +1076,58 @@
 @keyframes aike-shimmer {
   0%   { background-position: 220% center; }
   100% { background-position: -80% center; }
+}
+
+/* ── Tech Marquee ──────────────────────────────────────────── */
+.aike-marquee-section {
+  background: var(--color-surface);
+  padding: 28px 0;
+  overflow: hidden;
+}
+
+.aike-marquee-wrap {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.aike-marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: aike-marquee-scroll 30s linear infinite;
+}
+
+.aike-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes aike-marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.aike-marquee-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 36px;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease;
+}
+
+.aike-marquee-item:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aike-marquee-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(168, 85, 247, 0.5);
+  flex-shrink: 0;
 }

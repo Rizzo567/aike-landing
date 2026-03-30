@@ -440,6 +440,8 @@
     .owl-panel.active-panel { display:flex; }
     #panel-chat { position:relative; }
     #owlParticlesBg { position:absolute; inset:0; z-index:0; pointer-events:none; display:block; }
+    /* content sits above canvas */
+    #panel-chat > *:not(#owlParticlesBg) { position:relative; z-index:1; }
 
     /* ── Shared panel components ── */
     .owl-panel-header {
@@ -5653,16 +5655,15 @@
   var ctx = canvas.getContext('2d');
 
   // ── Config ──────────────────────────────────────────────────
-  var DENSITY        = 0.00030;  // particles per px²
-  var MIN_PARTICLES  = 120;
-  var MAX_PARTICLES  = 500;
-  var MOUSE_RADIUS   = 160;
-  var REPULSION      = 7.5;
-  var SPRING         = 0.055;
-  var DAMPING        = 0.87;
-  var CONNECT_DIST   = 130;
-  var DRIFT_SPEED    = 0.06;     // how fast origin wanders
-  var DRIFT_RANGE    = 55;       // max px origin drifts from start
+  var DENSITY        = 0.00040;  // particles per px²
+  var MIN_PARTICLES  = 160;
+  var MAX_PARTICLES  = 600;
+  var MOUSE_RADIUS   = 180;
+  var REPULSION      = 9;
+  var SPRING         = 0.05;
+  var DAMPING        = 0.86;
+  var CONNECT_DIST   = 140;
+  var DRIFT_RANGE    = 60;
   // ────────────────────────────────────────────────────────────
 
   var W = 0, H = 0;
@@ -5706,8 +5707,8 @@
       phaseSpeedX: (Math.random() * 0.4 + 0.15) * 0.01,
       phaseSpeedY: (Math.random() * 0.4 + 0.15) * 0.01,
       // visuals
-      size:    Math.random() * 1.8 + 0.4,
-      isAccent: Math.random() > 0.72
+      size:    Math.random() * 2.5 + 0.8,
+      isAccent: Math.random() > 0.68
     };
   }
 
@@ -5740,7 +5741,7 @@
     var r = accent.r, g = accent.g, b = accent.b;
 
     // ── 1. Pulsing radial glow in centre ──
-    var pulse = Math.sin(ts * 0.0007) * 0.03 + 0.06;
+    var pulse = Math.sin(ts * 0.0007) * 0.05 + 0.12;
     var cx = W * 0.5, cy = H * 0.5;
     var grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * 0.65);
     grad.addColorStop(0, 'rgba(' + r + ',' + g + ',' + b + ',' + pulse + ')');
@@ -5794,7 +5795,7 @@
         dy   = p.y - p2.y;
         dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < CONNECT_DIST) {
-          alpha = (1 - dist / CONNECT_DIST) * 0.18;
+          alpha = (1 - dist / CONNECT_DIST) * 0.28;
           ctx.strokeStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
@@ -5808,8 +5809,8 @@
     for (i = 0; i < particles.length; i++) {
       p = particles[i];
       var vel     = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-      var base    = p.isAccent ? 0.75 : 0.38;
-      var opacity = Math.min(base + vel * 0.06, 1.0);
+      var base    = p.isAccent ? 0.82 : 0.52;
+      var opacity = Math.min(base + vel * 0.07, 1.0);
       var cr = p.isAccent ? r : 255;
       var cg = p.isAccent ? g : 255;
       var cb = p.isAccent ? b : 255;
@@ -5861,9 +5862,13 @@
     }, 120);
   });
 
-  // ── Start ────────────────────────────────────────────────────
-  init();
-  frameId = requestAnimationFrame(frame);
+  // ── Start — defer to after first paint so flex layout is computed ──
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      init();
+      frameId = requestAnimationFrame(frame);
+    });
+  });
 })();
 </script>
 </body>

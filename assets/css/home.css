@@ -298,6 +298,7 @@
   background-repeat: repeat-x;
   background-position: bottom;
   margin-top: -90px;
+  margin-bottom: -1px;
   position: relative;
   z-index: 10;
   image-rendering: pixelated;
@@ -591,6 +592,7 @@
   background-repeat: repeat-x;
   background-position: bottom;
   margin-top: -90px;
+  margin-bottom: -1px;
   position: relative;
   z-index: 10;
   image-rendering: pixelated;

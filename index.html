@@ -592,10 +592,30 @@
       });
     }
 
+    function tryInitGlobe() {
+      var canvas = document.getElementById('owl-globe');
+      if (!canvas) return;
+      if (typeof window.createGlobe !== 'function') {
+        setTimeout(tryInitGlobe, 50);
+        return;
+      }
+      if (canvas.offsetWidth === 0) {
+        var ro = new ResizeObserver(function (entries) {
+          if (entries[0].contentRect.width > 0) {
+            ro.disconnect();
+            initGlobe();
+          }
+        });
+        ro.observe(canvas);
+      } else {
+        initGlobe();
+      }
+    }
+
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initGlobe);
+      document.addEventListener('DOMContentLoaded', tryInitGlobe);
     } else {
-      initGlobe();
+      tryInitGlobe();
     }
   })();
   </script>

@@ -298,7 +298,6 @@
   background-repeat: repeat-x;
   background-position: bottom;
   margin-top: -90px;
-  margin-bottom: -1px;
   position: relative;
   z-index: 10;
   image-rendering: pixelated;
@@ -592,7 +591,6 @@
   background-repeat: repeat-x;
   background-position: bottom;
   margin-top: -90px;
-  margin-bottom: -1px;
   position: relative;
   z-index: 10;
   image-rendering: pixelated;
@@ -956,80 +954,124 @@
   }
 }
 
-/* ── Always On animated underline ─────────────────────────── */
-.always-on-wrapper {
+/* ── Always On — animated wavy underline ───────────────────── */
+.always-on-wrap {
+  color: var(--color-primary);
   position: relative;
   display: inline-block;
   padding-bottom: 10px;
 }
 
-.always-on-svg {
+.always-on-underline {
   position: absolute;
-  bottom: -2px;
+  bottom: -4px;
   left: 0;
   width: 100%;
-  height: 14px;
+  height: 20px;
   overflow: visible;
   pointer-events: none;
 }
 
-.always-on-path {
-  stroke-dasharray: 350;
-  stroke-dashoffset: 350;
+.always-on-underline path {
+  stroke: var(--color-primary);
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  opacity: 0.85;
+  transition: stroke-dashoffset 0s;
 }
 
-.always-on-animate .always-on-path {
-  animation: drawAlwaysOn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  animation-delay: 0.3s;
+.always-on-underline path.aon-drawn {
+  animation: aon-draw 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-@keyframes drawAlwaysOn {
+@keyframes aon-draw {
   to { stroke-dashoffset: 0; }
 }
 
-/* ── COBE Globe ────────────────────────────────────────────── */
-.aike-globe-wrap {
-  position: relative;
-  width: 100%;
-  max-width: 460px;
-  aspect-ratio: 1 / 1;
-  margin: 0 auto;
+/* ── Floating Icons Layer (Motion Section) ─────────────────── */
+.mfl-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mfl-icon {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.mfl-icon.mfl-visible {
+  opacity: 1;
+}
+
+.mfl-icon__inner {
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(6px);
+  animation: mfl-float var(--fd, 6s) ease-in-out infinite;
+  animation-delay: var(--fdl, 0s);
 }
 
-.aike-globe-wrap::after {
-  content: '';
-  position: absolute;
-  inset: 12%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%);
-  filter: blur(28px);
-  z-index: 0;
-  pointer-events: none;
+@keyframes mfl-float {
+  0%   { transform: translateY(0)    rotate(0deg); }
+  25%  { transform: translateY(-9px) rotate(2deg); }
+  50%  { transform: translateY(-4px) rotate(-1deg); }
+  75%  { transform: translateY(-12px) rotate(3deg); }
+  100% { transform: translateY(0)    rotate(0deg); }
 }
 
-.aike-globe-wrap canvas {
-  display: block;
+/* Ensure section content sits above icons */
+#aikeMotionSection .container {
   position: relative;
   z-index: 1;
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 50%;
-  opacity: 0;
-  transition: opacity 1.2s ease;
-  cursor: grab;
-  touch-action: none;
 }
 
-.aike-globe-wrap canvas:active {
-  cursor: grabbing;
-}
-
-@media (max-width: 800px) {
-  .aike-globe-wrap {
-    max-width: 340px;
-    margin-top: var(--space-2xl);
+/* Mobile: reduce icon opacity and count */
+@media (max-width: 768px) {
+  .mfl-icon {
+    display: none;
   }
+  .mfl-icon:nth-child(-n+4) {
+    display: block;
+  }
+}
+
+/* ── Shimmer text — Automation Success ────────────────────── */
+.shimmer-aike {
+  display: inline;
+  background: linear-gradient(
+    to right,
+    #ffffff 0%,
+    #ffffff 20%,
+    #c084fc 44%,
+    #f0abfc 50%,
+    #c084fc 56%,
+    #ffffff 80%,
+    #ffffff 100%
+  );
+  background-size: 250% 100%;
+  background-position: 200% center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: aike-shimmer 2.2s linear 1s infinite;
+}
+
+@keyframes aike-shimmer {
+  0%   { background-position: 220% center; }
+  100% { background-position: -80% center; }
 }

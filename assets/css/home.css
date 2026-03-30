@@ -990,3 +990,61 @@
 @keyframes aon-draw {
   to { stroke-dashoffset: 0; }
 }
+
+/* ── Floating Icons Layer (Motion Section) ─────────────────── */
+.mfl-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mfl-icon {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.mfl-icon.mfl-visible {
+  opacity: 1;
+}
+
+.mfl-icon__inner {
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  animation: mfl-float var(--fd, 6s) ease-in-out infinite;
+  animation-delay: var(--fdl, 0s);
+}
+
+@keyframes mfl-float {
+  0%   { transform: translateY(0)    rotate(0deg); }
+  25%  { transform: translateY(-9px) rotate(2deg); }
+  50%  { transform: translateY(-4px) rotate(-1deg); }
+  75%  { transform: translateY(-12px) rotate(3deg); }
+  100% { transform: translateY(0)    rotate(0deg); }
+}
+
+/* Ensure section content sits above icons */
+#aikeMotionSection .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mobile: reduce icon opacity and count */
+@media (max-width: 768px) {
+  .mfl-icon {
+    display: none;
+  }
+  .mfl-icon:nth-child(-n+4) {
+    display: block;
+  }
+}

@@ -570,14 +570,14 @@
     ];
 
     function initGlobe() {
+      var wrap   = document.getElementById('owl-globe-wrap');
       var canvas = document.getElementById('owl-globe');
-      if (!canvas || typeof window.createGlobe !== 'function') return;
+      if (!canvas || !wrap || typeof window.createGlobe !== 'function') return;
 
       var dpr  = Math.min(window.devicePixelRatio || 1, 2);
-      var size = canvas.offsetWidth;
-      if (size === 0) return;
+      var size = wrap.offsetWidth || wrap.getBoundingClientRect().width || 420;
 
-      var phi = 0.6; // start tilted toward Europe/Italy
+      var phi = 0.6;
       var theta = 0.25;
       var isDragging = false;
       var lastX = 0, lastY = 0;
@@ -588,13 +588,13 @@
         height: size * dpr,
         phi:    phi,
         theta:  theta,
-        dark:   0,            // LIGHT globe — white ocean, visible on dark bg
+        dark:   0,
         diffuse: 1.4,
         mapSamples: 16000,
         mapBrightness: 8,
-        baseColor:   [1, 1, 1],              // white land
-        markerColor: [0.2, 0.85, 0.45],     // green dots
-        glowColor:   [0.92, 0.92, 0.92],    // soft white glow
+        baseColor:   [1, 1, 1],
+        markerColor: [0.2, 0.85, 0.45],
+        glowColor:   [0.92, 0.92, 0.92],
         markers: MARKERS,
         onRender: function (state) {
           if (!isDragging) phi += 0.003;
@@ -603,10 +603,8 @@
         }
       });
 
-      // Fade in
-      setTimeout(function () { canvas.style.opacity = '1'; }, 100);
+      canvas.style.opacity = '1';
 
-      // Drag-to-rotate
       canvas.addEventListener('pointerdown', function (e) {
         isDragging = true; lastX = e.clientX; lastY = e.clientY;
         canvas.style.cursor = 'grabbing';
@@ -623,20 +621,20 @@
     }
 
     function tryInit() {
-      var canvas = document.getElementById('owl-globe');
-      if (!canvas) return;
+      var wrap = document.getElementById('owl-globe-wrap');
+      if (!wrap) return;
       if (typeof window.createGlobe !== 'function') { setTimeout(tryInit, 60); return; }
-      if (canvas.offsetWidth === 0) {
+      var w = wrap.offsetWidth || wrap.getBoundingClientRect().width;
+      if (w === 0) {
         new ResizeObserver(function (entries, obs) {
           if (entries[0].contentRect.width > 0) { obs.disconnect(); initGlobe(); }
-        }).observe(canvas);
+        }).observe(wrap);
       } else {
         initGlobe();
       }
     }
 
-    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', tryInit); }
-    else { tryInit(); }
+    window.addEventListener('load', tryInit);
   })();
   </script>
 

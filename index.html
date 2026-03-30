@@ -566,78 +566,80 @@
 
   <!-- COBE Globe -->
   <script type="module">
-  import createGlobe from 'https://esm.sh/cobe@0.6.3';
+  import createGlobe from 'https://cdn.jsdelivr.net/npm/cobe@0.6.3/dist/index.mjs';
 
-  var canvas = document.getElementById('aikeGlobeCanvas');
-  if (!canvas) return;
+  (function () {
+    var canvas = document.getElementById('aikeGlobeCanvas');
+    if (!canvas) return;
 
-  var phi = 0;
-  var globe = null;
-  var pointerDown = null;
-  var phiOffset = 0;
-  var dragDelta = 0;
+    var phi = 0;
+    var globe = null;
+    var pointerDown = null;
+    var phiOffset = 0;
+    var dragDelta = 0;
 
-  var markers = [
-    { location: [40.71, -74.01], size: 0.04 },  // New York
-    { location: [51.51,  -0.12], size: 0.035 }, // London
-    { location: [45.46,   9.19], size: 0.03  }, // Milan
-    { location: [48.85,   2.35], size: 0.03  }, // Paris
-    { location: [35.68, 139.69], size: 0.04  }, // Tokyo
-    { location: [25.20,  55.27], size: 0.03  }, // Dubai
-    { location: [ 1.35, 103.82], size: 0.03  }, // Singapore
-    { location: [-23.55,-46.63], size: 0.03  }, // São Paulo
-  ];
+    var markers = [
+      { location: [40.71, -74.01], size: 0.04 },  // New York
+      { location: [51.51,  -0.12], size: 0.035 }, // London
+      { location: [45.46,   9.19], size: 0.03  }, // Milan
+      { location: [48.85,   2.35], size: 0.03  }, // Paris
+      { location: [35.68, 139.69], size: 0.04  }, // Tokyo
+      { location: [25.20,  55.27], size: 0.03  }, // Dubai
+      { location: [ 1.35, 103.82], size: 0.03  }, // Singapore
+      { location: [-23.55,-46.63], size: 0.03  }, // São Paulo
+    ];
 
-  canvas.addEventListener('pointerdown', function (e) {
-    pointerDown = e.clientX;
-    canvas.style.cursor = 'grabbing';
-  }, { passive: true });
-  window.addEventListener('pointermove', function (e) {
-    if (pointerDown !== null) dragDelta = (e.clientX - pointerDown) / 220;
-  }, { passive: true });
-  window.addEventListener('pointerup', function () {
-    if (pointerDown !== null) {
-      phiOffset += dragDelta;
-      dragDelta = 0;
-      pointerDown = null;
-      canvas.style.cursor = 'grab';
-    }
-  }, { passive: true });
-
-  function init() {
-    var w = canvas.offsetWidth;
-    if (w === 0 || globe) return;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    globe = createGlobe(canvas, {
-      devicePixelRatio: dpr,
-      width:  w * dpr,
-      height: w * dpr,
-      phi: 0,
-      theta: 0.2,
-      dark: 1,
-      diffuse: 1.2,
-      mapSamples: 16000,
-      mapBrightness: 5,
-      baseColor:   [0.18, 0.12, 0.28],
-      markerColor: [0.66, 0.33, 0.97],
-      glowColor:   [0.45, 0.15, 0.70],
-      markers: markers,
-      onRender: function (state) {
-        phi += 0.003;
-        state.phi = phi + phiOffset + dragDelta;
+    canvas.addEventListener('pointerdown', function (e) {
+      pointerDown = e.clientX;
+      canvas.style.cursor = 'grabbing';
+    }, { passive: true });
+    window.addEventListener('pointermove', function (e) {
+      if (pointerDown !== null) dragDelta = (e.clientX - pointerDown) / 220;
+    }, { passive: true });
+    window.addEventListener('pointerup', function () {
+      if (pointerDown !== null) {
+        phiOffset += dragDelta;
+        dragDelta = 0;
+        pointerDown = null;
+        canvas.style.cursor = 'grab';
       }
-    });
-    setTimeout(function () { if (canvas) canvas.style.opacity = '1'; });
-  }
+    }, { passive: true });
 
-  if (canvas.offsetWidth > 0) {
-    init();
-  } else {
-    var ro = new ResizeObserver(function () {
-      if (canvas.offsetWidth > 0) { ro.disconnect(); init(); }
-    });
-    ro.observe(canvas);
-  }
+    function init() {
+      var w = canvas.offsetWidth;
+      if (w === 0 || globe) return;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      globe = createGlobe(canvas, {
+        devicePixelRatio: dpr,
+        width:  w * dpr,
+        height: w * dpr,
+        phi: 0,
+        theta: 0.2,
+        dark: 1,
+        diffuse: 1.2,
+        mapSamples: 16000,
+        mapBrightness: 5,
+        baseColor:   [0.18, 0.12, 0.28],
+        markerColor: [0.66, 0.33, 0.97],
+        glowColor:   [0.45, 0.15, 0.70],
+        markers: markers,
+        onRender: function (state) {
+          phi += 0.003;
+          state.phi = phi + phiOffset + dragDelta;
+        }
+      });
+      setTimeout(function () { if (canvas) canvas.style.opacity = '1'; });
+    }
+
+    if (canvas.offsetWidth > 0) {
+      init();
+    } else {
+      var ro = new ResizeObserver(function () {
+        if (canvas.offsetWidth > 0) { ro.disconnect(); init(); }
+      });
+      ro.observe(canvas);
+    }
+  })();
   </script>
 </body>
 

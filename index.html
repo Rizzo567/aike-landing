@@ -248,7 +248,7 @@
         <div class="container">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3xl);align-items:center;">
             <div data-reveal>
-              <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;color:var(--color-white);line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.25rem;">Your AI operator.<br><span style="color:var(--color-primary);">Always on.</span></h2>
+              <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;color:var(--color-white);line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.25rem;">Your AI operator.<br><span class="always-on-wrapper" style="color:var(--color-primary);">Always on.<svg class="always-on-svg" viewBox="0 0 300 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="none"><path class="always-on-path" d="M 2,8 Q 75,2 150,8 Q 225,14 298,8" stroke="#a855f7" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></span></h2>
               <p style="color:var(--color-text-muted);font-size:1rem;line-height:1.7;margin-bottom:2rem;">Owl is not a chatbot. It's a multi-model AI operator that lives inside your workspace — switching between Claude, GPT-4, and Gemini depending on what the task demands. Sharp, direct, and unrestricted.</p>
               <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:2rem;">
                 <div style="display:flex;align-items:flex-start;gap:12px;">
@@ -275,23 +275,8 @@
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="6 3 11 8 6 13"/></svg>
               </a>
             </div>
-            <div data-reveal style="transition-delay:0.15s;">
-              <!-- Owl UI mockup -->
-              <div style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
-                <div style="background:rgba(168,85,247,0.06);border-bottom:1px solid rgba(255,255,255,0.06);padding:14px 18px;display:flex;align-items:center;gap:10px;">
-                  <img src="assets/images/logoimpressionato.png" style="width:28px;height:28px;object-fit:contain;" alt="Owl">
-                  <span style="font-weight:700;color:var(--color-white);font-size:0.9rem;">Owl</span>
-                  <span style="margin-left:auto;font-size:0.72rem;color:var(--color-text-muted);background:rgba(255,255,255,0.05);padding:3px 10px;border-radius:20px;">Claude Sonnet</span>
-                </div>
-                <div style="padding:18px;display:flex;flex-direction:column;gap:14px;min-height:220px;">
-                  <div style="align-self:flex-end;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.2);border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:0.82rem;color:var(--color-white);max-width:80%;">Analyze our Q1 revenue and find the top growth opportunity.</div>
-                  <div style="align-self:flex-start;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:4px 14px 14px 14px;padding:10px 14px;font-size:0.82rem;color:var(--color-text-muted);max-width:86%;line-height:1.6;">Based on the data: MRR grew 18% but churn at 11% is eroding it. Your highest-leverage move is a 72h post-trial engagement sequence — estimated +€4,200/month in recovered revenue.</div>
-                  <div style="display:flex;gap:7px;flex-wrap:wrap;">
-                    <span style="padding:4px 12px;border-radius:20px;border:1px solid rgba(168,85,247,0.25);font-size:0.72rem;color:var(--color-primary);">Draft the sequence →</span>
-                    <span style="padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);font-size:0.72rem;color:var(--color-text-muted);">Show full analysis</span>
-                  </div>
-                </div>
-              </div>
+            <div class="aike-globe-wrap" data-reveal style="transition-delay:0.15s;" aria-hidden="true">
+              <canvas id="aikeGlobeCanvas"></canvas>
             </div>
           </div>
         </div>
@@ -560,6 +545,99 @@
       setTimeout(window.aikePricing.init, 60);
     }
   })();
+  </script>
+
+  <!-- Always On underline: trigger on scroll-into-view -->
+  <script>
+  (function () {
+    var wrapper = document.querySelector('.always-on-wrapper');
+    if (!wrapper) return;
+    var triggered = false;
+    var obs = new IntersectionObserver(function (entries) {
+      if (!triggered && entries[0].isIntersecting) {
+        triggered = true;
+        wrapper.classList.add('always-on-animate');
+        obs.disconnect();
+      }
+    }, { threshold: 0.6 });
+    obs.observe(wrapper);
+  })();
+  </script>
+
+  <!-- COBE Globe -->
+  <script type="module">
+  import createGlobe from 'https://esm.sh/cobe@0.6.3';
+
+  var canvas = document.getElementById('aikeGlobeCanvas');
+  if (!canvas) return;
+
+  var phi = 0;
+  var globe = null;
+  var pointerDown = null;
+  var phiOffset = 0;
+  var dragDelta = 0;
+
+  var markers = [
+    { location: [40.71, -74.01], size: 0.04 },  // New York
+    { location: [51.51,  -0.12], size: 0.035 }, // London
+    { location: [45.46,   9.19], size: 0.03  }, // Milan
+    { location: [48.85,   2.35], size: 0.03  }, // Paris
+    { location: [35.68, 139.69], size: 0.04  }, // Tokyo
+    { location: [25.20,  55.27], size: 0.03  }, // Dubai
+    { location: [ 1.35, 103.82], size: 0.03  }, // Singapore
+    { location: [-23.55,-46.63], size: 0.03  }, // São Paulo
+  ];
+
+  canvas.addEventListener('pointerdown', function (e) {
+    pointerDown = e.clientX;
+    canvas.style.cursor = 'grabbing';
+  }, { passive: true });
+  window.addEventListener('pointermove', function (e) {
+    if (pointerDown !== null) dragDelta = (e.clientX - pointerDown) / 220;
+  }, { passive: true });
+  window.addEventListener('pointerup', function () {
+    if (pointerDown !== null) {
+      phiOffset += dragDelta;
+      dragDelta = 0;
+      pointerDown = null;
+      canvas.style.cursor = 'grab';
+    }
+  }, { passive: true });
+
+  function init() {
+    var w = canvas.offsetWidth;
+    if (w === 0 || globe) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    globe = createGlobe(canvas, {
+      devicePixelRatio: dpr,
+      width:  w * dpr,
+      height: w * dpr,
+      phi: 0,
+      theta: 0.2,
+      dark: 1,
+      diffuse: 1.2,
+      mapSamples: 16000,
+      mapBrightness: 5,
+      baseColor:   [0.18, 0.12, 0.28],
+      markerColor: [0.66, 0.33, 0.97],
+      glowColor:   [0.45, 0.15, 0.70],
+      markers: markers,
+      onRender: function (state) {
+        phi += 0.003;
+        state.phi = phi + phiOffset + dragDelta;
+      }
+    });
+    setTimeout(function () { if (canvas) canvas.style.opacity = '1'; });
+  }
+
+  if (canvas.offsetWidth > 0) {
+    init();
+  } else {
+    var ro = new ResizeObserver(function () {
+      if (canvas.offsetWidth > 0) { ro.disconnect(); init(); }
+    });
+    ro.observe(canvas);
+  }
   </script>
 </body>
 

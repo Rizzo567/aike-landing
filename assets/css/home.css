@@ -955,3 +955,81 @@
     height: 42px;
   }
 }
+
+/* ── Always On animated underline ─────────────────────────── */
+.always-on-wrapper {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 10px;
+}
+
+.always-on-svg {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 14px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.always-on-path {
+  stroke-dasharray: 350;
+  stroke-dashoffset: 350;
+}
+
+.always-on-animate .always-on-path {
+  animation: drawAlwaysOn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.3s;
+}
+
+@keyframes drawAlwaysOn {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ── COBE Globe ────────────────────────────────────────────── */
+.aike-globe-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aike-globe-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%);
+  filter: blur(28px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.aike-globe-wrap canvas {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  cursor: grab;
+  touch-action: none;
+}
+
+.aike-globe-wrap canvas:active {
+  cursor: grabbing;
+}
+
+@media (max-width: 800px) {
+  .aike-globe-wrap {
+    max-width: 340px;
+    margin-top: var(--space-2xl);
+  }
+}

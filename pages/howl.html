@@ -327,6 +327,25 @@
       28% { opacity: 1; }
     }
 
+    /* ── Pixel owl frames ── */
+    .howl-owl-pixel {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      flex-shrink: 0;
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+      display: block;
+    }
+    @keyframes howlOwlBreath {
+      0%, 100% { transform: scale(1) translateY(0); }
+      50% { transform: scale(1.03) translateY(-1px); }
+    }
+    .howl-owl-pixel.breathing {
+      animation: howlOwlBreath 3s ease-in-out infinite;
+    }
+
     /* ── Input area ── */
     .howl-input-area { padding: 14px 20px 22px; flex-shrink: 0; }
     .howl-input-inner {
@@ -2062,7 +2081,7 @@
 
       <div class="howl-typing" id="howlTyping">
         <div class="howl-owl-wrap">
-          <img src="../assets/images/logoimpressionato.png" class="howl-owl-emotion" id="howlOwlImg" alt="Howl" />
+          <img src="../assets/images/owl-frame-base.jpeg" class="howl-owl-pixel" id="howlOwlImg" alt="Howl" />
         </div>
         <div class="howl-thinking-status">
           <span class="howl-thinking-word" id="howlThinkingWord">thinking</span><span class="howl-thinking-dot">.</span><span class="howl-thinking-dot">.</span><span class="howl-thinking-dot">.</span>
@@ -3590,6 +3609,7 @@
 
     typingEl.classList.add('visible');
     startThinking();
+    owlStartAnimation();
     scrollToBottom();
 
     // Create streaming element (hidden until first chunk)
@@ -3602,6 +3622,7 @@
           // First chunk: hide typing, switch to writing words, show streaming el
           typingEl.classList.remove('visible');
           stopThinking();
+          owlStopAnimation();
           startWriting();
           streamEl.style.display = '';
           scrollToBottom();
@@ -3628,6 +3649,7 @@
       setOwlEmotion('error');
       typingEl.classList.remove('visible');
       stopThinking();
+      owlStopAnimation();
       stopWriting();
       if (streamEl.parentNode) streamEl.parentNode.removeChild(streamEl);
       renderError(err.message || 'Errore di connessione. Riprova.');
@@ -4946,7 +4968,7 @@
   // ─────────────────────────────────────────────────────────────────
   // THINKING STATE ANIMATION
   // ─────────────────────────────────────────────────────────────────
-  var THINKING_WORDS = ['thinking', 'compacting', 'vibing', 'flying', 'processing'];
+  var THINKING_WORDS = ['Thinking', 'Processing', 'Writing'];
   var _thinkTimer    = null;
   var _thinkIdx      = 0;
 
@@ -4973,6 +4995,67 @@
     clearInterval(_thinkTimer);
     _thinkTimer = null;
   }
+
+  /* ── Pixel Owl Animation ─────────────────────────────── */
+  var owlImg = document.getElementById('howlOwlImg');
+  var OWL_FRAMES = [
+    '../assets/images/owl-frame-base.jpeg',   // 0: base/idle
+    '../assets/images/owl-frame-mid.jpeg',    // 1: mid flap
+    '../assets/images/owl-frame-down.jpeg',   // 2: downstroke
+    '../assets/images/owl-frame-return.jpeg'  // 3: mid return
+  ];
+  // sequence: base → mid → down → mid(return) → base
+  var OWL_SEQUENCE = [0, 1, 2, 3, 0];
+  var OWL_FRAME_MS = 110;   // 110ms per frame
+  var OWL_IDLE_MS  = 2700;  // 2.7s idle after each flap cycle
+
+  var owlAnimTimer   = null;
+  var owlIsAnimating = false;
+
+  // Preload frames
+  OWL_FRAMES.forEach(function(src) {
+    var img = new Image(); img.src = src;
+  });
+
+  function owlSetFrame(idx) {
+    if (owlImg) owlImg.src = OWL_FRAMES[idx];
+  }
+
+  function owlRunCycle() {
+    if (!owlIsAnimating) return;
+    var step = 0;
+    owlSetFrame(OWL_SEQUENCE[0]); // base
+    function nextStep() {
+      if (!owlIsAnimating) { owlSetFrame(0); return; }
+      step++;
+      if (step < OWL_SEQUENCE.length) {
+        owlSetFrame(OWL_SEQUENCE[step]);
+        owlAnimTimer = setTimeout(nextStep, OWL_FRAME_MS);
+      } else {
+        // Idle pause, then repeat
+        owlSetFrame(0); // ensure base frame
+        owlAnimTimer = setTimeout(owlRunCycle, OWL_IDLE_MS);
+      }
+    }
+    owlAnimTimer = setTimeout(nextStep, OWL_FRAME_MS);
+  }
+
+  function owlStartAnimation() {
+    if (owlIsAnimating) return;
+    owlIsAnimating = true;
+    owlImg = document.getElementById('howlOwlImg');
+    if (owlImg) owlImg.classList.add('breathing');
+    owlRunCycle();
+  }
+
+  function owlStopAnimation() {
+    owlIsAnimating = false;
+    if (owlAnimTimer) { clearTimeout(owlAnimTimer); owlAnimTimer = null; }
+    owlImg = document.getElementById('howlOwlImg');
+    owlSetFrame(0); // reset to base
+    if (owlImg) owlImg.classList.remove('breathing');
+  }
+  /* ── End Pixel Owl Animation ─────────────────────────── */
 
   // ── Writing state (during streaming) ──────────────────────────────
   var WRITING_WORDS = ['writing', 'explaining', 'drafting', 'refining'];
@@ -5045,6 +5128,7 @@
       toggleSendBtn();
       typingEl.classList.add('visible');
       startThinking();
+      owlStartAnimation();
       scrollToBottom();
       var regenStreamEl = createStreamingEl();
       var regenFullContent = '';
@@ -5052,6 +5136,7 @@
         if (regenFullContent === '') {
           typingEl.classList.remove('visible');
           stopThinking();
+          owlStopAnimation();
           startWriting();
           regenStreamEl.style.display = '';
           scrollToBottom();
@@ -5069,6 +5154,7 @@
       }).catch(function(err) {
         typingEl.classList.remove('visible');
         stopThinking();
+        owlStopAnimation();
         stopWriting();
         if (regenStreamEl.parentNode) regenStreamEl.parentNode.removeChild(regenStreamEl);
         renderError(err.message || 'Errore di rigenerazione.');

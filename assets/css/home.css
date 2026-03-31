@@ -1149,7 +1149,7 @@
 }
 
 .aike-marquee-section {
-  background: #0b0b0c;
+  background: var(--color-surface);
   padding: 28px 0;
   overflow: hidden;
 }

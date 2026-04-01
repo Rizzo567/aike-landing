@@ -104,36 +104,117 @@
         <div class="container hero__layout">
           <!-- LEFT: CTA -->
           <div class="hero__content" data-reveal>
-            <h2 class="hero__title" data-i18n="solutions.cta.headline">"Your business is slow,<br><span class="hero__title-highlight">but you don't notice it"</span></h2>
-            <div class="hero__cta-group">
-              <h3 class="hero__cta-title">Book your consultation</h3>
-              <p class="hero__cta-desc">Schedule a call and receive a tailored implementation plan.<br>No spam, no ads.
-                We only email you when it's important.</p>
+            <h2 class="hero__title" data-i18n="solutions.cta.headline" style="margin-bottom: 1.5rem;">Your business is slow,<br><span class="hero__title-highlight">but you don't notice it</span></h2>
 
-              <div class="hero__cta-box">
-                <div class="hero__input-wrapper">
-                  <span class="hero__input-icon">✉</span>
-                  <input type="email" placeholder="your@email.com" class="hero__input" aria-label="Email address"
-                    required>
+            <div class="sol-tweet-card" style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 16px; padding: 1.25rem; max-width: 420px; margin-top: 1.5rem;">
+              <!-- Header -->
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <img src="https://unavatar.io/twitter/rauchg" alt="Alex Chen" width="38" height="38" style="border-radius: 50%; display: block;">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                      <span style="font-size: 0.9rem; font-weight: 600; color: var(--color-white);">Alex Chen</span>
+                      <!-- Blue Verified Badge -->
+                      <svg viewBox="0 0 22 22" width="15" height="15" fill="#1C9BF1" aria-label="Verified"><path d="M20.396 11c-.018-.646-.215-1.275-.57-1.816-.354-.54-.852-.972-1.438-1.246.223-.607.27-1.264.14-1.897-.131-.634-.437-1.218-.882-1.687-.47-.445-1.053-.75-1.687-.882-.633-.13-1.29-.083-1.897.14-.273-.587-.704-1.086-1.245-1.44S11.647 1.62 11 1.604c-.646.017-1.273.213-1.813.568s-.969.854-1.24 1.44c-.608-.223-1.267-.272-1.902-.14-.635.13-1.22.436-1.69.882-.445.47-.749 1.055-.878 1.688-.13.633-.08 1.29.144 1.896-.587.274-1.087.705-1.443 1.245-.356.54-.555 1.17-.574 1.817.02.647.218 1.276.574 1.817.356.54.856.972 1.443 1.245-.224.606-.274 1.263-.144 1.896.13.634.433 1.218.877 1.688.47.443 1.054.747 1.687.878.633.132 1.29.084 1.897-.136.274.586.705 1.084 1.246 1.439.54.354 1.17.551 1.816.569.647-.016 1.276-.213 1.817-.567s.972-.854 1.245-1.44c.604.239 1.266.296 1.903.164.636-.132 1.22-.447 1.68-.907.46-.46.776-1.044.908-1.681s.075-1.299-.165-1.903c.586-.274 1.084-.705 1.439-1.246.354-.54.551-1.17.569-1.816zM9.662 14.85l-3.429-3.428 1.293-1.302 2.072 2.072 4.4-4.794 1.347 1.246z"/></svg>
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: -2px;">@alexchen_dev</div>
+                  </div>
                 </div>
-                <button type="submit" class="hero__submit" data-glow><span class="hero__submit-text">Book your call 🚀</span></button>
+                <!-- X icon -->
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" style="color: var(--color-text-muted); flex-shrink: 0;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231L18.244 2.25Zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644Z"/></svg>
               </div>
-
-              <div class="hero__social-proof">
-                <div class="hero__avatars">
-                  <span class="avatar avatar--1">AI</span>
-                  <span class="avatar avatar--2">K</span>
-                  <span class="avatar avatar--3">E</span>
-                  <span class="avatar avatar--4">+184</span>
+              <!-- Body -->
+              <p style="font-size: 0.9rem; line-height: 1.6; color: var(--color-white); margin: 0 0 0.75rem;">Just shipped a new open-source component library built with React, Tailwind CSS, and TypeScript. Every component is accessible, composable, and beautiful. ✨</p>
+              <!-- Date -->
+              <div style="font-size: 0.78rem; color: var(--color-text-muted); padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-border);">6:30 PM · Mar 4, 2025</div>
+              <!-- Footer -->
+              <div style="display: flex; gap: 1.25rem; padding-top: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 6px; color: var(--color-text-muted);">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 18 18" fill="#e91e63"><path d="M12.164,2c-1.195,.015-2.324,.49-3.164,1.306-.84-.815-1.972-1.291-3.178-1.306-2.53,.015-4.582,2.084-4.572,4.609,0,5.253,5.306,8.429,6.932,9.278,.256,.133,.537,.2,.818,.2s.562-.067,.817-.2c1.626-.848,6.933-4.024,6.933-9.275,.009-2.528-2.042-4.597-4.586-4.612Z" fill="currentColor"/></svg>
+                  <span style="font-size: 0.8rem;">2.8k</span>
                 </div>
-                <p class="hero__proof-text"><strong>187</strong> businesses have already<br>booked a call</p>
+                <div style="display: flex; align-items: center; gap: 6px; color: var(--color-text-muted); cursor: pointer;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  <span style="font-size: 0.8rem;">Copy link</span>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- RIGHT: Owl image -->
-          <div class="hero__visual" aria-hidden="true" data-reveal style="transition-delay:0.2s;">
-            <img src="../assets/images/logo3.png" alt="Aike Owl" class="hero__main-img">
+          <div class="hero__visual" aria-hidden="true" data-reveal style="transition-delay:0.2s; position: relative;">
+            <img src="../assets/images/logoannoiato-removebg-preview.png" alt="Aike Owl" class="hero__main-img">
+
+            <!-- GitHub — top left, partially outside -->
+            <div class="mfl-icon mfl-visible" style="top: 8%; left: -4%; --fd: 6.3s; --fdl: 0s;">
+              <div class="mfl-icon__inner"><svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26" style="color:#fff;opacity:.85"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></div>
+            </div>
+
+            <!-- Discord — top right -->
+            <div class="mfl-icon mfl-visible" style="top: 5%; right: 2%; --fd: 8.1s; --fdl: 0.9s;">
+              <div class="mfl-icon__inner"><svg viewBox="0 0 24 24" fill="none" width="26" height="26"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03ZM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418Z" fill="#5865F2"/></svg></div>
+            </div>
+
+            <!-- X — right middle, sticking out right -->
+            <div class="mfl-icon mfl-visible" style="top: 48%; right: -3%; --fd: 5.7s; --fdl: 1.4s;">
+              <div class="mfl-icon__inner"><svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22" style="color:#fff;opacity:.85"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231L18.244 2.25Zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644Z"/></svg></div>
+            </div>
+
+            <!-- Google — bottom left, partially outside -->
+            <div class="mfl-icon mfl-visible" style="bottom: 12%; left: -2%; --fd: 7.5s; --fdl: 0.5s;">
+              <div class="mfl-icon__inner"><svg viewBox="0 0 24 24" fill="none" width="26" height="26"><path d="M21.6 12.24c0-.747-.067-1.48-.194-2.187H12v4.14h5.387c-.233 1.26-.94 2.327-2 3.027v2.52h3.24C20.453 18.16 21.6 15.453 21.6 12.24z" fill="#4285F4"/><path d="M12 22c2.7 0 4.96-.893 6.627-2.413l-3.24-2.52c-.893.6-2.04.96-3.387.96-2.6 0-4.8-1.753-5.587-4.12H3.08v2.6C4.747 20.02 8.147 22 12 22z" fill="#34A853"/><path d="M6.413 13.907A5.96 5.96 0 0 1 6.08 12c0-.667.12-1.307.333-1.907V7.493H3.08A9.96 9.96 0 0 0 2 12c0 1.613.387 3.14 1.08 4.507l3.333-2.6z" fill="#FBBC05"/><path d="M12 5.973c1.467 0 2.773.507 3.807 1.493l2.853-2.853C16.96 2.947 14.7 2 12 2 8.147 2 4.747 3.98 3.08 7.493l3.333 2.6C7.2 7.727 9.4 5.973 12 5.973z" fill="#EA4335"/></svg></div>
+            </div>
+
+            <!-- Notion — bottom right -->
+            <div class="mfl-icon mfl-visible" style="bottom: 6%; right: 4%; --fd: 9.2s; --fdl: 2.1s;">
+              <div class="mfl-icon__inner"><svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26" style="color:#fff;opacity:.85"><path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 2.26c-.42-.326-.981-.7-2.055-.607L3.01 2.845c-.466.046-.56.28-.374.466l1.823 1.897ZM5.15 7.338v13.981c0 .747.373 1.027 1.214.98l14.523-.84c.841-.047 1.027-.56 1.027-1.167V5.338c0-.607-.233-.933-.747-.887l-15.27.887c-.56.047-.747.327-.747.981v1.02Zm14.338.653c.093.42 0 .84-.42.887l-.7.14v10.27c-.608.327-1.168.514-1.635.514-.748 0-.935-.234-1.495-.933l-4.577-7.19v6.957l1.448.327s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.194L7.95 9.1c-.093-.42.14-1.026.793-1.073l3.456-.233 4.764 7.284V8.42l-1.214-.14c-.094-.514.28-.887.747-.933l3.222-.14.513.747-.093.093Z"/></svg></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="pixel-transition" aria-hidden="true"></div>
+
+      <!-- 2. Core Categories (Cards grid similar to pricing) -->
+      <section class="bg-transition-target" style="padding: var(--space-3xl) 0;">
+        <div class="container">
+          <div class="section-header" data-reveal style="text-align: center; max-width: 700px; margin: 0 auto;">
+            <div style="display: inline-flex; align-items: center; gap: 10px; margin-bottom: 1.25rem;">
+              <span style="font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 800; color: var(--color-white); letter-spacing: -0.02em;">Plane</span>
+              <span style="font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--color-white); letter-spacing: 0.06em; border: 1.5px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 3px 12px; text-transform: uppercase; opacity: 0.9;">BETA</span>
+            </div>
+          </div>
+
+          <div class="bundles-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+            <div class="bundle-card" data-reveal>
+              <h3 class="bundle-card__title">Client & CRM Logic</h3>
+              <p class="bundle-card__target">No more manual lead follow-ups. We integrate intelligent pipelines.</p>
+              <ul class="bundle-card__features" style="opacity: 0.8;">
+                <li><span>✓</span> Automated lead scoring</li>
+                <li><span>✓</span> Dynamic onboarding flows</li>
+                <li><span>✓</span> Client communication loops</li>
+              </ul>
+            </div>
+            
+            <div class="bundle-card bundle-card--highlight" data-reveal style="transition-delay: 0.1s;">
+              <h3 class="bundle-card__title">Business Workflows</h3>
+              <p class="bundle-card__target">Replacing repetitive human actions with flawless systemic logic.</p>
+              <ul class="bundle-card__features">
+                <li><span>✓</span> Document generation</li>
+                <li><span>✓</span> Internal process triggers</li>
+                <li><span>✓</span> Cross-platform data sync</li>
+              </ul>
+            </div>
+
+            <div class="bundle-card" data-reveal style="transition-delay: 0.2s;">
+              <h3 class="bundle-card__title">Booking & Scheduling</h3>
+              <p class="bundle-card__target">Eliminate calendar friction and secure high-intent appointments.</p>
+              <ul class="bundle-card__features" style="opacity: 0.8;">
+                <li><span>✓</span> Smart availability mapping</li>
+                <li><span>✓</span> Pre-call qualification</li>
+                <li><span>✓</span> Automated reminders</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -228,7 +309,6 @@
   <script src="../assets/js/auth.js"></script>
   <script src="../assets/js/analytics.js"></script>
   <script src="../assets/js/bundle.js"></script>
-  <script src="../assets/js/i18n.js"></script>
 
   <!-- Shooting Stars Canvas Animation -->
   <script>

@@ -84,7 +84,7 @@
     .plane-cursor {
       display: inline-block;
       width: 3px;
-      height: 0.85em;
+      height: 1em;
       background: #a855f7;
       border-radius: 2px;
       margin-left: 6px;
@@ -652,11 +652,14 @@
   (function() {
     var el = document.getElementById('plane-typing');
     if (!el) return;
-    var word = 'Experience liftoff with the next-generation Workstation', charIdx = 0;
+    var part1 = 'Experience liftoff with the next-generation';
+    var part2 = 'Workstation';
+    var full = part1 + '\n' + part2;
+    var charIdx = 0;
 
     function tick() {
-      if (charIdx < word.length) {
-        el.textContent = word.slice(0, ++charIdx);
+      if (charIdx < full.length) {
+        el.innerHTML = full.slice(0, ++charIdx).replace('\n', '<br>');
         setTimeout(tick, 55);
       } else {
         // Typing done — reveal brand row above

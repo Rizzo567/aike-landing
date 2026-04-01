@@ -72,32 +72,24 @@
       clip-path: inset(0 0% 0 0);
     }
 
-    @keyframes plane-grad {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .plane-gradient-text {
-      background: linear-gradient(270deg, #a855f7, #c084fc, #6d28d9, #e879f9, #7c3aed, #a855f7);
-      background-size: 400% 400%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: plane-grad 6s ease-in-out infinite;
-    }
     @keyframes blink-cursor {
       0%, 100% { opacity: 1; }
       50% { opacity: 0; }
+    }
+    @keyframes cursor-color {
+      0%, 100% { background: #a855f7; }
+      33%       { background: #e879f9; }
+      66%       { background: #6d28d9; }
     }
     .plane-cursor {
       display: inline-block;
       width: 3px;
       height: 0.85em;
-      background: #c084fc;
+      background: #a855f7;
       border-radius: 2px;
       margin-left: 6px;
       vertical-align: middle;
-      animation: blink-cursor 0.8s ease-in-out infinite;
+      animation: cursor-color 3s ease-in-out infinite, blink-cursor 0.8s ease-in-out infinite;
     }
     @keyframes slide-vertical {
       to { transform: translateY(var(--tm-dest)); }
@@ -209,10 +201,18 @@
       <!-- 2. Core Categories (Cards grid similar to pricing) -->
       <section class="bg-transition-target" style="padding: var(--space-3xl) 0;">
         <div class="container">
-          <div class="section-header" data-reveal style="text-align: center; max-width: 700px; margin: 0 auto;">
-            <div style="display: inline-flex; align-items: center; gap: 10px; margin-bottom: 1.25rem;">
-              <span class="plane-gradient-text" id="plane-typing" style="font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 5vw, 3.8rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;"></span><span class="plane-cursor"></span>
-              <span style="font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; color: var(--color-white); letter-spacing: 0.06em; border: 1.5px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 3px 12px; text-transform: uppercase; opacity: 0.9;">BETA</span>
+          <div class="section-header" data-reveal style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <!-- Brand reveal: fades in above after typing completes -->
+            <div id="plane-brand-reveal" style="display: inline-flex; align-items: center; gap: 10px; margin-bottom: 1.2rem; opacity: 0; transform: translateY(-10px); transition: opacity 0.7s ease, transform 0.7s ease;">
+              <img src="../assets/images/logo.png" alt="aike" style="width: 30px; height: 30px; object-fit: contain;">
+              <span style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: -0.01em;">aike</span>
+              <span style="color: rgba(255,255,255,0.25); font-size: 1rem; line-height: 1;">·</span>
+              <span style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: -0.01em;">Plane</span>
+              <span style="font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 700; color: #fff; letter-spacing: 0.06em; border: 1.5px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 3px 12px; text-transform: uppercase; opacity: 0.9;">BETA</span>
+            </div>
+            <!-- Typed text + gradient cursor -->
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; flex-wrap: wrap;">
+              <span id="plane-typing" style="font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 5vw, 3.8rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; color: #fff;"></span><span class="plane-cursor"></span>
             </div>
 
             <!-- Vertical text marquee -->
@@ -241,7 +241,6 @@
       <section style="background: var(--color-surface); padding: var(--space-3xl) 0; overflow: hidden;">
         <div class="container" style="margin-bottom: var(--space-xl);">
           <div data-reveal style="text-align: center;">
-            <p style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; color: var(--color-primary); text-transform: uppercase; margin-bottom: 0.75rem;">Community</p>
             <h2 style="font-family: 'Outfit', sans-serif; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; color: var(--color-white); letter-spacing: -0.02em;">People can't wait for Plane</h2>
           </div>
         </div>
@@ -653,14 +652,20 @@
   (function() {
     var el = document.getElementById('plane-typing');
     if (!el) return;
-    var word = 'Plane', charIdx = 0;
+    var word = 'Experience liftoff with the next-generation Workstation', charIdx = 0;
 
     function tick() {
       if (charIdx < word.length) {
         el.textContent = word.slice(0, ++charIdx);
-        setTimeout(tick, 150);
+        setTimeout(tick, 55);
+      } else {
+        // Typing done — reveal brand row above
+        var reveal = document.getElementById('plane-brand-reveal');
+        if (reveal) {
+          reveal.style.opacity = '1';
+          reveal.style.transform = 'translateY(0)';
+        }
       }
-      // done — stays fixed, cursor keeps blinking via CSS
     }
     tick();
   })();

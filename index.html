@@ -161,19 +161,19 @@
       <section class="hero" aria-labelledby="hero-heading">
         <div class="container hero__layout">
           <div class="hero__content" data-reveal>
-            <h1 class="hero__title" id="hero-heading">
+            <h1 class="hero__title" id="hero-heading" data-i18n="hero.title">
               Intelligent automation for<br>
               <span class="hero__title-highlight">modern businesses.</span>
             </h1>
-            <p class="hero__subtitle">
+            <p class="hero__subtitle" data-i18n="hero.subtitle">
               Avoid months of repetitive manual work. Get a solid automation base ready for production, complete with
               client management, workflows, and task deployment, all pre-configured and tested. <strong>Focus on the
                 unique features of your business, not the boring aspects.</strong>
             </p>
 
             <div class="hero__cta-group">
-              <h3 class="hero__cta-title">Book your consultation</h3>
-              <p class="hero__cta-desc">Schedule a call and receive a tailored implementation plan.<br>No spam, no ads.
+              <h3 class="hero__cta-title" data-i18n="hero.cta.title">Book your consultation</h3>
+              <p class="hero__cta-desc" data-i18n="hero.cta.desc">Schedule a call and receive a tailored implementation plan.<br>No spam, no ads.
                 We only email you when it's important.</p>
 
               <div class="hero__cta-box">
@@ -182,7 +182,7 @@
                   <input type="email" placeholder="your@email.com" class="hero__input" aria-label="Email address"
                     required>
                 </div>
-                <button type="submit" class="hero__submit" data-glow><span class="hero__submit-text">Book your call 🚀</span></button>
+                <button type="submit" class="hero__submit" data-glow><span class="hero__submit-text" data-i18n="hero.cta.btn">Book your call 🚀</span></button>
               </div>
 
               <div class="hero__social-proof">
@@ -192,7 +192,7 @@
                   <span class="avatar avatar--3">E</span>
                   <span class="avatar avatar--4">+184</span>
                 </div>
-                <p class="hero__proof-text"><strong>187</strong> businesses have already<br>booked a call</p>
+                <p class="hero__proof-text" data-i18n="hero.proof"><strong>187</strong> businesses have already<br>booked a call</p>
               </div>
             </div>
           </div>
@@ -369,7 +369,7 @@
       <div class="pixel-transition" aria-hidden="true"></div>
 
       <!-- ── MEET OWL ──────────────────────────────────────────── -->
-      <section class="section bg-dark" id="meetOwl" style="padding: var(--space-4xl) 0; background:var(--color-surface);">
+      <section class="section bg-dark" id="meetOwl" style="padding: var(--space-md) 0 var(--space-4xl) 0; background:var(--color-surface);">
 
         <!-- ── TECH MARQUEE ──────────────────────────────────────── -->
         <div class="aike-marquee-section" aria-label="Integrations">
@@ -871,6 +871,7 @@
   <script src="assets/js/analytics.js"></script>
   <script src="assets/js/stripe-checkout.js"></script>
   <script src="assets/js/bundle.js"></script>
+  <script src="assets/js/i18n.js"></script>
   <script src="assets/js/stacked-panels.js"></script>
 
   <!-- Pricing toggle logic -->

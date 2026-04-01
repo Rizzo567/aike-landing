@@ -262,7 +262,13 @@ function getSettingsOverlayHTML() {
           '<div class="settings-coming-soon"><span>🔒</span>Disponibile a breve</div>' +
         '</div>' +
         '<div class="settings-tab-panel" id="settings-panel-prefs">' +
-          '<div class="settings-coming-soon"><span>⚙️</span>Disponibile a breve</div>' +
+          '<div class="settings-field">' +
+            '<label style="color:var(--color-text-muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">Lingua / Language</label>' +
+            '<div style="display:flex;gap:8px;margin-top:8px;">' +
+              '<button class="lang-btn" id="lang-btn-en" onclick="window.aikeI18n&&window.aikeI18n.setLang(\'en\');window.aikeI18n&&window.aikeI18n.updateLangBtns&&window.aikeI18n.updateLangBtns()" style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--color-border);background:var(--color-surface-alt);color:var(--color-text);cursor:pointer;font-size:0.95rem;transition:border-color 0.2s;">🇬🇧 English</button>' +
+              '<button class="lang-btn" id="lang-btn-it" onclick="window.aikeI18n&&window.aikeI18n.setLang(\'it\');window.aikeI18n&&window.aikeI18n.updateLangBtns&&window.aikeI18n.updateLangBtns()" style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--color-border);background:var(--color-surface-alt);color:var(--color-text);cursor:pointer;font-size:0.95rem;transition:border-color 0.2s;">🇮🇹 Italiano</button>' +
+            '</div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -462,6 +468,7 @@ function initSettingsOverlay() {
     overlay.classList.add('overlay-open');
     document.body.style.overflow = 'hidden';
     if (nameInput) setTimeout(function() { nameInput.focus(); }, 250);
+    if (window.aikeI18n && window.aikeI18n.updateLangBtns) window.aikeI18n.updateLangBtns();
   }
 
   if (closeBtn) closeBtn.addEventListener('click', closeSettings);

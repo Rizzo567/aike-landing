@@ -91,9 +91,6 @@
       vertical-align: middle;
       animation: cursor-color 3s ease-in-out infinite, blink-cursor 0.8s ease-in-out infinite;
     }
-    @keyframes slide-vertical {
-      to { transform: translateY(var(--tm-dest)); }
-    }
   </style>
 </head>
 <body>
@@ -215,19 +212,11 @@
               <span id="plane-typing" style="font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 5vw, 3.8rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; color: #fff;"></span><span class="plane-cursor"></span>
             </div>
 
-            <!-- Vertical text marquee -->
-            <div style="display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 0.5rem;">
-              <span style="font-size: 1.5rem; font-weight: 600; color: var(--color-text-muted); white-space: pre; font-family: 'Outfit', sans-serif;">aike/</span>
-              <div style="position: relative; height: 120px; overflow: hidden;
-                -webkit-mask-image: linear-gradient(rgba(0,0,0,0) 0%, rgb(0,0,0) 43.69%, rgba(0,0,0,0) 100%);
-                mask-image: linear-gradient(rgba(0,0,0,0) 0%, rgb(0,0,0) 43.69%, rgba(0,0,0,0) 100%);">
-                <div style="position: relative; height: 100%;">
-                  <div style="height:40px;display:flex;align-items:center;font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;color:var(--color-white);--tm-dest:-40px;transform:translateY(200px);animation:slide-vertical 4s -4s linear infinite;">owl</div>
-                  <div style="height:40px;display:flex;align-items:center;font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;color:var(--color-white);--tm-dest:-80px;transform:translateY(160px);animation:slide-vertical 4s -3.2s linear infinite;">automation</div>
-                  <div style="height:40px;display:flex;align-items:center;font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;color:var(--color-white);--tm-dest:-120px;transform:translateY(120px);animation:slide-vertical 4s -2.4s linear infinite;">workflow</div>
-                  <div style="height:40px;display:flex;align-items:center;font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;color:var(--color-white);--tm-dest:-160px;transform:translateY(80px);animation:slide-vertical 4s -1.6s linear infinite;">organization</div>
-                  <div style="height:40px;display:flex;align-items:center;font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;color:var(--color-white);--tm-dest:-200px;transform:translateY(40px);animation:slide-vertical 4s -0.8s linear infinite;">together</div>
-                </div>
+            <!-- TextRotate pill -->
+            <div style="display: flex; align-items: center; justify-content: center; margin-top: 0.75rem;">
+              <div style="border: 1.5px solid var(--color-primary); border-radius: 999px; padding: 6px 22px; display: inline-flex; align-items: center; background: rgba(168,85,247,0.06);">
+                <span style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 600; color: var(--color-text-muted); white-space: pre;">aike / </span>
+                <span id="text-rotate-el" style="display: inline-flex; align-items: center; font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; color: #fff;"></span>
               </div>
             </div>
           </div>
@@ -668,6 +657,73 @@
       }
     }
     tick();
+  })();
+  </script>
+
+  <!-- TextRotate: character-by-character word rotation -->
+  <script>
+  (function() {
+    var texts = ['owl', 'automation', 'workflow', 'organization', 'together'];
+    var container = document.getElementById('text-rotate-el');
+    if (!container) return;
+
+    var currentIndex = 0;
+    var staggerMs = 38;
+    var intervalMs = 2600;
+    var isAnimating = false;
+
+    function showText(text) {
+      container.innerHTML = '';
+      var chars = Array.from(text);
+      var inners = [];
+
+      chars.forEach(function(char) {
+        var outer = document.createElement('span');
+        outer.style.cssText = 'display:inline-block;overflow:hidden;height:1.4em;line-height:1.4em;vertical-align:top;';
+        var inner = document.createElement('span');
+        inner.style.cssText = 'display:inline-block;transform:translateY(105%);opacity:0;';
+        inner.textContent = char === ' ' ? '\u00a0' : char;
+        outer.appendChild(inner);
+        container.appendChild(outer);
+        inners.push(inner);
+      });
+
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          inners.forEach(function(inner, i) {
+            var d = i * staggerMs;
+            inner.style.transition = 'transform 0.48s cubic-bezier(0.34,1.56,0.64,1) ' + d + 'ms, opacity 0.28s ease ' + d + 'ms';
+            inner.style.transform = 'translateY(0)';
+            inner.style.opacity = '1';
+          });
+        });
+      });
+    }
+
+    function hideText(callback) {
+      var inners = container.querySelectorAll('span > span');
+      var total = inners.length;
+      if (!total) { callback(); return; }
+      inners.forEach(function(inner, i) {
+        var d = i * staggerMs;
+        inner.style.transition = 'transform 0.26s ease ' + d + 'ms, opacity 0.2s ease ' + d + 'ms';
+        inner.style.transform = 'translateY(-120%)';
+        inner.style.opacity = '0';
+      });
+      setTimeout(callback, 260 + total * staggerMs + 60);
+    }
+
+    showText(texts[0]);
+
+    setInterval(function() {
+      if (isAnimating) return;
+      isAnimating = true;
+      hideText(function() {
+        currentIndex = (currentIndex + 1) % texts.length;
+        showText(texts[currentIndex]);
+        isAnimating = false;
+      });
+    }, intervalMs);
   })();
   </script>
 </body>

@@ -139,7 +139,7 @@
 
           <div class="bundles-grid">
             <!-- Basic -->
-            <div class="bundle-card" data-reveal style="transition-delay: 0s;">
+            <div class="bundle-card" data-reveal style="transition-delay: 0s; padding: 1.5rem 1.75rem;">
               <h3 class="bundle-card__title">Basic</h3>
               <p class="bundle-card__target">For focused teams beginning to automate their manual tasks.</p>
               <div class="bundle-card__price-wrap">
@@ -150,16 +150,15 @@
                 <p class="bundle-card__billed-note" id="billedBasic">€119/yr · billed annually</p>
               </div>
               <ul class="bundle-card__features">
-                <li><span>✓</span> Basic workflows & templates</li>
-                <li><span>✓</span> Standard AI responses</li>
-                <li><span>✓</span> Email support</li>
-                <li><span>✓</span> 1,000 tasks/month</li>
+                <li><span>✓</span> AI workflow automatizzato</li>
+                <li><span>✓</span> Assistente AI personale</li>
+                <li><span>✓</span> Email automation</li>
               </ul>
               <button id="checkoutBasic" onclick="window.aikeCheckout.basic(this)" class="btn btn-outline bundle-card__btn" style="width:100%; cursor:pointer;">Get started</button>
             </div>
 
             <!-- Pro (Recommended) -->
-            <div class="bundle-card bundle-card--highlight" data-reveal style="transition-delay: 0.15s;">
+            <div class="bundle-card bundle-card--highlight" data-reveal style="transition-delay: 0.15s; padding: 1.5rem 1.75rem;">
               <h3 class="bundle-card__title">Pro</h3>
               <p class="bundle-card__target">For scaling businesses needing advanced capabilities and volume.</p>
               <div class="bundle-card__price-wrap">
@@ -170,17 +169,16 @@
                 <p class="bundle-card__billed-note" id="billedPro">€399/yr · billed annually</p>
               </div>
               <ul class="bundle-card__features">
-                <li><span>✓</span> Premium integrations</li>
-                <li><span>✓</span> Custom logic & API access</li>
+                <li><span>✓</span> Tutto il piano Basic incluso</li>
+                <li><span>✓</span> WhatsApp automated replies with AI</li>
                 <li><span>✓</span> Priority 24/7 support</li>
-                <li><span>✓</span> 10,000 tasks/month</li>
                 <li><span>✓</span> Advanced analytics</li>
               </ul>
               <button id="checkoutPro" onclick="window.aikeCheckout.pro(this)" class="btn btn-primary bundle-card__btn" style="width:100%; cursor:pointer;">Get started →</button>
             </div>
 
             <!-- Custom -->
-            <div class="bundle-card" data-reveal style="transition-delay: 0.3s;">
+            <div class="bundle-card" data-reveal style="transition-delay: 0.3s; padding: 1.5rem 1.75rem;">
               <h3 class="bundle-card__title">Custom</h3>
               <p class="bundle-card__target">For mature operations requiring maximum control and orchestration.</p>
               <div class="bundle-card__price-wrap">
@@ -295,7 +293,7 @@
         </div>
 
         <div class="container">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3xl);align-items:center;">
+          <div style="max-width:700px;">
             <div data-reveal>
               <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;color:var(--color-white);line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.25rem;">Your AI operator.<br><span class="always-on-wrap" id="alwaysOnWrap">Always on.<svg class="always-on-underline" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path id="alwaysOnPath" d="M 0,10 Q 75,0 150,10 Q 225,20 300,10"/></svg></span></h2>
               <p style="color:var(--color-text-muted);font-size:1rem;line-height:1.7;margin-bottom:2rem;">Owl is not a chatbot. It's a multi-model AI operator that lives inside your workspace — switching between Claude, GPT-4, and Gemini depending on what the task demands. Sharp, direct, and unrestricted.</p>
@@ -324,12 +322,7 @@
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="6 3 11 8 6 13"/></svg>
               </a>
             </div>
-            <div data-reveal style="transition-delay:0.15s; display:flex; align-items:center; justify-content:center;">
-              <div id="owl-globe-wrap" style="width:100%; max-width:420px; aspect-ratio:1/1; position:relative;">
-                <canvas id="owl-globe" style="width:100%;height:100%;cursor:grab;opacity:0;transition:opacity 1.2s ease;border-radius:50%;touch-action:none;display:block;"></canvas>
-                <!-- pulse markers injected by JS -->
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
@@ -573,113 +566,6 @@
     <!-- Footer (injected by components.js) -->
     <div id="footer-placeholder"></div>
   </div>
-
-  <!-- Cobe globe (Meet Owl section) -->
-  <script src="https://cdn.jsdelivr.net/npm/cobe@0.6.3/dist/cobe.umd.js"></script>
-  <script>
-  (function () {
-    'use strict';
-
-    // Italy (~20 cities) + 6 international markers
-    var MARKERS = [
-      // Italy
-      { location: [41.90, 12.49], size: 0.035 }, // Rome
-      { location: [45.46,  9.19], size: 0.035 }, // Milan
-      { location: [40.85, 14.27], size: 0.03  }, // Naples
-      { location: [45.07,  7.69], size: 0.025 }, // Turin
-      { location: [38.12, 13.36], size: 0.025 }, // Palermo
-      { location: [44.41,  8.93], size: 0.022 }, // Genoa
-      { location: [44.50, 11.34], size: 0.022 }, // Bologna
-      { location: [43.77, 11.26], size: 0.022 }, // Florence
-      { location: [41.12, 16.87], size: 0.02  }, // Bari
-      { location: [37.50, 15.09], size: 0.02  }, // Catania
-      { location: [45.44, 12.32], size: 0.02  }, // Venice
-      { location: [45.44, 10.99], size: 0.018 }, // Verona
-      { location: [38.19, 15.55], size: 0.018 }, // Messina
-      { location: [45.41, 11.88], size: 0.018 }, // Padua
-      { location: [45.65, 13.77], size: 0.018 }, // Trieste
-      { location: [45.54, 10.22], size: 0.018 }, // Brescia
-      { location: [38.11, 15.66], size: 0.016 }, // Reggio Calabria
-      { location: [42.46, 14.21], size: 0.016 }, // Pescara
-      { location: [39.22,  9.12], size: 0.018 }, // Cagliari
-      { location: [43.62, 13.51], size: 0.016 }, // Ancona
-      // International
-      { location: [51.51, -0.13], size: 0.04  }, // London
-      { location: [40.71,-74.01], size: 0.04  }, // New York
-      { location: [35.68,139.65], size: 0.035 }, // Tokyo
-      { location: [-33.87,151.21],size: 0.03  }, // Sydney
-      { location: [48.86,  2.35], size: 0.03  }, // Paris
-      { location: [52.52, 13.41], size: 0.028 }, // Berlin
-    ];
-
-    function initGlobe() {
-      var wrap   = document.getElementById('owl-globe-wrap');
-      var canvas = document.getElementById('owl-globe');
-      if (!canvas || !wrap || typeof window.createGlobe !== 'function') return;
-
-      var dpr  = Math.min(window.devicePixelRatio || 1, 2);
-      var size = wrap.offsetWidth || wrap.getBoundingClientRect().width || 420;
-
-      var phi = 0.6;
-      var theta = 0.25;
-      var isDragging = false;
-      var lastX = 0, lastY = 0;
-
-      var globe = window.createGlobe(canvas, {
-        devicePixelRatio: dpr,
-        width:  size * dpr,
-        height: size * dpr,
-        phi:    phi,
-        theta:  theta,
-        dark:   0,
-        diffuse: 1.4,
-        mapSamples: 16000,
-        mapBrightness: 8,
-        baseColor:   [1, 1, 1],
-        markerColor: [0.2, 0.85, 0.45],
-        glowColor:   [0.92, 0.92, 0.92],
-        markers: MARKERS,
-        onRender: function (state) {
-          if (!isDragging) phi += 0.003;
-          state.phi   = phi;
-          state.theta = theta;
-        }
-      });
-
-      canvas.style.opacity = '1';
-
-      canvas.addEventListener('pointerdown', function (e) {
-        isDragging = true; lastX = e.clientX; lastY = e.clientY;
-        canvas.style.cursor = 'grabbing';
-        canvas.setPointerCapture(e.pointerId);
-      });
-      canvas.addEventListener('pointermove', function (e) {
-        if (!isDragging) return;
-        phi   -= (e.clientX - lastX) * 0.005;
-        theta = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, theta - (e.clientY - lastY) * 0.005));
-        lastX = e.clientX; lastY = e.clientY;
-      });
-      canvas.addEventListener('pointerup',     function () { isDragging = false; canvas.style.cursor = 'grab'; });
-      canvas.addEventListener('pointercancel', function () { isDragging = false; canvas.style.cursor = 'grab'; });
-    }
-
-    function tryInit() {
-      var wrap = document.getElementById('owl-globe-wrap');
-      if (!wrap) return;
-      if (typeof window.createGlobe !== 'function') { setTimeout(tryInit, 60); return; }
-      var w = wrap.offsetWidth || wrap.getBoundingClientRect().width;
-      if (w === 0) {
-        new ResizeObserver(function (entries, obs) {
-          if (entries[0].contentRect.width > 0) { obs.disconnect(); initGlobe(); }
-        }).observe(wrap);
-      } else {
-        initGlobe();
-      }
-    }
-
-    window.addEventListener('load', tryInit);
-  })();
-  </script>
 
   <!-- Spotlight glow — pointer tracker -->
   <script>

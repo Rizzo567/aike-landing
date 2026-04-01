@@ -99,44 +99,41 @@
       <!-- Pixel Transition -->
       <div class="pixel-transition" aria-hidden="true"></div>
 
-      <!-- 2. Core Categories (Cards grid similar to pricing) -->
+      <!-- 2. CTA + Owl Image -->
       <section class="bg-transition-target" style="padding: var(--space-3xl) 0;">
-        <div class="container">
-          <div class="section-header" data-reveal style="text-align: center; max-width: 700px; margin: 0 auto;">
-            <h2 style="font-size: 2.25rem; margin-bottom: 1rem; color: var(--color-white); font-family: 'Outfit', sans-serif;">End-to-end operational mastery</h2>
-            <p style="color: var(--color-text-muted);">We map your business processes entirely into autonomous, high-yield digital flows.</p>
+        <div class="container hero__layout">
+          <!-- LEFT: CTA -->
+          <div class="hero__content" data-reveal>
+            <h2 class="hero__title">"La tua azienda è lenta,<br><span class="hero__title-highlight">ma non te ne accorgi"</span></h2>
+            <div class="hero__cta-group">
+              <h3 class="hero__cta-title">Book your consultation</h3>
+              <p class="hero__cta-desc">Schedule a call and receive a tailored implementation plan.<br>No spam, no ads.
+                We only email you when it's important.</p>
+
+              <div class="hero__cta-box">
+                <div class="hero__input-wrapper">
+                  <span class="hero__input-icon">✉</span>
+                  <input type="email" placeholder="your@email.com" class="hero__input" aria-label="Email address"
+                    required>
+                </div>
+                <button type="submit" class="hero__submit" data-glow><span class="hero__submit-text">Book your call 🚀</span></button>
+              </div>
+
+              <div class="hero__social-proof">
+                <div class="hero__avatars">
+                  <span class="avatar avatar--1">AI</span>
+                  <span class="avatar avatar--2">K</span>
+                  <span class="avatar avatar--3">E</span>
+                  <span class="avatar avatar--4">+184</span>
+                </div>
+                <p class="hero__proof-text"><strong>187</strong> businesses have already<br>booked a call</p>
+              </div>
+            </div>
           </div>
 
-          <div class="bundles-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
-            <div class="bundle-card" data-reveal>
-              <h3 class="bundle-card__title">Client & CRM Logic</h3>
-              <p class="bundle-card__target">No more manual lead follow-ups. We integrate intelligent pipelines.</p>
-              <ul class="bundle-card__features" style="opacity: 0.8;">
-                <li><span>✓</span> Automated lead scoring</li>
-                <li><span>✓</span> Dynamic onboarding flows</li>
-                <li><span>✓</span> Client communication loops</li>
-              </ul>
-            </div>
-            
-            <div class="bundle-card bundle-card--highlight" data-reveal style="transition-delay: 0.1s;">
-              <h3 class="bundle-card__title">Business Workflows</h3>
-              <p class="bundle-card__target">Replacing repetitive human actions with flawless systemic logic.</p>
-              <ul class="bundle-card__features">
-                <li><span>✓</span> Document generation</li>
-                <li><span>✓</span> Internal process triggers</li>
-                <li><span>✓</span> Cross-platform data sync</li>
-              </ul>
-            </div>
-
-            <div class="bundle-card" data-reveal style="transition-delay: 0.2s;">
-              <h3 class="bundle-card__title">Booking & Scheduling</h3>
-              <p class="bundle-card__target">Eliminate calendar friction and secure high-intent appointments.</p>
-              <ul class="bundle-card__features" style="opacity: 0.8;">
-                <li><span>✓</span> Smart availability mapping</li>
-                <li><span>✓</span> Pre-call qualification</li>
-                <li><span>✓</span> Automated reminders</li>
-              </ul>
-            </div>
+          <!-- RIGHT: Owl image -->
+          <div class="hero__visual" aria-hidden="true" data-reveal style="transition-delay:0.2s;">
+            <img src="../assets/images/logo3.png" alt="Aike Owl" class="hero__main-img">
           </div>
         </div>
       </section>

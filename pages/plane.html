@@ -1139,6 +1139,83 @@
   }
 
   /* ─────────────────────────────────────────
+     VOICE BUTTON
+  ───────────────────────────────────────── */
+  #plane-voice-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px;
+    background: transparent;
+    border: 1px solid var(--h-border);
+    border-radius: var(--h-r-sm);
+    color: var(--h-text-muted);
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  #plane-voice-btn:hover { background: var(--h-surface-alt); color: var(--h-text-sec); }
+  #plane-voice-btn.recording {
+    background: rgba(239,68,68,0.12);
+    border-color: rgba(239,68,68,0.4);
+    color: #ef4444;
+    animation: voice-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes voice-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.35); }
+    50%       { box-shadow: 0 0 0 5px rgba(239,68,68,0); }
+  }
+
+  /* ─────────────────────────────────────────
+     ENVIRONMENT NODES
+  ───────────────────────────────────────── */
+  .plane-env-node {
+    position: absolute;
+    width: 220px;
+    background: var(--h-surface);
+    border: 1px solid var(--h-border);
+    border-radius: var(--h-r-lg);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .plane-env-node.plane-env-drop-active {
+    border-color: var(--h-purple);
+    box-shadow: 0 0 0 2px var(--h-purple-dim), 0 4px 24px rgba(0,0,0,0.4);
+  }
+  .plane-env-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--h-border-sub);
+    cursor: grab; user-select: none;
+  }
+  .plane-env-header:active { cursor: grabbing; }
+  .plane-env-logo {
+    display: flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 6px;
+    font-size: 0.72rem; font-weight: 800; color: #fff; flex-shrink: 0;
+  }
+  .plane-env-name { font-size: 0.82rem; font-weight: 600; color: var(--h-text); flex: 1; }
+  .plane-env-body {
+    min-height: 52px; padding: 8px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .plane-env-drop-hint {
+    font-size: 0.7rem; color: var(--h-text-dim);
+    text-align: center; padding: 10px 8px;
+    border: 1px dashed var(--h-border); border-radius: var(--h-r-sm);
+  }
+  .plane-env-footer {
+    padding: 6px 10px 10px;
+    border-top: 1px solid var(--h-border-sub);
+  }
+  .plane-env-join-btn {
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    width: 100%; padding: 6px 0;
+    border-radius: var(--h-r-sm);
+    font-size: 0.8rem; font-weight: 700; color: #fff; letter-spacing: 0.02em;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .plane-env-join-btn:hover { opacity: 0.82; transform: translateY(-1px); }
+  .plane-doc-dragging { opacity: 0.75; }
+
+  /* ─────────────────────────────────────────
      ACTION SEARCH BAR
   ───────────────────────────────────────── */
   #plane-search-wrap {
@@ -1276,16 +1353,6 @@
   </div>
 
   <!-- ══════════════════════════════════════
-       BACK BUTTON
-  ══════════════════════════════════════ -->
-  <button id="plane-back" onclick="window.location.href='owl.html'">
-    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M10 12L6 8l4-4"/>
-    </svg>
-    Owl
-  </button>
-
-  <!-- ══════════════════════════════════════
        AGENT INSTRUCTIONS PANEL
   ══════════════════════════════════════ -->
   <div id="plane-agent-panel">
@@ -1374,8 +1441,6 @@
           <circle cx="6" cy="6" r="3" fill="var(--h-purple)" opacity="0.7"/>
           <circle cx="6" cy="6" r="5" stroke="var(--h-purple)" stroke-width="1" opacity="0.3" fill="none"/>
         </svg>
-        <img id="planeOwlAnim" src="../assets/images/owl1.png" alt=""
-             style="width:20px;height:20px;image-rendering:pixelated;display:inline-block;vertical-align:middle;margin-right:6px;flex-shrink:0;">
         <span>Owl 3.0</span>
         <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 3.5l3 3 3-3"/>
@@ -1389,6 +1454,13 @@
           <circle cx="6" cy="5" r="1.5" fill="var(--h-bg)" stroke="currentColor" stroke-width="1.2"/>
           <circle cx="10" cy="8" r="1.5" fill="var(--h-bg)" stroke="currentColor" stroke-width="1.2"/>
           <circle cx="7" cy="11" r="1.5" fill="var(--h-bg)" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+      </button>
+      <button id="plane-voice-btn" title="Voce (microfono)" type="button">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="1.5" width="6" height="8" rx="3"/>
+          <path d="M2.5 8.5A5.5 5.5 0 008 14a5.5 5.5 0 005.5-5.5"/>
+          <line x1="8" y1="14" x2="8" y2="15.5"/>
         </svg>
       </button>
       <button id="plane-submit" title="Invia (Invio)" disabled>
@@ -1573,6 +1645,16 @@
         <span>Immagine</span>
       </div>
 
+      <div class="plane-elem-item" data-elem-type="documento" data-elem-label="Documento">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V6L9 2z"/>
+          <path d="M9 2v4h4"/>
+          <line x1="5.5" y1="8" x2="10.5" y2="8"/>
+          <line x1="5.5" y1="11" x2="9" y2="11"/>
+        </svg>
+        <span>Documento</span>
+      </div>
+
       <!-- Categoria: Struttura -->
       <div class="plane-elem-category">Struttura</div>
       <div class="plane-elem-item" data-elem-type="frame" data-elem-label="Frame">
@@ -1628,6 +1710,41 @@
           <path d="M9.5 5.5L12.5 8l-3 2.5"/>
         </svg>
         <span>Connessione</span>
+      </div>
+
+      <!-- Categoria: Ambienti -->
+      <div class="plane-elem-category">Ambienti</div>
+
+      <div class="plane-elem-item" data-elem-type="env-claude" data-elem-label="Claude">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none">
+          <rect width="16" height="16" rx="4" fill="#e07050" opacity="0.15"/>
+          <text x="8" y="12" text-anchor="middle" fill="#e07050" font-size="9" font-family="Inter" font-weight="800">C</text>
+        </svg>
+        <span>Claude</span>
+      </div>
+
+      <div class="plane-elem-item" data-elem-type="env-gemini" data-elem-label="Gemini">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none">
+          <rect width="16" height="16" rx="4" fill="#4285f4" opacity="0.15"/>
+          <text x="8" y="12" text-anchor="middle" fill="#4285f4" font-size="9" font-family="Inter" font-weight="800">G</text>
+        </svg>
+        <span>Gemini</span>
+      </div>
+
+      <div class="plane-elem-item" data-elem-type="env-chatgpt" data-elem-label="ChatGPT">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none">
+          <rect width="16" height="16" rx="4" fill="#10a37f" opacity="0.15"/>
+          <text x="8" y="12" text-anchor="middle" fill="#10a37f" font-size="9" font-family="Inter" font-weight="800">GP</text>
+        </svg>
+        <span>ChatGPT</span>
+      </div>
+
+      <div class="plane-elem-item" data-elem-type="env-kimi" data-elem-label="Kimi 2.5">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none">
+          <rect width="16" height="16" rx="4" fill="#6366f1" opacity="0.15"/>
+          <text x="8" y="12" text-anchor="middle" fill="#6366f1" font-size="9" font-family="Inter" font-weight="800">K</text>
+        </svg>
+        <span>Kimi 2.5</span>
       </div>
 
     </div>
@@ -2471,12 +2588,241 @@ function addNodeToCanvas(type, label) {
   toggleElementsPanel(true);
 }
 
+/* ════════════════════════════════════════════
+   AI ENVIRONMENT NODES
+════════════════════════════════════════════ */
+const ENV_CONFIGS = {
+  'env-claude':  { name: 'Claude',   url: 'https://claude.ai',           color: '#e07050', bg: 'rgba(224,112,80,0.12)' },
+  'env-gemini':  { name: 'Gemini',   url: 'https://gemini.google.com',   color: '#4285f4', bg: 'rgba(66,133,244,0.12)' },
+  'env-chatgpt': { name: 'ChatGPT',  url: 'https://chat.openai.com',     color: '#10a37f', bg: 'rgba(16,163,127,0.12)' },
+  'env-kimi':    { name: 'Kimi 2.5', url: 'https://kimi.moonshot.cn',    color: '#6366f1', bg: 'rgba(99,102,241,0.12)'  },
+};
+
+function addEnvToCanvas(type) {
+  const cfg = ENV_CONFIGS[type];
+  if (!cfg) return;
+  const vw = window.innerWidth / 2, vh = window.innerHeight / 2;
+  const x = (vw - translateX) / scale, y = (vh - translateY) / scale;
+
+  const node = document.createElement('div');
+  node.className = 'plane-env-node';
+  node.dataset.envType = type;
+  node.style.left = (x - 110) + 'px';
+  node.style.top  = (y - 70) + 'px';
+  node.style.zIndex = ++blockZCounter;
+
+  const initial = cfg.name === 'ChatGPT' ? 'GP' : cfg.name[0];
+
+  node.innerHTML = `
+    <div class="plane-env-header">
+      <div class="plane-env-logo" style="background:${cfg.bg};color:${cfg.color};">${initial}</div>
+      <span class="plane-env-name">${cfg.name}</span>
+      <button class="plane-node-close" title="Rimuovi">
+        <svg viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="plane-env-body">
+      <div class="plane-env-drop-hint">Trascina documenti qui</div>
+    </div>
+    <div class="plane-env-footer">
+      <button class="plane-env-join-btn" style="background:${cfg.color};" data-url="${cfg.url}">
+        Join
+        <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9"/>
+          <path d="M11 1h4v4"/><line x1="15" y1="1" x2="8" y2="8"/>
+        </svg>
+      </button>
+    </div>
+  `;
+
+  node.querySelector('.plane-env-join-btn').addEventListener('click', () => {
+    window.open(cfg.url, '_blank', 'noopener');
+  });
+
+  node.addEventListener('mousedown', () => { node.style.zIndex = ++blockZCounter; });
+
+  const envHeader = node.querySelector('.plane-env-header');
+  let envDrag = false, envOffX = 0, envOffY = 0;
+  envHeader.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.plane-node-close')) return;
+    envDrag = true;
+    envOffX = e.clientX - node.getBoundingClientRect().left;
+    envOffY = e.clientY - node.getBoundingClientRect().top;
+    node.style.zIndex = ++blockZCounter;
+    e.preventDefault(); e.stopPropagation();
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!envDrag) return;
+    const r = canvasViewport.getBoundingClientRect();
+    node.style.left = ((e.clientX - envOffX - r.left) - translateX) / scale + 'px';
+    node.style.top  = ((e.clientY - envOffY - r.top)  - translateY) / scale + 'px';
+  });
+  window.addEventListener('mouseup', () => { envDrag = false; });
+
+  node.querySelector('.plane-node-close').addEventListener('click', () => {
+    node.style.transition = 'opacity 0.18s';
+    node.style.opacity = '0';
+    setTimeout(() => node.remove(), 180);
+  });
+
+  canvasInner.appendChild(node);
+  toggleElementsPanel(true);
+}
+
+/* ════════════════════════════════════════════
+   DOCUMENT NODES (draggable into envs)
+════════════════════════════════════════════ */
+function addDocToCanvas() {
+  const vw = window.innerWidth / 2, vh = window.innerHeight / 2;
+  const x = (vw - translateX) / scale, y = (vh - translateY) / scale;
+
+  const node = document.createElement('div');
+  node.className = 'plane-node plane-doc-node';
+  node.dataset.type = 'documento';
+  node.style.left = (x - 90) + 'px';
+  node.style.top  = (y - 60) + 'px';
+  node.style.zIndex = ++blockZCounter;
+
+  node.innerHTML = `
+    <div class="plane-node-header">
+      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V6L9 2z"/>
+        <path d="M9 2v4h4"/>
+        <line x1="5.5" y1="8" x2="10.5" y2="8"/>
+        <line x1="5.5" y1="11" x2="9" y2="11"/>
+      </svg>
+      <span class="plane-node-label" contenteditable="true" spellcheck="false">Documento</span>
+      <button class="plane-node-close" title="Rimuovi">
+        <svg viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="plane-node-body">
+      <div class="plane-node-editable" contenteditable="true" data-placeholder="Contenuto del documento..."></div>
+    </div>
+  `;
+
+  node.addEventListener('mousedown', () => { node.style.zIndex = ++blockZCounter; });
+
+  const docHeader = node.querySelector('.plane-node-header');
+  let docDrag = false, docOffX = 0, docOffY = 0;
+
+  docHeader.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.plane-node-close') || e.target.closest('[contenteditable]')) return;
+    docDrag = true;
+    docOffX = e.clientX - node.getBoundingClientRect().left;
+    docOffY = e.clientY - node.getBoundingClientRect().top;
+    node.style.zIndex = ++blockZCounter;
+    node.classList.add('plane-doc-dragging');
+    e.preventDefault(); e.stopPropagation();
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!docDrag) return;
+    const r = canvasViewport.getBoundingClientRect();
+    node.style.left = ((e.clientX - docOffX - r.left) - translateX) / scale + 'px';
+    node.style.top  = ((e.clientY - docOffY - r.top)  - translateY) / scale + 'px';
+    // Highlight env node under cursor
+    document.querySelectorAll('.plane-env-node').forEach(env => {
+      const er = env.getBoundingClientRect();
+      env.classList.toggle('plane-env-drop-active',
+        e.clientX >= er.left && e.clientX <= er.right &&
+        e.clientY >= er.top  && e.clientY <= er.bottom);
+    });
+  });
+
+  window.addEventListener('mouseup', (e) => {
+    if (!docDrag) return;
+    docDrag = false;
+    node.classList.remove('plane-doc-dragging');
+    const dropEnv = document.querySelector('.plane-env-node.plane-env-drop-active');
+    if (dropEnv) {
+      dropEnv.classList.remove('plane-env-drop-active');
+      const envBody = dropEnv.querySelector('.plane-env-body');
+      const hint = envBody.querySelector('.plane-env-drop-hint');
+      if (hint) hint.style.display = 'none';
+      // Re-insert node as child of env body
+      node.style.position = 'relative';
+      node.style.left = ''; node.style.top = '';
+      node.style.zIndex = ''; node.style.width = '100%';
+      envBody.appendChild(node);
+    } else {
+      document.querySelectorAll('.plane-env-node').forEach(env => env.classList.remove('plane-env-drop-active'));
+    }
+  });
+
+  node.querySelector('.plane-node-close').addEventListener('click', () => {
+    node.style.transition = 'opacity 0.18s';
+    node.style.opacity = '0';
+    setTimeout(() => node.remove(), 180);
+  });
+
+  canvasInner.appendChild(node);
+  toggleElementsPanel(true);
+}
+
+/* ════════════════════════════════════════════
+   VOICE BUTTON
+════════════════════════════════════════════ */
+(function() {
+  const voiceBtn = document.getElementById('plane-voice-btn');
+  const planeInput = document.getElementById('plane-input');
+  if (!voiceBtn || !planeInput) return;
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    voiceBtn.title = 'Riconoscimento vocale non supportato';
+    voiceBtn.style.opacity = '0.35';
+    return;
+  }
+
+  const rec = new SpeechRecognition();
+  rec.lang = 'it-IT';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+
+  let isRecording = false;
+
+  rec.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    planeInput.value += (planeInput.value ? ' ' : '') + transcript;
+    planeInput.dispatchEvent(new Event('input'));
+  };
+  rec.onend = () => {
+    isRecording = false;
+    voiceBtn.classList.remove('recording');
+  };
+  rec.onerror = () => {
+    isRecording = false;
+    voiceBtn.classList.remove('recording');
+  };
+
+  voiceBtn.addEventListener('click', () => {
+    if (isRecording) {
+      rec.stop();
+    } else {
+      isRecording = true;
+      voiceBtn.classList.add('recording');
+      rec.start();
+    }
+  });
+})();
+
 // Wire up element items
 document.querySelectorAll('.plane-elem-item').forEach(item => {
   item.addEventListener('click', () => {
     const type  = item.dataset.elemType;
     const label = item.dataset.elemLabel;
-    addNodeToCanvas(type, label);
+    if (type.startsWith('env-')) {
+      addEnvToCanvas(type);
+    } else if (type === 'documento') {
+      addDocToCanvas();
+    } else {
+      addNodeToCanvas(type, label);
+    }
   });
 });
 

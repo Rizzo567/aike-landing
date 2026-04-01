@@ -71,6 +71,20 @@
     .sol-line-2.sol-animate-2 {
       clip-path: inset(0 0% 0 0);
     }
+
+    @keyframes plane-grad {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .plane-gradient-text {
+      background: linear-gradient(270deg, #a855f7, #c084fc, #6d28d9, #e879f9, #7c3aed, #a855f7);
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: plane-grad 6s ease-in-out infinite;
+    }
   </style>
 </head>
 <body>
@@ -180,42 +194,11 @@
         <div class="container">
           <div class="section-header" data-reveal style="text-align: center; max-width: 700px; margin: 0 auto;">
             <div style="display: inline-flex; align-items: center; gap: 10px; margin-bottom: 1.25rem;">
-              <span style="font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 800; color: var(--color-white); letter-spacing: -0.02em;">Plane</span>
-              <span style="font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--color-white); letter-spacing: 0.06em; border: 1.5px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 3px 12px; text-transform: uppercase; opacity: 0.9;">BETA</span>
+              <span class="plane-gradient-text" style="font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 5vw, 3.8rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;">Plane</span>
+              <span style="font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; color: var(--color-white); letter-spacing: 0.06em; border: 1.5px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 3px 12px; text-transform: uppercase; opacity: 0.9;">BETA</span>
             </div>
           </div>
 
-          <div class="bundles-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
-            <div class="bundle-card" data-reveal>
-              <h3 class="bundle-card__title">Client & CRM Logic</h3>
-              <p class="bundle-card__target">No more manual lead follow-ups. We integrate intelligent pipelines.</p>
-              <ul class="bundle-card__features" style="opacity: 0.8;">
-                <li><span>✓</span> Automated lead scoring</li>
-                <li><span>✓</span> Dynamic onboarding flows</li>
-                <li><span>✓</span> Client communication loops</li>
-              </ul>
-            </div>
-            
-            <div class="bundle-card bundle-card--highlight" data-reveal style="transition-delay: 0.1s;">
-              <h3 class="bundle-card__title">Business Workflows</h3>
-              <p class="bundle-card__target">Replacing repetitive human actions with flawless systemic logic.</p>
-              <ul class="bundle-card__features">
-                <li><span>✓</span> Document generation</li>
-                <li><span>✓</span> Internal process triggers</li>
-                <li><span>✓</span> Cross-platform data sync</li>
-              </ul>
-            </div>
-
-            <div class="bundle-card" data-reveal style="transition-delay: 0.2s;">
-              <h3 class="bundle-card__title">Booking & Scheduling</h3>
-              <p class="bundle-card__target">Eliminate calendar friction and secure high-intent appointments.</p>
-              <ul class="bundle-card__features" style="opacity: 0.8;">
-                <li><span>✓</span> Smart availability mapping</li>
-                <li><span>✓</span> Pre-call qualification</li>
-                <li><span>✓</span> Automated reminders</li>
-              </ul>
-            </div>
-          </div>
         </div>
       </section>
 

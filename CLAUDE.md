@@ -123,5 +123,13 @@ Cloudflare Pages: push su `main` → deploy automatico.
 ## Branch & Git
 
 - Branch principale: `main`
-- Push diretto su main (niente PR workflow attivo)
+- **MAI pushare direttamente su main** — lavora sempre su un feature branch
+- Workflow obbligatorio:
+  1. `git checkout main && git pull origin main`
+  2. `git checkout -b feature/<nome-task>` (es. `feature/owl-hero`, `feature/homepage-nav`)
+  3. Fai il lavoro
+  4. `git add -A && git commit -m "feat(scope): descrizione"`
+  5. `git push origin feature/<nome-task>`
+  6. Il merge su main lo fa l'utente manualmente
 - Commit con prefisso: `feat(scope):`, `fix(scope):`, `refactor(scope):`
+- Agenti paralleli: ognuno su branch separato per evitare conflitti

@@ -1178,38 +1178,6 @@
     }
 
     /* ══════════════════════════════════════════════════════════════
-       CREDIT WARNING BAR
-    ══════════════════════════════════════════════════════════════ */
-    .owl-credit-warn {
-      display: none; flex-direction: column; gap: 7px;
-      padding: 9px 14px; margin-bottom: 4px;
-      background: rgba(251,191,36,0.04);
-      border: 1px solid rgba(251,191,36,0.14);
-      border-radius: var(--h-r-md);
-      animation: owlFadeUp 0.3s cubic-bezier(0.16,1,0.3,1);
-    }
-    .owl-credit-warn.visible { display: flex; }
-    .owl-credit-warn-row { display: flex; align-items: center; gap: 8px; }
-    .owl-credit-warn-icon { color: #fbbf24; flex-shrink: 0; }
-    .owl-credit-warn-text { flex: 1; font-size: 0.79rem; color: var(--h-text-muted); }
-    .owl-credit-warn-text strong { color: #fbbf24; font-weight: 600; }
-    .owl-credit-warn-cta {
-      font-size: 0.76rem; font-weight: 600; color: var(--h-purple);
-      background: none; border: none; cursor: pointer; font-family: var(--h-font);
-      white-space: nowrap; padding: 0; flex-shrink: 0;
-      transition: color 140ms ease;
-    }
-    .owl-credit-warn-cta:hover { color: #c084fc; }
-    .owl-credit-bar-track {
-      height: 2px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden;
-    }
-    .owl-credit-bar-fill {
-      height: 100%; border-radius: 99px;
-      background: linear-gradient(90deg, #d97706, #fbbf24);
-      transition: width 600ms cubic-bezier(0.16,1,0.3,1);
-    }
-
-    /* ══════════════════════════════════════════════════════════════
        SETTINGS OVERLAY
     ══════════════════════════════════════════════════════════════ */
     .owl-sett-overlay {
@@ -2490,11 +2458,6 @@
           </button>
         </div>
 
-        <button class="owl-profile-menu-item" data-profile-action="usage" role="menuitem">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="3" height="4" rx="1"/><rect x="6.5" y="6" width="3" height="8" rx="1"/><rect x="11" y="2" width="3" height="12" rx="1"/></svg>
-          <span>Piano e crediti</span>
-        </button>
-
         <div class="owl-profile-menu-divider"></div>
 
         <button class="owl-profile-menu-item" data-profile-action="upgrade" role="menuitem">
@@ -2581,18 +2544,6 @@
     <!-- Input -->
     <div class="owl-input-area">
       <div class="owl-input-inner">
-
-        <!-- Credit warning bar — visible when >80% credits used -->
-        <div class="owl-credit-warn" id="owlCreditWarn">
-          <div class="owl-credit-warn-row">
-            <svg class="owl-credit-warn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="7"/><line x1="8" y1="5.5" x2="8" y2="8.5"/><circle cx="8" cy="11" r="0.6" fill="currentColor" stroke="none"/></svg>
-            <span class="owl-credit-warn-text">Ti restano solo il <strong id="owlCreditPct">—</strong> dei crediti Owl</span>
-            <button class="owl-credit-warn-cta" id="owlCreditWarnCta">Ottieni più →</button>
-          </div>
-          <div class="owl-credit-bar-track">
-            <div class="owl-credit-bar-fill" id="owlCreditFill" style="width:0%"></div>
-          </div>
-        </div>
 
         <div class="owl-input-shell" id="owlInputShell">
           <textarea
@@ -3509,13 +3460,6 @@
                 <span class="owl-usage-plan-badge free" id="owlPlanBadge">Free</span>
                 <span class="owl-usage-plan-name" id="owlPlanName">Piano Gratuito</span>
               </div>
-              <div class="owl-usage-credits-row">
-                <div>
-                  <div class="owl-usage-credits-num" id="owlCreditsNum">—</div>
-                  <div class="owl-usage-credits-label">crediti rimanenti</div>
-                </div>
-                <div class="owl-usage-credits-info" id="owlCreditsInfo"></div>
-              </div>
               <div class="owl-usage-bar-track">
                 <div class="owl-usage-bar-fill" id="owlUsageBarFill" style="width:0%"></div>
               </div>
@@ -4359,7 +4303,6 @@
       });
 
       stopWriting();
-      deductCredit(currentModel);
       finalizeStreamingEl(streamEl, fullContent);
       convoMessages.push({ role: 'assistant', content: fullContent });
       extractMemoryFacts(fullContent, convoMessages);
@@ -5808,7 +5751,6 @@
         scrollToBottom();
       }).then(function() {
         stopWriting();
-        deductCredit(currentModel);
         finalizeStreamingEl(regenStreamEl, regenFullContent);
         convoMessages.push({ role: 'assistant', content: regenFullContent });
         if (currentConvoId) upsertConversation(currentConvoId, convoMessages[0].content, currentModel, convoMessages);
@@ -5825,75 +5767,6 @@
         scrollToBottom();
       });
     }
-  });
-
-  // ─────────────────────────────────────────────────────────────────
-  // CREDIT SYSTEM
-  // ─────────────────────────────────────────────────────────────────
-  var STORAGE_CREDITS = 'owl_credits_v1';
-  var CREDIT_COSTS    = { 'claude-sonnet-4-6': 2, 'gemini-2.5-flash': 1, 'gemini-2.5-pro': 3, 'gpt-4o': 2, 'gpt-4.1': 2, 'nano-banana-2': 4, 'nano-banana-pro': 6 };
-
-  function loadCredits() {
-    try {
-      var raw = JSON.parse(localStorage.getItem(STORAGE_CREDITS));
-      if (raw && typeof raw.total === 'number') return raw;
-    } catch {}
-    var def = { total: 30, used: 0, plan: 'free' };
-    localStorage.setItem(STORAGE_CREDITS, JSON.stringify(def));
-    return def;
-  }
-
-  function saveCredits(c) { localStorage.setItem(STORAGE_CREDITS, JSON.stringify(c)); }
-
-  function deductCredit(model) {
-    var c    = loadCredits();
-    var cost = CREDIT_COSTS[model] || 1;
-    c.used   = Math.min(c.used + cost, c.total);
-    saveCredits(c);
-    updateCreditUI();
-  }
-
-  function updateCreditUI() {
-    var c   = loadCredits();
-    var pct = c.total > 0 ? c.used / c.total : 0;
-
-    // Warning bar in chat input area
-    var warnEl = document.getElementById('owlCreditWarn');
-    var fillEl = document.getElementById('owlCreditFill');
-    var pctEl  = document.getElementById('owlCreditPct');
-    if (warnEl && fillEl && pctEl) {
-      var pctLeft = Math.max(0, Math.round((1 - pct) * 100));
-      if (pct >= 0.8) {
-        pctEl.textContent = pctLeft + '%';
-        fillEl.style.width = Math.round(pct * 100) + '%';
-        warnEl.classList.add('visible');
-      } else {
-        warnEl.classList.remove('visible');
-      }
-    }
-
-    // Settings usage tab
-    var remaining = c.total - c.used;
-    var numEl = document.getElementById('owlCreditsNum');
-    if (numEl) numEl.textContent = remaining;
-    var infoEl = document.getElementById('owlCreditsInfo');
-    if (infoEl) infoEl.innerHTML = c.used + ' / ' + c.total + ' usati';
-    var barFill = document.getElementById('owlUsageBarFill');
-    if (barFill) {
-      barFill.style.width = Math.round(pct * 100) + '%';
-      barFill.classList.toggle('warn', pct >= 0.8);
-    }
-    var planBadge = document.getElementById('owlPlanBadge');
-    var planNameEl = document.getElementById('owlPlanName');
-    var planMap = { free: ['Free', 'Piano Gratuito'], basic: ['Basic', 'Piano Basic'], pro: ['Pro', 'Piano Pro'] };
-    var planInfo = planMap[c.plan] || planMap.free;
-    if (planBadge) { planBadge.className = 'owl-usage-plan-badge ' + (c.plan || 'free'); planBadge.textContent = planInfo[0]; }
-    if (planNameEl) planNameEl.textContent = planInfo[1];
-    updateSidebarPlan();
-  }
-
-  document.getElementById('owlCreditWarnCta').addEventListener('click', function () {
-    openSettings('usage');
   });
 
   // ─────────────────────────────────────────────────────────────────
@@ -5969,7 +5842,6 @@
     settOverlay.classList.add('open');
     document.body.style.overflow = 'hidden';
     switchSettSection(sec);
-    updateCreditUI();
     applyOwlPrefs();
     loadAIProfileForm();
     // Sync account panel
@@ -6370,7 +6242,6 @@
   tryLoadUser();
   setDynamicGreeting();
   loadSettingsForm();
-  updateCreditUI();
   applyLanguage(_initPrefs.language || 'auto');
   textarea.focus();
 

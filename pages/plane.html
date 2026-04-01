@@ -934,6 +934,209 @@
     50%  { transform: scale(1.03) translateY(-1px); }
     100% { transform: scale(1) translateY(0); }
   }
+
+  /* ─────────────────────────────────────────
+     ADD BUTTON (fixed left)
+  ───────────────────────────────────────── */
+  #plane-add-btn {
+    position: fixed;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--h-surface);
+    border: 1px solid var(--h-border);
+    border-radius: var(--h-r-md);
+    color: var(--h-text-muted);
+    transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+    backdrop-filter: blur(12px);
+    flex-shrink: 0;
+  }
+  #plane-add-btn:hover {
+    background: var(--h-surface-alt);
+    border-color: rgba(255,250,240,0.14);
+    color: var(--h-purple);
+  }
+  #plane-add-btn svg {
+    transition: transform 180ms ease, color 180ms ease;
+  }
+  #plane-add-btn.elem-open {
+    background: var(--h-purple-dim);
+    border-color: rgba(224,112,80,0.3);
+    color: var(--h-purple);
+  }
+  #plane-add-btn.elem-open svg {
+    transform: rotate(45deg);
+  }
+
+  /* ─────────────────────────────────────────
+     ELEMENTS PANEL (fixed right)
+  ───────────────────────────────────────── */
+  #plane-elements-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 260px;
+    z-index: 99;
+    background: var(--h-sidebar);
+    border-left: 1px solid var(--h-border);
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 180ms cubic-bezier(0.32,0,0.67,0);
+    pointer-events: none;
+  }
+  #plane-elements-panel.elem-open {
+    transform: translateX(0);
+    pointer-events: all;
+    transition: transform 220ms cubic-bezier(0.32,0,0.67,0);
+  }
+  #plane-elements-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 16px 12px;
+    border-bottom: 1px solid var(--h-border);
+    flex-shrink: 0;
+  }
+  #plane-elements-panel-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--h-text);
+  }
+  #plane-elements-panel-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--h-r-sm);
+    color: var(--h-text-dim);
+    transition: background 140ms ease, color 140ms ease;
+  }
+  #plane-elements-panel-close:hover {
+    background: var(--h-surface);
+    color: var(--h-text-sec);
+  }
+  #plane-elements-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 8px 16px;
+  }
+  #plane-elements-list::-webkit-scrollbar { width: 3px; }
+  #plane-elements-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+  .plane-elem-category {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--h-text-dim);
+    padding: 14px 14px 6px;
+  }
+  .plane-elem-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border-radius: var(--h-r-sm);
+    font-size: 0.84rem;
+    color: var(--h-text-sec);
+    cursor: pointer;
+    transition: background 140ms ease;
+  }
+  .plane-elem-item:hover {
+    background: var(--h-surface);
+  }
+  .plane-elem-item svg {
+    flex-shrink: 0;
+    color: var(--h-text-muted);
+  }
+
+  /* ─────────────────────────────────────────
+     CANVAS NODES
+  ───────────────────────────────────────── */
+  .plane-node {
+    position: absolute;
+    background: var(--h-surface);
+    border: 1px solid var(--h-border);
+    border-radius: var(--h-r-md);
+    padding: 0;
+    min-width: 180px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    user-select: none;
+    transition: box-shadow 140ms ease;
+  }
+  .plane-node:hover {
+    box-shadow: 0 6px 32px rgba(0,0,0,0.5);
+  }
+  .plane-node-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px 8px;
+    cursor: move;
+    border-bottom: 1px solid var(--h-border-sub);
+    flex-shrink: 0;
+  }
+  .plane-node-header svg {
+    color: var(--h-text-muted);
+    flex-shrink: 0;
+  }
+  .plane-node-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--h-text-sec);
+    flex: 1;
+  }
+  .plane-node-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    color: var(--h-text-dim);
+    transition: background 120ms ease, color 120ms ease;
+    cursor: pointer;
+  }
+  .plane-node-close:hover {
+    background: var(--h-surface-alt);
+    color: var(--h-text-sec);
+  }
+  .plane-node-body {
+    padding: 12px;
+    min-height: 60px;
+  }
+  .plane-node-editable {
+    min-height: 48px;
+    color: var(--h-text-sec);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    outline: none;
+    caret-color: var(--h-purple);
+  }
+  .plane-node-editable:empty::before {
+    content: attr(data-placeholder);
+    color: var(--h-text-dim);
+    pointer-events: none;
+  }
+  .plane-node-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    border: 1px dashed var(--h-border);
+    border-radius: var(--h-r-sm);
+    color: var(--h-text-dim);
+    font-size: 0.78rem;
+  }
   </style>
 </head>
 <body>
@@ -1047,7 +1250,7 @@
           <circle cx="6" cy="6" r="3" fill="var(--h-purple)" opacity="0.7"/>
           <circle cx="6" cy="6" r="5" stroke="var(--h-purple)" stroke-width="1" opacity="0.3" fill="none"/>
         </svg>
-        <img id="planeOwlAnim" src="../assets/images/owl1.jpeg" alt=""
+        <img id="planeOwlAnim" src="../assets/images/owl1.png" alt=""
              style="width:20px;height:20px;image-rendering:pixelated;display:inline-block;vertical-align:middle;margin-right:6px;flex-shrink:0;">
         <span>Owl 3.0</span>
         <svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
@@ -1195,6 +1398,118 @@
   </div>
 
   <!-- ══════════════════════════════════════
+       ADD BUTTON — fixed left center
+  ══════════════════════════════════════ -->
+  <button id="plane-add-btn" title="Aggiungi elemento" aria-label="Aggiungi elemento">
+    <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <line x1="8" y1="3" x2="8" y2="13"/>
+      <line x1="3" y1="8" x2="13" y2="8"/>
+    </svg>
+  </button>
+
+  <!-- ══════════════════════════════════════
+       ELEMENTS PANEL — fixed right
+  ══════════════════════════════════════ -->
+  <div id="plane-elements-panel" role="dialog" aria-label="Elementi">
+    <div id="plane-elements-panel-header">
+      <span id="plane-elements-panel-title">Elementi</span>
+      <button id="plane-elements-panel-close" title="Chiudi">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <line x1="4" y1="4" x2="12" y2="12"/>
+          <line x1="12" y1="4" x2="4" y2="12"/>
+        </svg>
+      </button>
+    </div>
+    <div id="plane-elements-list">
+
+      <!-- Categoria: Base -->
+      <div class="plane-elem-category">Base</div>
+      <div class="plane-elem-item" data-elem-type="testo" data-elem-label="Testo">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+          <line x1="3" y1="4" x2="13" y2="4"/>
+          <line x1="8" y1="4" x2="8" y2="13"/>
+          <line x1="5" y1="13" x2="11" y2="13"/>
+        </svg>
+        <span>Testo</span>
+      </div>
+      <div class="plane-elem-item" data-elem-type="nota" data-elem-label="Nota">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="2" width="10" height="12" rx="1.5"/>
+          <line x1="5.5" y1="6" x2="10.5" y2="6"/>
+          <line x1="5.5" y1="9" x2="9" y2="9"/>
+        </svg>
+        <span>Nota</span>
+      </div>
+      <div class="plane-elem-item" data-elem-type="immagine" data-elem-label="Immagine">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="12" height="10" rx="1.5"/>
+          <circle cx="5.5" cy="6.5" r="1.2"/>
+          <path d="M2 11l3-3 2.5 2.5L10 7.5l4 4"/>
+        </svg>
+        <span>Immagine</span>
+      </div>
+
+      <!-- Categoria: Struttura -->
+      <div class="plane-elem-category">Struttura</div>
+      <div class="plane-elem-item" data-elem-type="frame" data-elem-label="Frame">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="10" height="10" rx="1"/>
+          <line x1="6" y1="1" x2="6" y2="3"/>
+          <line x1="10" y1="1" x2="10" y2="3"/>
+          <line x1="6" y1="13" x2="6" y2="15"/>
+          <line x1="10" y1="13" x2="10" y2="15"/>
+          <line x1="1" y1="6" x2="3" y2="6"/>
+          <line x1="1" y1="10" x2="3" y2="10"/>
+          <line x1="13" y1="6" x2="15" y2="6"/>
+          <line x1="13" y1="10" x2="15" y2="10"/>
+        </svg>
+        <span>Frame</span>
+      </div>
+      <div class="plane-elem-item" data-elem-type="forma" data-elem-label="Forma">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4">
+          <circle cx="8" cy="8" r="5.5"/>
+        </svg>
+        <span>Forma</span>
+      </div>
+      <div class="plane-elem-item" data-elem-type="separatore" data-elem-label="Separatore">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <line x1="2" y1="8" x2="14" y2="8"/>
+        </svg>
+        <span>Separatore</span>
+      </div>
+
+      <!-- Categoria: Dati -->
+      <div class="plane-elem-category">Dati</div>
+      <div class="plane-elem-item" data-elem-type="grafico" data-elem-label="Grafico">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="9" width="3" height="5" rx="0.5"/>
+          <rect x="6.5" y="5" width="3" height="9" rx="0.5"/>
+          <rect x="11" y="2" width="3" height="12" rx="0.5"/>
+        </svg>
+        <span>Grafico</span>
+      </div>
+      <div class="plane-elem-item" data-elem-type="tabella" data-elem-label="Tabella">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="12" height="10" rx="1"/>
+          <line x1="2" y1="7" x2="14" y2="7"/>
+          <line x1="7" y1="3" x2="7" y2="13"/>
+        </svg>
+        <span>Tabella</span>
+      </div>
+      <div class="plane-elem-item" data-elem-type="connessione" data-elem-label="Connessione">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="3" cy="8" r="1.8"/>
+          <circle cx="13" cy="8" r="1.8"/>
+          <line x1="4.8" y1="8" x2="11.2" y2="8"/>
+          <path d="M9.5 5.5L12.5 8l-3 2.5"/>
+        </svg>
+        <span>Connessione</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
        HELP TOOLTIP (hidden by default)
   ══════════════════════════════════════ -->
   <div id="plane-help-tip" hidden>
@@ -1270,11 +1585,13 @@ function setZoom(newScale, cx, cy) {
 canvasViewport.addEventListener('mousedown', (e) => {
   // Only pan if clicking directly on viewport or canvas inner (not on a block/panel)
   const target = e.target;
-  if (target.closest('.plane-block') || target.closest('#plane-agent-panel') ||
+  if (target.closest('.plane-block') || target.closest('.plane-node') ||
+      target.closest('#plane-agent-panel') ||
       target.closest('#plane-log-panel') || target.closest('#plane-input-bar') ||
       target.closest('#plane-controls') || target.closest('#plane-toolstrip') ||
       target.closest('#plane-back') || target.closest('#plane-theme-dropdown') ||
-      target.closest('#plane-help-tip')) return;
+      target.closest('#plane-help-tip') || target.closest('#plane-add-btn') ||
+      target.closest('#plane-elements-panel')) return;
 
   isPanning = true;
   panStartX = e.clientX - translateX;
@@ -1882,6 +2199,167 @@ function escapeHtml(str) {
 }
 
 /* ════════════════════════════════════════════
+   ELEMENTS PANEL — toggle + node creation
+════════════════════════════════════════════ */
+let elemPanelOpen = false;
+
+const planeAddBtn       = document.getElementById('plane-add-btn');
+const planeElemsPanel   = document.getElementById('plane-elements-panel');
+const planeElemsPanelClose = document.getElementById('plane-elements-panel-close');
+
+function toggleElementsPanel(forceClose) {
+  if (forceClose === true) {
+    elemPanelOpen = false;
+  } else {
+    elemPanelOpen = !elemPanelOpen;
+  }
+  planeAddBtn.classList.toggle('elem-open', elemPanelOpen);
+  planeElemsPanel.classList.toggle('elem-open', elemPanelOpen);
+}
+
+planeAddBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  toggleElementsPanel();
+});
+
+planeElemsPanelClose.addEventListener('click', () => {
+  toggleElementsPanel(true);
+});
+
+// Close panel on outside click
+document.addEventListener('click', (e) => {
+  if (elemPanelOpen &&
+      !planeElemsPanel.contains(e.target) &&
+      e.target !== planeAddBtn &&
+      !planeAddBtn.contains(e.target)) {
+    toggleElementsPanel(true);
+  }
+});
+
+// Node icon SVG map (inline, 16x16)
+const ELEM_ICONS = {
+  testo: `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><line x1="3" y1="4" x2="13" y2="4"/><line x1="8" y1="4" x2="8" y2="13"/><line x1="5" y1="13" x2="11" y2="13"/></svg>`,
+  nota: `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="10" height="12" rx="1.5"/><line x1="5.5" y1="6" x2="10.5" y2="6"/><line x1="5.5" y1="9" x2="9" y2="9"/></svg>`,
+  immagine: `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="10" rx="1.5"/><circle cx="5.5" cy="6.5" r="1.2"/><path d="M2 11l3-3 2.5 2.5L10 7.5l4 4"/></svg>`,
+  frame: `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="10" height="10" rx="1"/><line x1="6" y1="1" x2="6" y2="3"/><line x1="10" y1="1" x2="10" y2="3"/><line x1="6" y1="13" x2="6" y2="15"/><line x1="10" y1="13" x2="10" y2="15"/><line x1="1" y1="6" x2="3" y2="6"/><line x1="1" y1="10" x2="3" y2="10"/><line x1="13" y1="6" x2="15" y2="6"/><line x1="13" y1="10" x2="15" y2="10"/></svg>`,
+  forma: `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="5.5"/></svg>`,
+  separatore: `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="2" y1="8" x2="14" y2="8"/></svg>`,
+  grafico: `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="5" rx="0.5"/><rect x="6.5" y="5" width="3" height="9" rx="0.5"/><rect x="11" y="2" width="3" height="12" rx="0.5"/></svg>`,
+  tabella: `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="10" rx="1"/><line x1="2" y1="7" x2="14" y2="7"/><line x1="7" y1="3" x2="7" y2="13"/></svg>`,
+  connessione: `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="3" cy="8" r="1.8"/><circle cx="13" cy="8" r="1.8"/><line x1="4.8" y1="8" x2="11.2" y2="8"/><path d="M9.5 5.5L12.5 8l-3 2.5"/></svg>`,
+};
+
+// Editable body types
+const EDITABLE_TYPES = ['testo', 'nota'];
+
+function buildNodeBody(type) {
+  if (EDITABLE_TYPES.includes(type)) {
+    const placeholder = type === 'testo' ? 'Scrivi qualcosa...' : 'Aggiungi una nota...';
+    return `<div class="plane-node-editable" contenteditable="true" data-placeholder="${placeholder}"></div>`;
+  }
+  const labels = {
+    immagine:    'Trascina un\'immagine qui',
+    frame:       'Area frame vuota',
+    forma:       'Forma vettoriale',
+    separatore:  'Linea separatrice',
+    grafico:     'Grafico dati',
+    tabella:     'Tabella dati',
+    connessione: 'Connessione tra nodi',
+  };
+  return `<div class="plane-node-placeholder">${labels[type] || ''}</div>`;
+}
+
+function addNodeToCanvas(type, label) {
+  // Calculate center of current viewport in canvas coordinates
+  const vw = window.innerWidth / 2;
+  const vh = window.innerHeight / 2;
+  const x  = (vw - translateX) / scale;
+  const y  = (vh - translateY) / scale;
+
+  const iconSvg = ELEM_ICONS[type] || '';
+
+  // Build the node element
+  const node = document.createElement('div');
+  node.className  = 'plane-node';
+  node.dataset.type = type;
+  node.style.left   = (x - 90) + 'px';  // center horizontally (half of min-width 180)
+  node.style.top    = (y - 50) + 'px';
+  node.style.zIndex = ++blockZCounter;
+
+  node.innerHTML = `
+    <div class="plane-node-header">
+      ${iconSvg}
+      <span class="plane-node-label">${escapeHtml(label)}</span>
+      <button class="plane-node-close" title="Rimuovi">
+        <svg viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="plane-node-body">${buildNodeBody(type)}</div>
+  `;
+
+  // Bring to front on click
+  node.addEventListener('mousedown', () => {
+    node.style.zIndex = ++blockZCounter;
+  });
+
+  // Drag — header only
+  const nodeHeader = node.querySelector('.plane-node-header');
+  let nodeDragging = false;
+  let nodeDragOffX = 0;
+  let nodeDragOffY = 0;
+
+  nodeHeader.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.plane-node-close')) return;
+    nodeDragging = true;
+    nodeDragOffX = e.clientX - node.getBoundingClientRect().left;
+    nodeDragOffY = e.clientY - node.getBoundingClientRect().top;
+    node.style.zIndex = ++blockZCounter;
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!nodeDragging) return;
+    const vRect    = canvasViewport.getBoundingClientRect();
+    const screenX  = e.clientX - nodeDragOffX - vRect.left;
+    const screenY  = e.clientY - nodeDragOffY - vRect.top;
+    node.style.left = (screenX - translateX) / scale + 'px';
+    node.style.top  = (screenY - translateY) / scale + 'px';
+  });
+
+  window.addEventListener('mouseup', () => {
+    nodeDragging = false;
+  });
+
+  // Close / remove
+  node.querySelector('.plane-node-close').addEventListener('click', () => {
+    node.style.opacity = '0';
+    node.style.transform = 'scale(0.95)';
+    node.style.transition = 'opacity 0.18s ease, transform 0.18s ease';
+    setTimeout(() => node.remove(), 180);
+  });
+
+  canvasInner.appendChild(node);
+
+  // Close the panel after insertion
+  toggleElementsPanel(true);
+}
+
+// Wire up element items
+document.querySelectorAll('.plane-elem-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const type  = item.dataset.elemType;
+    const label = item.dataset.elemLabel;
+    addNodeToCanvas(type, label);
+  });
+});
+
+// Also update pan exclusion to include panel + add button
+// (handled via existing click listener — panel/add-btn clicks stopPropagation or are fixed)
+
+/* ════════════════════════════════════════════
    INITIAL STATE
 ════════════════════════════════════════════ */
 // Center canvas initially — place demo blocks in view
@@ -1893,12 +2371,12 @@ applyTransform();
 // ── Plane Pixel Owl Animation ──
 (function() {
   const FRAMES = [
-    '../assets/images/owl1.jpeg',
-    '../assets/images/owl2.jpeg',
-    '../assets/images/owl3.jpeg',
-    '../assets/images/owl4.jpeg',
-    '../assets/images/owl3.jpeg',
-    '../assets/images/owl2.jpeg'
+    '../assets/images/owl1.png',
+    '../assets/images/owl2.png',
+    '../assets/images/owl3.png',
+    '../assets/images/owl4.png',
+    '../assets/images/owl3.png',
+    '../assets/images/owl2.png'
   ];
   const FRAME_MS = 110;
   const IDLE_MS = 2700;

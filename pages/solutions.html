@@ -13,7 +13,7 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="../assets/css/styles.css?v=5" />
-  <link rel="stylesheet" href="../assets/css/components.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/components.css?v=6" />
   <link rel="stylesheet" href="../assets/css/sections.css?v=5" />
   <link rel="stylesheet" href="../assets/css/home.css?v=5" />
   
@@ -41,6 +41,36 @@
       .unified-features { grid-template-columns: 1fr !important; }
       .unified-features > div { grid-column: 1 !important; }
     }
+
+    /* ── Solutions Hero Cinematic Animation ── */
+    .sol-hero-title {
+      perspective: 800px;
+      transform-style: preserve-3d;
+    }
+
+    .sol-line-1 {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(60px) scale(0.85) rotateX(-20deg);
+      filter: blur(20px);
+      transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sol-line-1.sol-animate {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotateX(0deg);
+      filter: blur(0px);
+    }
+
+    .sol-line-2 {
+      display: inline-block;
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .sol-line-2.sol-animate-2 {
+      clip-path: inset(0 0% 0 0);
+    }
   </style>
 </head>
 <body>
@@ -53,8 +83,10 @@
       <section class="page-hero" style="background: var(--color-background); padding-top: var(--space-4xl); padding-bottom: var(--space-2xl); text-align: center; position: relative; overflow: hidden;">
         <canvas id="stars-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;"></canvas>
         <div class="container" style="position: relative; z-index: 1;">
-          <div class="hero__badge" data-reveal style="margin: 0 auto 1.5rem;">Operational Architecture</div>
-          <h1 class="hero__title" data-reveal style="transition-delay: 0.1s;">Intelligent systems for<br><span class="hero__title-highlight">serious operations</span></h1>
+          <h1 class="hero__title sol-hero-title">
+  <span class="sol-line-1">Intelligent systems for</span><br>
+  <span class="hero__title-highlight sol-line-2">serious operations</span>
+</h1>
           <p class="hero__subtitle" data-reveal style="transition-delay: 0.2s; max-width: 600px; margin: 0 auto 2rem;">
             Stop managing fragmented tools. We build unified, intelligent architectures that automate your client logic, workflows, and operational efficiency so you can scale without the chaos.
           </p>
@@ -325,6 +357,27 @@
         initStars();
       }, 150);
     });
+  })();
+  </script>
+
+  <!-- Solutions Hero Cinematic Text Animation -->
+  <script>
+  (function() {
+    function initSolHero() {
+      setTimeout(function() {
+        var l1 = document.querySelector('.sol-line-1');
+        if (l1) l1.classList.add('sol-animate');
+      }, 300);
+      setTimeout(function() {
+        var l2 = document.querySelector('.sol-line-2');
+        if (l2) l2.classList.add('sol-animate-2');
+      }, 900);
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSolHero);
+    } else {
+      initSolHero();
+    }
   })();
   </script>
 </body>

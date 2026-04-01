@@ -480,22 +480,14 @@
   (function() {
     var el = document.getElementById('plane-typing');
     if (!el) return;
-    var texts = ['Plane', 'Canvas', 'Flow'];
-    var wordIdx = 0, charIdx = 0;
+    var word = 'Plane', charIdx = 0;
 
     function tick() {
-      var word = texts[wordIdx % texts.length];
       if (charIdx < word.length) {
         el.textContent = word.slice(0, ++charIdx);
         setTimeout(tick, 150);
-      } else {
-        setTimeout(function() {
-          el.textContent = '';
-          charIdx = 0;
-          wordIdx++;
-          setTimeout(tick, 200);
-        }, 3000);
       }
+      // done — stays fixed, cursor keeps blinking via CSS
     }
     tick();
   })();

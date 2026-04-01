@@ -74,7 +74,6 @@
   function updateHeader(user, profile) {
     var loginBtn  = document.getElementById('auth-login-btn');
     var wrapper   = document.getElementById('auth-profile-wrapper');
-    var initial   = document.getElementById('auth-profile-initial');
     var adminLink = document.getElementById('auth-dropdown-admin');
     var divider   = document.getElementById('auth-dropdown-divider');
 
@@ -83,10 +82,32 @@
     if (user) {
       loginBtn.style.display = 'none';
       wrapper.style.display  = 'flex';
-      if (initial) initial.textContent = user.email.charAt(0).toUpperCase();
+
+      // Apply saved avatar (emoji) or fall back to initial
+      var savedAvatar = null;
+      try { savedAvatar = JSON.parse(localStorage.getItem('aike_avatar') || 'null'); } catch(e) {}
+      if (window.applyAvatarToHeader) {
+        window.applyAvatarToHeader(savedAvatar, user.email);
+      } else {
+        var initial = document.getElementById('auth-profile-initial');
+        if (initial && !savedAvatar) initial.textContent = user.email.charAt(0).toUpperCase();
+      }
+
+      // Apply saved display name to dropdown
+      var savedName = '';
+      try { savedName = localStorage.getItem('aike_display_name') || ''; } catch(e) {}
+      if (window.applyDisplayNameToDropdown) {
+        window.applyDisplayNameToDropdown(savedName, user.email);
+      } else {
+        var nameEl = document.getElementById('dropdown-header-name');
+        var emailEl = document.getElementById('dropdown-header-email');
+        if (nameEl) nameEl.textContent = savedName || user.email.split('@')[0];
+        if (emailEl) emailEl.textContent = user.email;
+      }
+
       var isAdmin = profile && profile.is_admin;
-      if (adminLink) adminLink.style.display = isAdmin ? 'flex' : 'none';
-      if (divider)   divider.style.display   = isAdmin ? 'block' : 'none';
+      if (adminLink) adminLink.className = isAdmin ? 'dropdown-item visible' : 'dropdown-item';
+      if (divider)   divider.style.display = isAdmin ? 'block' : 'none';
     } else {
       loginBtn.style.display = '';
       wrapper.style.display  = 'none';
@@ -97,21 +118,21 @@
   function openDropdown() {
     var d = document.getElementById('auth-dropdown');
     var b = document.getElementById('auth-profile-btn');
-    if (d) d.style.display = 'block';
+    if (d) d.classList.add('dropdown-open');
     if (b) b.setAttribute('aria-expanded', 'true');
   }
 
   function closeDropdown() {
     var d = document.getElementById('auth-dropdown');
     var b = document.getElementById('auth-profile-btn');
-    if (d) d.style.display = 'none';
+    if (d) d.classList.remove('dropdown-open');
     if (b) b.setAttribute('aria-expanded', 'false');
   }
 
   function toggleDropdown() {
     var d = document.getElementById('auth-dropdown');
     if (!d) return;
-    d.style.display === 'block' ? closeDropdown() : openDropdown();
+    d.classList.contains('dropdown-open') ? closeDropdown() : openDropdown();
   }
 
   // ── Called by bundle.js immediately after header is injected ─

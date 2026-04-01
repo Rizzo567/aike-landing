@@ -23,18 +23,52 @@ const getHeaderHTML = (b) => `
       
       <!-- Profile Wrapper (Desktop & Mobile) -->
       <div id="auth-profile-wrapper" style="display:none; align-items:center; position:relative;">
-        <button id="auth-profile-btn" aria-label="Account menu" aria-haspopup="true" aria-expanded="false" style="width:36px; height:36px; border-radius:50%; background:var(--color-primary); border:2px solid rgba(168,85,247,0.4); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.875rem; font-weight:600; color:#fff; font-family:var(--font-sans);">
+        <button id="auth-profile-btn" aria-label="Account menu" aria-haspopup="true" aria-expanded="false">
           <span id="auth-profile-initial">?</span>
+          <span class="aike-avatar-status" id="auth-avatar-status"></span>
         </button>
-        <div id="auth-dropdown" role="menu" style="display:none; position:absolute; top:calc(100% + 10px); right:0; background:#1a1a1a; border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:0.375rem; min-width:200px; z-index:9999; box-shadow:0 8px 32px rgba(0,0,0,0.7);">
-          <a id="auth-dropdown-admin" href="${b}pages/admin.html" role="menuitem" style="display:none;align-items:center;gap:0.6rem;padding:0.65rem 0.875rem;border-radius:8px;color:#c084fc;text-decoration:none;font-size:0.875rem;font-weight:600;" onmouseover="this.style.background='rgba(168,85,247,0.15)'" onmouseout="this.style.background='transparent'">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <div id="auth-dropdown" role="menu">
+          <!-- Header: avatar + name + email -->
+          <div class="dropdown-header">
+            <div class="dropdown-header-avatar" id="dropdown-header-avatar"><span id="dropdown-header-initial">?</span></div>
+            <div class="dropdown-header-info">
+              <div class="dropdown-header-name" id="dropdown-header-name">Account</div>
+              <div class="dropdown-header-email" id="dropdown-header-email"></div>
+            </div>
+          </div>
+          <div class="dropdown-separator"></div>
+
+          <!-- Admin (hidden unless admin) -->
+          <a id="auth-dropdown-admin" href="${b}pages/admin.html" role="menuitem" class="dropdown-item" style="color:#c084fc;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
             Admin Dashboard
           </a>
-          <div id="auth-dropdown-divider" style="display:none; height:1px;background:rgba(255,255,255,0.07);margin:0.25rem 0.5rem;"></div>
-          <button id="auth-logout-btn" role="menuitem" style="display:flex;align-items:center;gap:0.6rem;padding:0.65rem 0.875rem;border-radius:8px;color:#9ca3af;font-size:0.875rem;font-weight:500;background:transparent;border:none;cursor:pointer;width:100%;text-align:left;" onmouseover="this.style.background='rgba(239,68,68,0.1)';this.style.color='#f87171'" onmouseout="this.style.background='transparent';this.style.color='#9ca3af'">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Log out
+          <div id="auth-dropdown-divider" style="display:none;"></div>
+
+          <!-- Settings -->
+          <button id="auth-settings-btn" role="menuitem" class="dropdown-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Impostazioni
+          </button>
+
+          <!-- Upgrade -->
+          <a href="${b}pages/pricing.html" role="menuitem" class="dropdown-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="17 11 21 7 17 3"/><line x1="21" y1="7" x2="9" y2="7"/><path d="M3 17a4 4 0 0 0 4 4h8"/></svg>
+            Upgrade piano
+          </a>
+
+          <!-- Booking -->
+          <a href="${b}pages/booking.html" role="menuitem" class="dropdown-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Prenota una call
+          </a>
+
+          <div class="dropdown-separator"></div>
+
+          <!-- Logout -->
+          <button id="auth-logout-btn" role="menuitem" class="dropdown-item dropdown-item--danger">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
           </button>
         </div>
       </div>
@@ -174,12 +208,291 @@ function initScrollReveal() {
   });
 }
 
+// ── Settings Overlay HTML ────────────────────────────────────
+
+function getSettingsOverlayHTML() {
+  var avatarDefs = [
+    { id: 1,  emoji: '🦊', color: '#f97316' },
+    { id: 2,  emoji: '🐺', color: '#6366f1' },
+    { id: 3,  emoji: '🦁', color: '#eab308' },
+    { id: 4,  emoji: '🐉', color: '#22c55e' },
+    { id: 5,  emoji: '🦅', color: '#3b82f6' },
+    { id: 6,  emoji: '🐬', color: '#06b6d4' },
+    { id: 7,  emoji: '🦄', color: '#a855f7' },
+    { id: 8,  emoji: '🐻‍❄️', color: '#94a3b8' },
+    { id: 9,  emoji: '🦋', color: '#ec4899' },
+    { id: 10, emoji: '⚡', color: '#f59e0b' }
+  ];
+
+  var gridHTML = avatarDefs.map(function(a) {
+    return '<button class="avatar-option" data-avatar-id="' + a.id + '" data-emoji="' + a.emoji + '" data-color="' + a.color + '" style="background:' + a.color + ';" title="Avatar ' + a.id + '" aria-label="Scegli avatar ' + a.emoji + '">' + a.emoji + '</button>';
+  }).join('');
+
+  return '<div id="aike-settings-overlay" role="dialog" aria-modal="true" aria-label="Impostazioni">' +
+    '<div class="settings-scrim" id="settings-scrim"></div>' +
+    '<div class="settings-panel">' +
+      '<div class="settings-header">' +
+        '<span class="settings-title">Impostazioni</span>' +
+        '<button class="settings-close-btn" id="settings-close-btn" aria-label="Chiudi impostazioni">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+        '</button>' +
+      '</div>' +
+      '<div class="settings-tabs">' +
+        '<button class="settings-tab active" data-tab="profile">Profilo</button>' +
+        '<button class="settings-tab" data-tab="account">Account</button>' +
+        '<button class="settings-tab" data-tab="prefs">Preferenze</button>' +
+      '</div>' +
+      '<div class="settings-body">' +
+        '<div class="settings-tab-panel active" id="settings-panel-profile">' +
+          '<div class="settings-profile-avatar-section">' +
+            '<div class="settings-avatar-preview">' +
+              '<div class="settings-avatar-circle" id="settings-avatar-circle"><span id="settings-avatar-preview-content">?</span></div>' +
+              '<div class="settings-avatar-status"></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="settings-avatar-grid-label">Scegli il tuo avatar</div>' +
+          '<div class="settings-avatar-grid" id="settings-avatar-grid">' + gridHTML + '</div>' +
+          '<div class="settings-field">' +
+            '<label for="settings-display-name">Nome visualizzato</label>' +
+            '<input type="text" id="settings-display-name" placeholder="Il tuo nome..." maxlength="40" autocomplete="name">' +
+          '</div>' +
+          '<button class="settings-save-btn" id="settings-save-btn">Salva modifiche</button>' +
+        '</div>' +
+        '<div class="settings-tab-panel" id="settings-panel-account">' +
+          '<div class="settings-coming-soon"><span>🔒</span>Disponibile a breve</div>' +
+        '</div>' +
+        '<div class="settings-tab-panel" id="settings-panel-prefs">' +
+          '<div class="settings-coming-soon"><span>⚙️</span>Disponibile a breve</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+// ── Avatar persistence helpers ───────────────────────────────
+
+function loadSavedAvatar() {
+  try {
+    return JSON.parse(localStorage.getItem('aike_avatar') || 'null');
+  } catch(e) { return null; }
+}
+
+function saveAvatar(avatarObj) {
+  try {
+    localStorage.setItem('aike_avatar', JSON.stringify(avatarObj));
+  } catch(e) {}
+}
+
+function loadSavedDisplayName() {
+  try {
+    return localStorage.getItem('aike_display_name') || '';
+  } catch(e) { return ''; }
+}
+
+function saveDisplayName(name) {
+  try {
+    localStorage.setItem('aike_display_name', name);
+  } catch(e) {}
+}
+
+// ── Apply avatar to header button ────────────────────────────
+
+window.applyAvatarToHeader = function applyAvatarToHeader(avatarData, userEmail) {
+  var btn = document.getElementById('auth-profile-btn');
+  var initial = document.getElementById('auth-profile-initial');
+  var dropHdrAvatar = document.getElementById('dropdown-header-avatar');
+  var dropHdrInitial = document.getElementById('dropdown-header-initial');
+
+  if (avatarData) {
+    // Show emoji avatar
+    if (initial) {
+      initial.innerHTML = '<span class="aike-avatar-emoji">' + avatarData.emoji + '</span>';
+    }
+    if (btn) {
+      btn.style.background = avatarData.color;
+      btn.style.fontSize = '20px';
+    }
+    if (dropHdrAvatar) {
+      dropHdrAvatar.style.background = avatarData.color;
+      dropHdrAvatar.innerHTML = '<span style="font-size:17px">' + avatarData.emoji + '</span>';
+    }
+  } else {
+    // Show initial
+    var letter = userEmail ? userEmail.charAt(0).toUpperCase() : '?';
+    if (initial) initial.textContent = letter;
+    if (btn) {
+      btn.style.background = '';
+      btn.style.fontSize = '';
+    }
+    if (dropHdrAvatar) {
+      dropHdrAvatar.style.background = '';
+      dropHdrAvatar.innerHTML = '<span id="dropdown-header-initial">' + letter + '</span>';
+    }
+  }
+}
+
+window.applyDisplayNameToDropdown = function applyDisplayNameToDropdown(name, email) {
+  var nameEl = document.getElementById('dropdown-header-name');
+  var emailEl = document.getElementById('dropdown-header-email');
+  if (nameEl) nameEl.textContent = name || (email ? email.split('@')[0] : 'Account');
+  if (emailEl) emailEl.textContent = email || '';
+}
+
+// ── Settings overlay controller ──────────────────────────────
+
+function initSettingsOverlay() {
+  var overlay = document.getElementById('aike-settings-overlay');
+  if (!overlay) return;
+
+  var scrim = document.getElementById('settings-scrim');
+  var closeBtn = document.getElementById('settings-close-btn');
+  var saveBtn = document.getElementById('settings-save-btn');
+  var nameInput = document.getElementById('settings-display-name');
+  var avatarGrid = document.getElementById('settings-avatar-grid');
+  var settingsAvatarCircle = document.getElementById('settings-avatar-circle');
+  var settingsAvatarPreview = document.getElementById('settings-avatar-preview-content');
+  var tabs = overlay.querySelectorAll('.settings-tab');
+  var panels = overlay.querySelectorAll('.settings-tab-panel');
+
+  var currentSelectedAvatar = loadSavedAvatar();
+
+  // Populate name input
+  if (nameInput) nameInput.value = loadSavedDisplayName();
+
+  // Mark selected avatar in grid
+  function markSelectedAvatar(id) {
+    var opts = avatarGrid ? avatarGrid.querySelectorAll('.avatar-option') : [];
+    opts.forEach(function(opt) {
+      opt.classList.toggle('selected', parseInt(opt.dataset.avatarId) === id);
+    });
+  }
+
+  if (currentSelectedAvatar) {
+    markSelectedAvatar(currentSelectedAvatar.id);
+    updateSettingsPreview(currentSelectedAvatar);
+  } else {
+    updateSettingsPreviewFromEmail();
+  }
+
+  function updateSettingsPreview(avatarData) {
+    if (!settingsAvatarCircle) return;
+    settingsAvatarCircle.style.background = avatarData.color;
+    if (settingsAvatarPreview) settingsAvatarPreview.innerHTML = '<span style="font-size:36px">' + avatarData.emoji + '</span>';
+  }
+
+  function updateSettingsPreviewFromEmail() {
+    if (!settingsAvatarCircle) return;
+    settingsAvatarCircle.style.background = '';
+    var btn = document.getElementById('auth-profile-btn');
+    var initial = btn ? (btn.querySelector('#auth-profile-initial') || btn.querySelector('[id="auth-profile-initial"]')) : null;
+    var letter = '?';
+    if (document.getElementById('dropdown-header-email')) {
+      var em = document.getElementById('dropdown-header-email').textContent;
+      if (em) letter = em.charAt(0).toUpperCase();
+    }
+    if (settingsAvatarPreview) settingsAvatarPreview.textContent = letter;
+  }
+
+  // Avatar grid click
+  if (avatarGrid) {
+    avatarGrid.addEventListener('click', function(e) {
+      var opt = e.target.closest('.avatar-option');
+      if (!opt) return;
+      var id = parseInt(opt.dataset.avatarId);
+      var emoji = opt.dataset.emoji;
+      var color = opt.dataset.color;
+      currentSelectedAvatar = { id: id, emoji: emoji, color: color };
+      markSelectedAvatar(id);
+      updateSettingsPreview(currentSelectedAvatar);
+    });
+  }
+
+  // Tab switching
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var target = tab.dataset.tab;
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      tab.classList.add('active');
+      var panel = document.getElementById('settings-panel-' + target);
+      if (panel) panel.classList.add('active');
+    });
+  });
+
+  // Save
+  if (saveBtn) {
+    saveBtn.addEventListener('click', function() {
+      var displayName = nameInput ? nameInput.value.trim() : '';
+      saveDisplayName(displayName);
+      if (currentSelectedAvatar) {
+        saveAvatar(currentSelectedAvatar);
+        var emailForAvatar = document.getElementById('dropdown-header-email') ? document.getElementById('dropdown-header-email').textContent : '';
+        window.applyAvatarToHeader(currentSelectedAvatar, emailForAvatar);
+      }
+      var email = document.getElementById('dropdown-header-email') ? document.getElementById('dropdown-header-email').textContent : '';
+      window.applyDisplayNameToDropdown(displayName, email);
+
+      // Visual feedback
+      saveBtn.textContent = 'Salvato ✓';
+      saveBtn.style.background = '#22c55e';
+      setTimeout(function() {
+        saveBtn.textContent = 'Salva modifiche';
+        saveBtn.style.background = '';
+        closeSettings();
+      }, 900);
+    });
+  }
+
+  // Close handlers
+  function closeSettings() {
+    overlay.classList.remove('overlay-open');
+    document.body.style.overflow = '';
+  }
+
+  function openSettings() {
+    // Refresh state from storage each time
+    var saved = loadSavedAvatar();
+    var savedName = loadSavedDisplayName();
+    currentSelectedAvatar = saved;
+    if (nameInput) nameInput.value = savedName;
+    markSelectedAvatar(saved ? saved.id : -1);
+    if (saved) updateSettingsPreview(saved);
+    else updateSettingsPreviewFromEmail();
+
+    overlay.classList.add('overlay-open');
+    document.body.style.overflow = 'hidden';
+    if (nameInput) setTimeout(function() { nameInput.focus(); }, 250);
+  }
+
+  if (closeBtn) closeBtn.addEventListener('click', closeSettings);
+  if (scrim) scrim.addEventListener('click', closeSettings);
+
+  // ESC key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.classList.contains('overlay-open')) closeSettings();
+  });
+
+  // Expose open function
+  window.aikeOpenSettings = openSettings;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   const isPage = window.location.pathname.includes('/pages/');
   const b = isPage ? '../' : './';
-  
+
   injectHTML('navbar-placeholder', getHeaderHTML(b));
   injectHTML('footer-placeholder', getFooterHTML(b));
+
+  // Inject settings overlay into body
+  var overlayContainer = document.createElement('div');
+  overlayContainer.innerHTML = getSettingsOverlayHTML();
+  document.body.appendChild(overlayContainer.firstChild);
+
+  // Apply saved avatar immediately (before auth resolves)
+  var savedAvatar = loadSavedAvatar();
+  if (savedAvatar) window.applyAvatarToHeader(savedAvatar, '');
+  var savedName = loadSavedDisplayName();
+  window.applyDisplayNameToDropdown(savedName, '');
 
   // Header is in DOM — tell auth.js to initialise now (no timing guesswork)
   if (window.aikeAuthInit) window.aikeAuthInit();
@@ -187,6 +500,18 @@ document.addEventListener('DOMContentLoaded', function() {
   initHeader();
   initScrollReveal();
   initInfiniteCarousel();
+  initSettingsOverlay();
+
+  // Wire settings button (after overlay is ready)
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('#auth-settings-btn')) {
+      var d = document.getElementById('auth-dropdown');
+      if (d) d.classList.remove('dropdown-open');
+      var btn = document.getElementById('auth-profile-btn');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+      if (window.aikeOpenSettings) window.aikeOpenSettings();
+    }
+  });
 });
 
 function initInfiniteCarousel() {

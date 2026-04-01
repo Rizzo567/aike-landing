@@ -13,7 +13,6 @@ const getHeaderHTML = (b) => `
     <nav class="header__nav hide-on-mobile">
       <a href="${b}pages/solutions.html" class="header__link">Solutions</a>
       <a href="${b}pages/pricing.html" class="header__link">Pricing</a>
-      <a href="${b}pages/booking.html" class="header__link">Booking</a>
       <a href="${b}pages/owl.html" class="header__link">Owl</a>
       <a href="${b}pages/plane.html" class="header__link">Plane</a>
     </nav>
@@ -57,12 +56,6 @@ const getHeaderHTML = (b) => `
             Upgrade piano
           </a>
 
-          <!-- Booking -->
-          <a href="${b}pages/booking.html" role="menuitem" class="dropdown-item">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Prenota una call
-          </a>
-
           <div class="dropdown-separator"></div>
 
           <!-- Logout -->
@@ -73,9 +66,6 @@ const getHeaderHTML = (b) => `
         </div>
       </div>
       
-      <!-- Desktop Book Call -->
-      <a href="${b}pages/booking.html" class="btn btn-primary hide-on-mobile" style="padding: 0.5rem 1.25rem;">Book a Call</a>
-
       <!-- Mobile Menu Trigger -->
       <button class="mobile-nav-trigger" id="mobile-menu-trigger" aria-label="Open menu" aria-expanded="false">
         <span class="mobile-nav-trigger-lines"></span>
@@ -88,7 +78,6 @@ const getHeaderHTML = (b) => `
     <div class="mobile-nav-panel-inner">
       <a href="${b}pages/solutions.html" class="mobile-nav-link">Solutions</a>
       <a href="${b}pages/pricing.html" class="mobile-nav-link">Pricing</a>
-      <a href="${b}pages/booking.html" class="mobile-nav-link">Booking</a>
       <a href="${b}pages/owl.html" class="mobile-nav-link">Owl</a>
       <a href="${b}pages/plane.html" class="mobile-nav-link">Plane</a>
       <div class="mobile-nav-divider"></div>
@@ -120,7 +109,6 @@ const getFooterHTML = (b) => `
         <nav class="footer__nav" aria-label="Footer navigation">
           <a href="${b}pages/solutions.html" class="footer__link">Solutions</a>
           <a href="${b}pages/pricing.html" class="footer__link">Pricing</a>
-          <a href="${b}pages/booking.html" class="footer__link">Booking</a>
         </nav>
         
         <a href="https://discord.com" target="_blank" rel="noopener" class="footer__link" style="display: flex; align-items: center; gap: 8px; color: var(--color-primary); font-weight: 600;">

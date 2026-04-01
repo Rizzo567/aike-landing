@@ -72,15 +72,17 @@
   // ── Header helpers ───────────────────────────────────────────
 
   function updateHeader(user, profile) {
-    var loginBtn  = document.getElementById('auth-login-btn');
-    var wrapper   = document.getElementById('auth-profile-wrapper');
-    var adminLink = document.getElementById('auth-dropdown-admin');
-    var divider   = document.getElementById('auth-dropdown-divider');
+    var loginBtn       = document.getElementById('auth-login-btn');
+    var loginBtnMobile = document.getElementById('auth-login-btn-mobile');
+    var wrapper        = document.getElementById('auth-profile-wrapper');
+    var adminLink      = document.getElementById('auth-dropdown-admin');
+    var divider        = document.getElementById('auth-dropdown-divider');
 
     if (!loginBtn || !wrapper) return; // header not yet in DOM
 
     if (user) {
       loginBtn.style.display = 'none';
+      if (loginBtnMobile) loginBtnMobile.style.display = 'none';
       wrapper.style.display  = 'flex';
 
       // Apply saved avatar (emoji) or fall back to initial
@@ -110,6 +112,7 @@
       if (divider)   divider.style.display = isAdmin ? 'block' : 'none';
     } else {
       loginBtn.style.display = '';
+      if (loginBtnMobile) loginBtnMobile.style.display = '';
       wrapper.style.display  = 'none';
       closeDropdown();
     }

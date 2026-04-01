@@ -19,7 +19,7 @@ const getHeaderHTML = (b) => `
     </nav>
     <div class="header__actions">
       <!-- Desktop Log In -->
-      <a href="${b}pages/login.html" class="btn btn-outline auth-btn-login hide-on-mobile" style="border-color:transparent; padding: 0.5rem 1rem;">Log in</a>
+      <a id="auth-login-btn" href="${b}pages/login.html" class="btn btn-outline auth-btn-login hide-on-mobile" style="border-color:transparent; padding: 0.5rem 1rem;">Log in</a>
       
       <!-- Profile Wrapper (Desktop & Mobile) -->
       <div id="auth-profile-wrapper" style="display:none; align-items:center; position:relative;">
@@ -92,7 +92,7 @@ const getHeaderHTML = (b) => `
       <a href="${b}pages/owl.html" class="mobile-nav-link">Owl</a>
       <a href="${b}pages/plane.html" class="mobile-nav-link">Plane</a>
       <div class="mobile-nav-divider"></div>
-      <a href="${b}pages/login.html" class="mobile-nav-link auth-btn-login" style="color:var(--color-primary)">Log in</a>
+      <a id="auth-login-btn-mobile" href="${b}pages/login.html" class="mobile-nav-link auth-btn-login" style="color:var(--color-primary)">Log in</a>
     </div>
   </div>
 </header>

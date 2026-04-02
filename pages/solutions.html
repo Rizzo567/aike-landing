@@ -206,18 +206,9 @@
       <div class="pixel-transition" aria-hidden="true"></div>
 
       <!-- 2. Core Categories (Cards grid similar to pricing) -->
-      <section class="bg-transition-target" style="padding: var(--space-xl) 0 var(--space-xl); background: var(--color-bg);">
-
+      <section class="bg-transition-target" style="padding: var(--space-3xl) 0; background: var(--color-bg);">
         <div class="container">
           <div class="section-header" data-reveal style="text-align: center; max-width: 800px; margin: 0 auto;">
-            <!-- Brand reveal: fades in above after typing completes -->
-            <div id="plane-brand-reveal" style="display: inline-flex; align-items: center; gap: 10px; margin-bottom: 1.2rem; opacity: 0; transform: translateY(-10px); transition: opacity 0.7s ease, transform 0.7s ease;">
-              <img src="../assets/images/logo.png" alt="aike" style="width: 30px; height: 30px; object-fit: contain;">
-              <span style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: -0.01em;">aike</span>
-              <span style="color: rgba(255,255,255,0.25); font-size: 1rem; line-height: 1;">·</span>
-              <span style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: -0.01em;">Plane</span>
-              <span style="font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 700; color: #fff; letter-spacing: 0.06em; border: 1.5px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 3px 12px; text-transform: uppercase; opacity: 0.9;">BETA</span>
-            </div>
             <!-- Typed text + gradient cursor -->
             <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; flex-wrap: wrap;">
               <span id="plane-typing" style="font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 5vw, 3.8rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; color: #fff;"></span><span class="plane-cursor"></span>
@@ -225,7 +216,6 @@
 
             <!-- Vertical text marquee -->
             <div style="display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 0.5rem;">
-              <span style="font-size: 1.5rem; font-weight: 600; color: var(--color-text-muted); white-space: pre; font-family: 'Outfit', sans-serif;">aike/</span>
               <div style="position: relative; height: 120px; overflow: hidden;
                 -webkit-mask-image: linear-gradient(rgba(0,0,0,0) 0%, rgb(0,0,0) 43.69%, rgba(0,0,0,0) 100%);
                 mask-image: linear-gradient(rgba(0,0,0,0) 0%, rgb(0,0,0) 43.69%, rgba(0,0,0,0) 100%);">
@@ -243,10 +233,8 @@
         </div>
       </section>
 
-      <div class="pixel-transition" aria-hidden="true"></div>
-
       <!-- Plane Launch Section -->
-      <section id="plane-launch" style="background: var(--color-surface); padding: var(--space-xl) 0 var(--space-4xl); overflow: hidden; position: relative;">
+      <section id="plane-launch" style="background: var(--color-bg); padding: var(--space-4xl) 0; overflow: hidden; position: relative;">
         <!-- Background glow -->
         <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 72% 50%, rgba(168,85,247,0.09) 0%, transparent 70%);pointer-events:none;z-index:0;"></div>
 
@@ -488,13 +476,6 @@
       if (charIdx < word.length) {
         el.textContent = word.slice(0, ++charIdx);
         setTimeout(tick, 55);
-      } else {
-        // Typing done — reveal brand row above
-        var reveal = document.getElementById('plane-brand-reveal');
-        if (reveal) {
-          reveal.style.opacity = '1';
-          reveal.style.transform = 'translateY(0)';
-        }
       }
     }
     tick();

@@ -14,90 +14,181 @@
   <link rel="stylesheet" href="/assets/css/components.css" />
 
   <style>
+    /* ── Page reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #111111;
+      font-family: 'Inter', sans-serif;
+      color: #ffffff;
+    }
+
+    /* ── Entrance animation ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    /* ── Ghost-owl float animation ── */
+    @keyframes owl-float {
+      0%, 100% { transform: translateY(-6px); }
+      50%       { transform: translateY(6px);  }
+    }
+
+    /* ── Layout ── */
     .error-page {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 2rem;
-      background: var(--color-bg);
+      background: #111111;
       text-align: center;
     }
 
     .error-inner {
-      max-width: 480px;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
     }
 
-    .error-code {
+    /* ── 4 [owl] 4 row ── */
+    .e-numbers {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .e-num {
       font-family: 'Outfit', sans-serif;
-      font-size: clamp(5rem, 20vw, 8rem);
+      font-size: clamp(5rem, 18vw, 6.5rem);
       font-weight: 800;
       line-height: 1;
+      color: rgba(255, 255, 255, 0.7);
       letter-spacing: -0.04em;
-      background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 1.5rem;
+      /* individual delay applied inline */
+      opacity: 0;
+      animation: fadeInUp 0.55s ease forwards;
     }
 
-    .error-heading {
+    .e-owl {
+      width: auto;
+      height: clamp(80px, 16vw, 100px);
+      object-fit: contain;
+      opacity: 0;
+      animation: fadeInUp 0.55s ease forwards, owl-float 2s ease-in-out infinite;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .e-owl:hover {
+      filter: drop-shadow(0 0 18px rgba(168, 85, 247, 0.5));
+    }
+
+    /* ── Text & CTA ── */
+    .e-heading {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--color-white);
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 800;
+      color: #ffffff;
       letter-spacing: -0.02em;
       margin-bottom: 0.75rem;
+      opacity: 0;
+      animation: fadeInUp 0.55s ease forwards;
     }
 
-    .error-body {
-      color: var(--color-text-muted);
+    .e-body {
+      font-family: 'Inter', sans-serif;
       font-size: 1rem;
       line-height: 1.6;
+      color: #9ca3af;
       margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeInUp 0.55s ease forwards;
     }
 
-    .error-btn {
+    .e-btn {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       padding: 0.8rem 1.75rem;
-      background: var(--color-primary);
-      color: #fff;
-      font-family: var(--font-sans);
+      background: #a855f7;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
       font-size: 0.95rem;
       font-weight: 600;
-      border-radius: var(--radius-sm);
+      border-radius: 8px;
       text-decoration: none;
       transition: opacity 0.15s ease, transform 0.15s ease;
+      margin-bottom: 1.25rem;
+      opacity: 0;
+      animation: fadeInUp 0.55s ease forwards;
     }
 
-    .error-btn:hover {
+    .e-btn:hover {
       opacity: 0.88;
       transform: translateY(-1px);
     }
 
-    .error-divider {
-      width: 48px;
-      height: 2px;
-      background: rgba(168, 85, 247, 0.35);
-      margin: 0 auto 2rem;
-      border-radius: 2px;
+    .e-link {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: #9ca3af;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(168, 85, 247, 0.35);
+      padding-bottom: 1px;
+      transition: color 0.15s ease, border-color 0.15s ease;
+      opacity: 0;
+      animation: fadeInUp 0.55s ease forwards;
+    }
+
+    .e-link:hover {
+      color: #a855f7;
+      border-color: #a855f7;
+    }
+
+    /* ── Mobile tweaks ── */
+    @media (max-width: 480px) {
+      .e-numbers {
+        gap: 0.65rem;
+      }
+
+      .e-btn {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
   <main class="error-page">
     <div class="error-inner">
-      <div class="error-code">404</div>
-      <div class="error-divider"></div>
-      <h1 class="error-heading">Page not found</h1>
-      <p class="error-body">
-        The page you're looking for doesn't exist or has been moved.
-      </p>
-      <a href="/" class="error-btn">
-        ← Return to Home
-      </a>
+
+      <!-- 4 [ghost-owl] 4 -->
+      <div class="e-numbers">
+        <span class="e-num" style="animation-delay: 0.1s">4</span>
+        <img
+          src="/assets/images/fai_una_versione_202604021418-removebg-preview.png"
+          class="e-owl"
+          style="animation-delay: 0.2s"
+          alt="Ghost Owl"
+          draggable="false"
+        />
+        <span class="e-num" style="animation-delay: 0.3s">4</span>
+      </div>
+
+      <h1 class="e-heading" style="animation-delay: 0.4s">Boo! Page missing!</h1>
+      <p class="e-body" style="animation-delay: 0.5s">Whoops! This page must be a ghost — it's not here!</p>
+
+      <a href="/" class="e-btn" style="animation-delay: 0.6s">Back home</a>
+      <a href="#" class="e-link" style="animation-delay: 0.7s">What means 404?</a>
+
     </div>
   </main>
 </body>

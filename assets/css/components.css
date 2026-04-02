@@ -446,15 +446,19 @@
 
 .aike-avatar-status {
   position: absolute;
-  bottom: 0px;
-  right: 0px;
-  width: 8px;
-  height: 8px;
+  bottom: -2px;
+  right: -2px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background: #22c55e;
-  border: 2px solid #111111;
+  background: #111111;
+  border: 1.5px solid #111111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
   z-index: 2;
+  overflow: visible;
 }
 
 /* ── Auth Dropdown ───────────────────────────────────────────── */

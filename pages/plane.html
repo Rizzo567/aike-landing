@@ -115,33 +115,6 @@
     }
 
     /* ─────────────────────────────────────────
-       BACK BUTTON
-    ───────────────────────────────────────── */
-    #plane-back {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      background: var(--h-surface);
-      border: 1px solid var(--h-border);
-      border-radius: var(--h-r-sm);
-      color: var(--h-text-muted);
-      font-size: 0.82rem;
-      font-weight: 500;
-      transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-      backdrop-filter: blur(12px);
-    }
-    #plane-back:hover {
-      color: var(--h-text-sec);
-      border-color: rgba(255,250,240,0.18);
-      background: var(--h-surface-alt);
-    }
-
-    /* ─────────────────────────────────────────
        PANEL SHARED STYLES
     ───────────────────────────────────────── */
     .plane-panel-btn {
@@ -1458,16 +1431,6 @@
   </div>
 
   <!-- ══════════════════════════════════════
-       BACK BUTTON
-  ══════════════════════════════════════ -->
-  <button id="plane-back" onclick="window.location.href='owl.html'">
-    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M10 12L6 8l4-4"/>
-    </svg>
-    Owl
-  </button>
-
-  <!-- ══════════════════════════════════════
        AGENT INSTRUCTIONS PANEL
   ══════════════════════════════════════ -->
   <div id="plane-agent-panel">
@@ -1895,7 +1858,7 @@ canvasViewport.addEventListener('mousedown', (e) => {
       target.closest('#plane-agent-panel') ||
       target.closest('#plane-log-panel') || target.closest('#plane-input-bar') ||
       target.closest('#plane-controls') || target.closest('#plane-toolstrip') ||
-      target.closest('#plane-back') || target.closest('#plane-theme-dropdown') ||
+      target.closest('#plane-theme-dropdown') ||
       target.closest('#plane-help-tip') || target.closest('#plane-add-btn') ||
       target.closest('#plane-elements-panel')) return;
 

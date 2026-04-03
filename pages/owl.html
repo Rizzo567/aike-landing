@@ -2208,12 +2208,13 @@
       </div>
     </div>
     <div class="jarvis-model-selector">
-      <button class="jarvis-model-btn active" data-model="claude">Claude</button>
+      <button class="jarvis-model-btn active" data-model="claude-haiku">Haiku</button>
       <button class="jarvis-model-btn" data-model="gpt4">GPT-4o</button>
       <button class="jarvis-model-btn" data-model="gemini">Gemini</button>
     </div>
     <div class="jarvis-input-area">
       <textarea id="jarvisInput" class="jarvis-textarea" placeholder="Ask Jarvis anything…" rows="2"></textarea>
+      <button id="jarvisMic" class="jarvis-send-btn" title="Hold to speak" style="background:transparent;border:1.5px solid rgba(168,85,247,0.4);font-size:18px;">🎤</button>
       <button id="jarvisSend" class="jarvis-send-btn">Send</button>
     </div>
   </div><!-- /panel-jarvis -->
@@ -5904,33 +5905,40 @@
 (function() {
   const WS_URL = 'ws://localhost:7331';
   let ws = null;
-  let selectedModel = 'claude';
+  let selectedModel = 'claude-haiku';
   let pendingPermissionId = null;
   let reconnectTimer = null;
+  let conversationHistory = [];
+  let currentAudio = null;
+  let lastJarvisText = '';
+  let isListening = false;
 
   const $ = id => document.getElementById(id);
 
+  // ── WebSocket ──
   function connect() {
     if (ws && ws.readyState < 2) return;
     ws = new WebSocket(WS_URL);
-    ws.onopen = () => {
-      clearTimeout(reconnectTimer);
-      setStatus(true, 'Connected');
-    };
-    ws.onclose = () => {
-      setStatus(false, 'Disconnected');
-      reconnectTimer = setTimeout(connect, 5000);
-    };
+    ws.onopen = () => { clearTimeout(reconnectTimer); setStatus(true, 'Connected'); };
+    ws.onclose = () => { setStatus(false, 'Offline — avvia il server locale'); reconnectTimer = setTimeout(connect, 5000); };
     ws.onerror = () => setStatus(false, 'Error');
-    ws.onmessage = e => {
-      try { handleMessage(JSON.parse(e.data)); } catch {}
-    };
+    ws.onmessage = e => { try { handleMessage(JSON.parse(e.data)); } catch {} };
   }
 
   function handleMessage(msg) {
     switch (msg.type) {
       case 'ai_response':
+        lastJarvisText = msg.text;
+        conversationHistory.push({ role: 'assistant', content: msg.text });
+        if (conversationHistory.length > 12) conversationHistory = conversationHistory.slice(-12);
         appendMsg(msg.text, 'jarvis');
+        speakText(msg.text);
+        break;
+      case 'tts_audio':
+        playBase64Audio(msg.audio);
+        break;
+      case 'tts_fallback':
+        fallbackBrowserTTS(lastJarvisText);
         break;
       case 'system_status':
         if (msg.data) {
@@ -5962,6 +5970,77 @@
     if (ws && ws.readyState === 1) ws.send(JSON.stringify(data));
   }
 
+  // ── TTS ──
+  function speakText(text) {
+    stopSpeaking();
+    send({ type: 'tts_request', id: Date.now().toString(), text });
+  }
+
+  function playBase64Audio(base64) {
+    stopSpeaking();
+    const audio = new Audio('data:audio/mpeg;base64,' + base64);
+    currentAudio = audio;
+    audio.onended = () => { currentAudio = null; };
+    audio.onerror = () => { currentAudio = null; fallbackBrowserTTS(lastJarvisText); };
+    audio.play().catch(() => fallbackBrowserTTS(lastJarvisText));
+  }
+
+  function stopSpeaking() {
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    if (window.speechSynthesis) speechSynthesis.cancel();
+  }
+
+  function fallbackBrowserTTS(text) {
+    if (!text || !window.speechSynthesis) return;
+    const utter = new SpeechSynthesisUtterance(text);
+    const voices = speechSynthesis.getVoices();
+    utter.voice = voices.find(v => v.name.includes('UK') && v.name.includes('Male'))
+                 || voices.find(v => v.lang === 'en-GB') || voices[0];
+    utter.rate = 0.9; utter.pitch = 0.8;
+    speechSynthesis.speak(utter);
+  }
+
+  // ── Voice Input ──
+  function initVoice() {
+    const micBtn = $('jarvisMic');
+    if (!micBtn || !('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) return;
+
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SR();
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onresult = e => {
+      const transcript = e.results[0][0].transcript.trim();
+      if (transcript) sendText(transcript);
+    };
+    recognition.onend = () => {
+      isListening = false;
+      micBtn.style.borderColor = 'rgba(168,85,247,0.4)';
+      micBtn.style.color = '';
+    };
+    recognition.onerror = () => {
+      isListening = false;
+      micBtn.style.borderColor = 'rgba(168,85,247,0.4)';
+    };
+
+    micBtn.addEventListener('click', () => {
+      if (isListening) {
+        recognition.stop();
+        return;
+      }
+      // Interrompi audio se Jarvis sta parlando
+      stopSpeaking();
+      send({ type: 'cancel_response' });
+      isListening = true;
+      micBtn.style.borderColor = '#a855f7';
+      micBtn.style.color = '#a855f7';
+      recognition.start();
+    });
+  }
+
+  // ── Messaggi ──
   function appendMsg(text, type) {
     const div = document.createElement('div');
     div.className = `jarvis-msg jarvis-msg--${type}`;
@@ -5979,14 +6058,20 @@
     $('jarvisStatusText').textContent = text;
   }
 
+  function sendText(text) {
+    appendMsg(text, 'user');
+    conversationHistory.push({ role: 'user', content: text });
+    if (conversationHistory.length > 12) conversationHistory = conversationHistory.slice(-12);
+    send({ type: 'ai_request', prompt: text, model: selectedModel, history: conversationHistory.slice(-6) });
+  }
+
   function sendMessage() {
     const input = $('jarvisInput');
     if (!input) return;
     const text = input.value.trim();
     if (!text) return;
-    appendMsg(text, 'user');
     input.value = '';
-    send({ type: 'ai_request', text, model: selectedModel });
+    sendText(text);
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -5997,16 +6082,10 @@
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
     });
     $('jarvisAllow').addEventListener('click', () => {
-      if (pendingPermissionId) {
-        send({ type: 'command_confirmed', id: pendingPermissionId });
-        pendingPermissionId = null;
-      }
+      if (pendingPermissionId) { send({ type: 'command_confirmed', id: pendingPermissionId }); pendingPermissionId = null; }
     });
     $('jarvisDeny').addEventListener('click', () => {
-      if (pendingPermissionId) {
-        send({ type: 'command_denied', id: pendingPermissionId });
-        pendingPermissionId = null;
-      }
+      if (pendingPermissionId) { send({ type: 'command_denied', id: pendingPermissionId }); pendingPermissionId = null; }
     });
     document.querySelectorAll('.jarvis-model-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -6016,6 +6095,7 @@
       });
     });
 
+    initVoice();
     connect();
   });
 })();

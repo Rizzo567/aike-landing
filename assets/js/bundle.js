@@ -471,6 +471,341 @@ function initSettingsOverlay() {
   window.aikeOpenSettings = openSettings;
 }
 
+// ── Auth Modal ─────────────────────────────────────────────────────────────
+
+function injectAuthModalCSS() {
+  if (document.getElementById('aam-styles')) return;
+  var style = document.createElement('style');
+  style.id = 'aam-styles';
+  style.textContent = [
+    '#aam-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.25s ease;}',
+    '#aam-overlay.aam-open{opacity:1;pointer-events:all;}',
+    '.aam-scrim{position:absolute;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}',
+    '.aam-dialog{position:relative;display:flex;width:min(860px,95vw);max-height:90dvh;background:#09090f;border-radius:16px;overflow:hidden;border:1px solid #14141f;transform:scale(0.96) translateY(8px);transition:transform 0.28s cubic-bezier(0.16,1,0.3,1);}',
+    '#aam-overlay.aam-open .aam-dialog{transform:scale(1) translateY(0);}',
+    '.aam-left{position:relative;width:42%;overflow:hidden;background:#07070e;border-right:1px solid #14141f;display:flex;flex-direction:column;}',
+    '#aam-stars{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}',
+    '.aam-left-inner{position:relative;z-index:2;display:flex;flex-direction:column;height:100%;padding:36px 40px;}',
+    '.aam-brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}',
+    '.aam-brand-logo{height:28px;width:auto;}',
+    ".aam-brand-name{font-family:'Suisse Int\\'l','Inter',system-ui,sans-serif;font-size:1.4rem;font-weight:700;color:#fff;letter-spacing:-0.02em;line-height:1;}",
+    '.aam-cta{flex:1;display:flex;flex-direction:column;justify-content:center;gap:28px;padding:24px 0 16px;}',
+    '.aam-cta-text{font-size:clamp(1.2rem,1.8vw,1.6rem);font-weight:800;line-height:1.2;letter-spacing:-0.03em;color:#fff;perspective:800px;transform-style:preserve-3d;}',
+    '.aam-line-1{display:inline-block;opacity:0;transform:translateY(50px) scale(0.87) rotateX(-18deg);filter:blur(16px);transition:opacity 1.3s cubic-bezier(0.16,1,0.3,1),transform 1.3s cubic-bezier(0.16,1,0.3,1),filter 1.3s cubic-bezier(0.16,1,0.3,1);}',
+    '.aam-line-1.animate{opacity:1;transform:translateY(0) scale(1) rotateX(0);filter:blur(0);}',
+    '.aam-line-2{display:inline-block;background-color:#3b1d64;color:#d9abff;padding:3px 12px;border-radius:5px;margin-top:8px;transform:rotate(-2.5deg) translateY(-2px);box-shadow:0 8px 24px rgba(168,85,247,0.15);clip-path:inset(0 100% 0 0);transition:clip-path 1.1s cubic-bezier(0.77,0,0.175,1);}',
+    '.aam-line-2.animate{clip-path:inset(0 0% 0 0);}',
+    '.aam-globe-wrap{display:flex;justify-content:center;align-items:center;position:relative;height:180px;}',
+    '.aam-globe-glow{position:absolute;width:220px;height:220px;background:radial-gradient(circle,rgba(99,102,241,0.16),transparent 65%);border-radius:50%;pointer-events:none;}',
+    '#aam-globe{display:block;border-radius:50%;}',
+    '.aam-left-footer{color:#252535;font-size:11px;flex-shrink:0;}',
+    '.aam-right{width:58%;background:#09090f;display:flex;align-items:center;justify-content:center;padding:40px 44px;position:relative;}',
+    '.aam-close-btn{position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;color:#4b5563;padding:6px;display:flex;align-items:center;border-radius:6px;transition:color 0.15s,background 0.15s;}',
+    '.aam-close-btn:hover{color:#d1d5db;background:#111118;}',
+    '.aam-form-wrap{width:100%;max-width:340px;display:flex;flex-direction:column;gap:20px;}',
+    '.aam-heading{font-size:22px;font-weight:600;letter-spacing:-0.03em;color:#f9f9fb;}',
+    '.aam-sub{font-size:13px;color:#4b5563;margin-top:4px;}',
+    '.aam-social-row{display:flex;gap:10px;}',
+    '.aam-btn-social{flex:1;background:#111118;border:1px solid #1e1e30;border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:center;gap:8px;color:#d1d5db;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;transition:border-color 0.15s,background 0.15s;}',
+    '.aam-btn-social:hover{border-color:#2e2e45;background:#13131e;}',
+    '.aam-btn-social:disabled{opacity:0.5;cursor:not-allowed;}',
+    '.aam-divider{display:flex;align-items:center;gap:10px;}',
+    '.aam-divider-line{flex:1;height:1px;background:#1a1a2a;}',
+    '.aam-divider-text{color:#2a2a3e;font-size:11px;white-space:nowrap;}',
+    '.aam-fields{display:flex;flex-direction:column;gap:12px;}',
+    '.aam-field{display:flex;flex-direction:column;gap:5px;}',
+    '.aam-label{font-size:11px;font-weight:500;color:#4b5563;letter-spacing:0.5px;text-transform:uppercase;}',
+    '.aam-input-wrap{position:relative;}',
+    '.aam-input{width:100%;background:#0e0e1a;border:1px solid #1e1e30;border-radius:8px;padding:10px 14px;color:#f9f9fb;font-size:14px;font-family:inherit;outline:none;transition:border-color 0.15s;}',
+    '.aam-input:focus{border-color:#4f4f8a;}',
+    '.aam-input::placeholder{color:#252535;}',
+    '.aam-input.has-toggle{padding-right:40px;}',
+    '.aam-pw-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#4b5563;padding:4px;display:flex;align-items:center;}',
+    '.aam-pw-toggle:hover{color:#9ca3af;}',
+    '.aam-field-error{font-size:12px;color:#ef4444;min-height:15px;display:none;}',
+    '.aam-field-error.visible{display:block;}',
+    '.aam-btn-submit{width:100%;background:#fff;color:#09090f;border:none;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:600;font-family:inherit;letter-spacing:-0.01em;cursor:pointer;transition:opacity 0.15s;display:flex;align-items:center;justify-content:center;gap:8px;}',
+    '.aam-btn-submit:hover:not(:disabled){opacity:0.9;}',
+    '.aam-btn-submit:disabled{opacity:0.6;cursor:not-allowed;}',
+    '.aam-spinner{width:14px;height:14px;border:2px solid rgba(0,0,0,0.2);border-top-color:#09090f;border-radius:50%;animation:aam-spin 0.7s linear infinite;display:none;}',
+    '@keyframes aam-spin{to{transform:rotate(360deg);}}',
+    '.aam-footer-link{font-size:12px;color:#4b5563;text-align:center;}',
+    '.aam-footer-link a{color:#8b8ba0;text-decoration:underline;text-underline-offset:2px;}',
+    '.aam-footer-link a:hover{color:#d1d5db;}',
+    '.aam-error-banner{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:10px 14px;font-size:13px;color:#f87171;display:none;}',
+    '.aam-error-banner.visible{display:block;}',
+    '@media(max-width:640px){.aam-left{display:none;}.aam-right{width:100%;padding:32px 24px;}.aam-dialog{width:95vw;}}'
+  ].join('');
+  document.head.appendChild(style);
+}
+
+function getAuthModalHTML(b) {
+  return '<div id="aam-overlay" role="dialog" aria-modal="true" aria-label="Accedi">' +
+    '<div class="aam-scrim" id="aam-scrim"></div>' +
+    '<div class="aam-dialog">' +
+      '<div class="aam-left">' +
+        '<canvas id="aam-stars"></canvas>' +
+        '<div class="aam-left-inner">' +
+          '<a href="' + b + 'index.html" class="aam-brand">' +
+            '<img src="' + b + 'assets/images/logo.png" alt="Aike Logo" class="aam-brand-logo">' +
+            '<span class="aam-brand-name">aike</span>' +
+          '</a>' +
+          '<div class="aam-cta">' +
+            '<div class="aam-cta-text">' +
+              '<span class="aam-line-1">Built for teams that<br>move fast and</span><br>' +
+              '<span class="aam-line-2">need results</span>' +
+            '</div>' +
+            '<div class="aam-globe-wrap">' +
+              '<div class="aam-globe-glow"></div>' +
+              '<canvas id="aam-globe" width="160" height="160"></canvas>' +
+            '</div>' +
+          '</div>' +
+          '<div class="aam-left-footer">\u00a9 2025 AIKE</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="aam-right">' +
+        '<button class="aam-close-btn" id="aam-close" aria-label="Chiudi">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+        '</button>' +
+        '<div class="aam-form-wrap">' +
+          '<div><div class="aam-heading">Bentornato</div><div class="aam-sub">Accedi al tuo account AIKE.</div></div>' +
+          '<div class="aam-social-row">' +
+            '<button class="aam-btn-social" id="aam-btn-google" type="button">' +
+              '<svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>' +
+              'Google' +
+            '</button>' +
+            '<button class="aam-btn-social" id="aam-btn-github" type="button">' +
+              '<svg width="15" height="15" viewBox="0 0 24 24" fill="#d1d5db" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>' +
+              'GitHub' +
+            '</button>' +
+          '</div>' +
+          '<div class="aam-divider"><div class="aam-divider-line"></div><div class="aam-divider-text">oppure continua con email</div><div class="aam-divider-line"></div></div>' +
+          '<div class="aam-error-banner" id="aam-error-banner" role="alert"></div>' +
+          '<form class="aam-fields" id="aam-form" novalidate>' +
+            '<div class="aam-field">' +
+              '<label class="aam-label" for="aam-email">Email</label>' +
+              '<div class="aam-input-wrap"><input class="aam-input" type="email" id="aam-email" name="email" autocomplete="email" placeholder="mario@esempio.it" required></div>' +
+              '<div class="aam-field-error" id="aam-err-email"></div>' +
+            '</div>' +
+            '<div class="aam-field">' +
+              '<label class="aam-label" for="aam-password">Password</label>' +
+              '<div class="aam-input-wrap">' +
+                '<input class="aam-input has-toggle" type="password" id="aam-password" name="password" autocomplete="current-password" placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" required>' +
+                '<button type="button" class="aam-pw-toggle" id="aam-pw-toggle" aria-label="Mostra/nascondi password">' +
+                  '<svg id="aam-eye" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' +
+                  '<svg id="aam-eye-off" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>' +
+                '</button>' +
+              '</div>' +
+              '<div class="aam-field-error" id="aam-err-password"></div>' +
+            '</div>' +
+            '<button class="aam-btn-submit" type="submit" id="aam-submit">' +
+              '<span class="aam-spinner" id="aam-spinner"></span>' +
+              '<span id="aam-submit-text">Accedi</span>' +
+            '</button>' +
+          '</form>' +
+          '<div class="aam-footer-link">Non hai un account? <a href="' + b + 'pages/signup.html">Registrati</a></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function initAuthModal(b) {
+  injectAuthModalCSS();
+
+  var container = document.createElement('div');
+  container.innerHTML = getAuthModalHTML(b);
+  document.body.appendChild(container.firstChild);
+
+  var overlay = document.getElementById('aam-overlay');
+  var scrim = document.getElementById('aam-scrim');
+  var closeBtn = document.getElementById('aam-close');
+  var globeInited = false;
+  var starsRaf = null;
+
+  // ── Stars ──────────────────────────────────────────────────
+  function initAamStars() {
+    if (starsRaf) cancelAnimationFrame(starsRaf);
+    var canvas = document.getElementById('aam-stars');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var stars = [];
+    var NUM = 120;
+    function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+    function rand(a, b) { return Math.random() * (b - a) + a; }
+    function mkStar(top) {
+      var angle = rand(35, 45) * Math.PI / 180;
+      var speed = rand(0.4, 1.1), len = rand(18, 55), opacity = rand(0.3, 0.75), w = rand(0.5, 1.4);
+      var vx = -Math.cos(angle) * speed, vy = Math.sin(angle) * speed, x, y;
+      if (top) {
+        x = Math.random() < 0.6 ? rand(0, canvas.width) : rand(canvas.width * 0.5, canvas.width + len);
+        y = Math.random() < 0.6 ? rand(-len, 0) : rand(-canvas.height * 0.1, canvas.height * 0.4);
+      } else {
+        x = Math.random() < 0.5 ? rand(0, canvas.width + canvas.height * Math.tan(angle)) : canvas.width + rand(0, len);
+        y = rand(-len, canvas.height * 0.3);
+      }
+      return { x: x, y: y, vx: vx, vy: vy, len: len, opacity: opacity, w: w };
+    }
+    function off(s) { return s.x < -s.len * 2 || s.y > canvas.height + s.len; }
+    function drawStar(s) {
+      var hyp = Math.hypot(s.vx, s.vy);
+      var nx = s.vx / hyp, ny = s.vy / hyp;
+      var g = ctx.createLinearGradient(s.x - nx * s.len, s.y - ny * s.len, s.x, s.y);
+      g.addColorStop(0, 'rgba(255,255,255,0)');
+      g.addColorStop(1, 'rgba(220,230,255,' + s.opacity + ')');
+      ctx.beginPath(); ctx.moveTo(s.x - nx * s.len, s.y - ny * s.len); ctx.lineTo(s.x, s.y);
+      ctx.strokeStyle = g; ctx.lineWidth = s.w; ctx.lineCap = 'round'; ctx.stroke();
+    }
+    resize();
+    for (var i = 0; i < NUM; i++) stars.push(mkStar(true));
+    function loop() {
+      ctx.fillStyle = 'rgba(0,0,0,0.03)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (var i = 0; i < stars.length; i++) {
+        stars[i].x += stars[i].vx; stars[i].y += stars[i].vy;
+        if (off(stars[i])) stars[i] = mkStar(false); else drawStar(stars[i]);
+      }
+      starsRaf = requestAnimationFrame(loop);
+    }
+    loop();
+  }
+
+  // ── Globe ──────────────────────────────────────────────────
+  function initAamGlobe() {
+    var s = document.createElement('script');
+    s.type = 'module';
+    s.textContent =
+      'import createGlobe from "https://cdn.jsdelivr.net/npm/cobe@0.6.3/+esm";' +
+      'var c=document.getElementById("aam-globe");' +
+      'if(c){var phi=0;createGlobe(c,{devicePixelRatio:2,width:320,height:320,phi:0,theta:0.25,dark:1,diffuse:1.2,mapSamples:10000,mapBrightness:6,baseColor:[0.18,0.12,0.38],markerColor:[0.55,0.25,0.95],glowColor:[0.15,0.08,0.3],markers:[{location:[41.9,12.5],size:0.05},{location:[48.8,2.3],size:0.04},{location:[40.7,-74],size:0.06}],onRender:function(state){state.phi=phi;phi+=0.004;}});}';
+    document.head.appendChild(s);
+  }
+
+  // ── Open / Close ───────────────────────────────────────────
+  function openModal() {
+    overlay.classList.add('aam-open');
+    document.body.style.overflow = 'hidden';
+    if (!globeInited) { initAamGlobe(); globeInited = true; }
+    initAamStars();
+    setTimeout(function() {
+      var l1 = overlay.querySelector('.aam-line-1');
+      var l2 = overlay.querySelector('.aam-line-2');
+      if (l1) l1.classList.add('animate');
+      if (l2) setTimeout(function() { l2.classList.add('animate'); }, 550);
+    }, 80);
+    setTimeout(function() { var el = document.getElementById('aam-email'); if (el) el.focus(); }, 300);
+  }
+
+  function closeModal() {
+    overlay.classList.remove('aam-open');
+    document.body.style.overflow = '';
+    if (starsRaf) { cancelAnimationFrame(starsRaf); starsRaf = null; }
+    var l1 = overlay.querySelector('.aam-line-1');
+    var l2 = overlay.querySelector('.aam-line-2');
+    if (l1) l1.classList.remove('animate');
+    if (l2) l2.classList.remove('animate');
+    var form = document.getElementById('aam-form');
+    if (form) form.reset();
+    showAamBanner('');
+    showAamErr('aam-err-email', '');
+    showAamErr('aam-err-password', '');
+  }
+
+  // ── Intercept login links ──────────────────────────────────
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.auth-btn-login');
+    if (btn) { e.preventDefault(); openModal(); }
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (scrim) scrim.addEventListener('click', closeModal);
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.classList.contains('aam-open')) closeModal();
+  });
+
+  // ── Helpers ────────────────────────────────────────────────
+  function showAamErr(id, msg) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.toggle('visible', !!msg);
+  }
+  function showAamBanner(msg) {
+    var el = document.getElementById('aam-error-banner');
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.toggle('visible', !!msg);
+  }
+  function setAamLoading(on) {
+    var btn = document.getElementById('aam-submit');
+    var sp = document.getElementById('aam-spinner');
+    var txt = document.getElementById('aam-submit-text');
+    if (!btn) return;
+    btn.disabled = on;
+    if (sp) sp.style.display = on ? 'block' : 'none';
+    if (txt) txt.textContent = on ? '' : 'Accedi';
+    document.querySelectorAll('.aam-btn-social').forEach(function(b) { b.disabled = on; });
+  }
+
+  // ── Password toggle ────────────────────────────────────────
+  var pwInput = document.getElementById('aam-password');
+  var pwToggle = document.getElementById('aam-pw-toggle');
+  var pwEye = document.getElementById('aam-eye');
+  var pwEyeOff = document.getElementById('aam-eye-off');
+  if (pwToggle) {
+    pwToggle.addEventListener('click', function() {
+      var isText = pwInput.type === 'text';
+      pwInput.type = isText ? 'password' : 'text';
+      if (pwEye) pwEye.style.display = isText ? 'block' : 'none';
+      if (pwEyeOff) pwEyeOff.style.display = isText ? 'none' : 'block';
+    });
+  }
+
+  // ── OAuth ──────────────────────────────────────────────────
+  var gBtn = document.getElementById('aam-btn-google');
+  var ghBtn = document.getElementById('aam-btn-github');
+  if (gBtn) gBtn.addEventListener('click', async function() {
+    setAamLoading(true);
+    if (window.aikeAuth) await window.aikeAuth.signInWithOAuth('google');
+  });
+  if (ghBtn) ghBtn.addEventListener('click', async function() {
+    setAamLoading(true);
+    if (window.aikeAuth) await window.aikeAuth.signInWithOAuth('github');
+  });
+
+  // ── Email/password form ────────────────────────────────────
+  var form = document.getElementById('aam-form');
+  if (form) {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      showAamBanner('');
+      showAamErr('aam-err-email', '');
+      showAamErr('aam-err-password', '');
+      var email = document.getElementById('aam-email').value.trim().toLowerCase();
+      var password = document.getElementById('aam-password').value;
+      var valid = true;
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showAamErr('aam-err-email', 'Inserisci un indirizzo email valido.');
+        valid = false;
+      }
+      if (!password) {
+        showAamErr('aam-err-password', 'Inserisci la password.');
+        valid = false;
+      }
+      if (!valid) return;
+      setAamLoading(true);
+      if (!window.aikeSupabase) { showAamBanner('Errore di configurazione.'); setAamLoading(false); return; }
+      var sb = window.aikeSupabase.getClient();
+      var result = await sb.auth.signInWithPassword({ email: email, password: password });
+      if (result.error) {
+        setAamLoading(false);
+        showAamBanner(window.aikeAuth ? window.aikeAuth.parseAuthError(result.error) : result.error.message);
+        return;
+      }
+      window.location.reload();
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   const isPage = window.location.pathname.includes('/pages/');
   const b = isPage ? '../' : './';
@@ -496,6 +831,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initScrollReveal();
   initInfiniteCarousel();
   initSettingsOverlay();
+  initAuthModal(b);
 
   // Wire settings button (after overlay is ready)
   document.addEventListener('click', function(e) {

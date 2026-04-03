@@ -10,6 +10,8 @@
 
   var _client = null;
   var _profileCache = null;
+  var _profileCacheTime = 0;
+  var PROFILE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
   function getClient() {
     if (!_client) {
@@ -39,6 +41,7 @@
 
     signOut: async function () {
       _profileCache = null;
+      _profileCacheTime = 0;
       await getClient().auth.signOut();
       updateHeader(null, null);
     },
@@ -57,7 +60,10 @@
 
     // Profile row from public.users (is_admin, plan)
     getProfile: async function (userId) {
-      if (_profileCache) return _profileCache;
+      var now = Date.now();
+      if (_profileCache && (now - _profileCacheTime < PROFILE_CACHE_TTL)) {
+        return _profileCache;
+      }
       var r = await getClient()
         .from('users')
         .select('is_admin, plan, email')
@@ -65,7 +71,36 @@
         .maybeSingle();
       if (r.error) console.warn('[aikeAuth] getProfile:', r.error.message);
       _profileCache = r.data || null;
+      _profileCacheTime = Date.now();
       return _profileCache;
+    },
+
+    signInWithOAuth: async function (provider) {
+      var redirectTo = window.location.origin + '/pages/login.html';
+      var r = await getClient().auth.signInWithOAuth({
+        provider: provider,
+        options: { redirectTo: redirectTo }
+      });
+      return r.error ? { error: r.error.message } : { error: null };
+    },
+
+    parseAuthError: function (err) {
+      if (!err) return 'Errore sconosciuto. Riprova.';
+      var code = err.code || '';
+      var msg  = (err.message || '').toLowerCase();
+      if (code === 'invalid_credentials' || msg.includes('invalid login'))
+        return 'Email o password non corretti.';
+      if (code === 'email_not_confirmed' || msg.includes('email not confirmed'))
+        return 'Conferma la tua email prima di accedere.';
+      if (code === 'over_email_send_rate_limit' || msg.includes('rate limit'))
+        return 'Troppi tentativi. Riprova tra qualche minuto.';
+      if (code === 'user_already_exists' || msg.includes('already registered'))
+        return 'Un account con questa email esiste già.';
+      if (code === 'weak_password' || msg.includes('weak password'))
+        return 'Password troppo debole. Usa almeno 8 caratteri.';
+      if (msg.includes('network') || msg.includes('fetch'))
+        return 'Errore di rete. Controlla la connessione.';
+      return 'Errore. Riprova.';
     }
   };
 

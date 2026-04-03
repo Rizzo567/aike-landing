@@ -295,7 +295,7 @@
       background: var(--color-bg);
     }
 
-    #admin-app { display: none; }
+    /* #admin-container is empty until JS injects after auth verification */
 
     @media (max-width: 768px) {
       .admin-layout { grid-template-columns: 1fr; }
@@ -315,88 +315,8 @@
     </div>
   </div>
 
-  <!-- Admin app — hidden until auth verified -->
-  <div id="admin-app">
-    <div class="admin-layout">
-
-      <!-- Sidebar -->
-      <aside class="admin-sidebar">
-        <a href="../index.html" class="admin-brand">
-          <img src="../assets/images/logo.png" alt="Aike" />
-          <span>aike</span>
-          <span class="admin-tag">Admin</span>
-        </a>
-
-        <nav class="admin-nav">
-          <a class="admin-nav-item active" href="#">
-            <span class="nav-icon">◈</span> Overview
-          </a>
-          <a class="admin-nav-item" href="../index.html">
-            <span class="nav-icon">↗</span> View Site
-          </a>
-        </nav>
-
-        <div class="admin-sidebar-footer">
-          <button class="admin-logout-btn" id="admin-logout-btn">
-            <span>⇤</span> Log out
-          </button>
-        </div>
-      </aside>
-
-      <!-- Main -->
-      <main class="admin-main">
-        <div class="admin-header">
-          <div>
-            <div class="admin-header-title">Dashboard</div>
-            <div class="admin-header-sub" id="admin-date"></div>
-          </div>
-          <div class="admin-user-chip">
-            <div class="admin-avatar" id="admin-avatar-initial">A</div>
-            <span id="admin-email-label"></span>
-          </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">Total Users</div>
-            <div class="stat-value" id="stat-users">—</div>
-            <div class="stat-sub">registered accounts</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Total Visits</div>
-            <div class="stat-value" id="stat-visits">—</div>
-            <div class="stat-sub">all-time page views</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Active Now</div>
-            <div class="stat-value purple" id="stat-active">—</div>
-            <div class="stat-sub">visits in last 5 min</div>
-          </div>
-        </div>
-
-        <!-- Users table -->
-        <div class="section-heading">All Users</div>
-        <div class="admin-table-wrap">
-          <div id="users-loading" class="admin-loading">
-            <div class="admin-spinner"></div>
-            <div>Loading users…</div>
-          </div>
-          <table class="admin-table" id="users-table" style="display:none;">
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Plan</th>
-                <th>Joined</th>
-              </tr>
-            </thead>
-            <tbody id="users-tbody"></tbody>
-          </table>
-        </div>
-      </main>
-
-    </div>
-  </div>
+  <!-- Admin app injected by JS after auth verification -->
+  <div id="admin-container"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="../assets/js/config.js"></script>

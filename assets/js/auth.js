@@ -173,6 +173,40 @@
     d.classList.contains('dropdown-open') ? closeDropdown() : openDropdown();
   }
 
+  // ── Email-verified badge ─────────────────────────────────
+
+  async function updateEmailVerifiedBadge(userId) {
+    if (!userId) {
+      var statusEl = document.getElementById('auth-avatar-status');
+      if (statusEl) statusEl.style.display = 'none';
+      return;
+    }
+    try {
+      var jwt = null;
+      var key = Object.keys(localStorage).find(function(k) {
+        return k.startsWith('sb-') && k.endsWith('-auth-token');
+      });
+      if (key) {
+        var sess = JSON.parse(localStorage.getItem(key) || 'null');
+        if (sess && sess.access_token) jwt = sess.access_token;
+      }
+      if (!jwt) return;
+      var url = window.AIKE_CONFIG.supabase.url + '/rest/v1/profiles?id=eq.' + userId + '&select=email_verified&limit=1';
+      var r = await fetch(url, {
+        headers: {
+          'apikey': window.AIKE_CONFIG.supabase.anonKey,
+          'Authorization': 'Bearer ' + jwt,
+          'Accept': 'application/json'
+        }
+      });
+      if (!r.ok) return;
+      var data = await r.json();
+      var verified = data && data.length && data[0].email_verified === true;
+      var statusEl = document.getElementById('auth-avatar-status');
+      if (statusEl) statusEl.style.display = verified ? 'flex' : 'none';
+    } catch(e) {}
+  }
+
   // ── Called by bundle.js immediately after header is injected ─
 
   window.aikeAuthInit = async function () {
@@ -183,6 +217,13 @@
 
     // 2. Update header state
     updateHeader(user, profile);
+
+    // 2b. Show/hide email verified badge
+    if (user) updateEmailVerifiedBadge(user.id);
+    else {
+      var statusEl = document.getElementById('auth-avatar-status');
+      if (statusEl) statusEl.style.display = 'none';
+    }
 
     // 3. Wire profile button → toggle dropdown
     var profileBtn = document.getElementById('auth-profile-btn');
@@ -216,6 +257,11 @@
       var u = (session && session.user) ? session.user : null;
       var p = u ? await window.aikeAuth.getProfile(u.id) : null;
       updateHeader(u, p);
+      if (u) updateEmailVerifiedBadge(u.id);
+      else {
+        var statusEl = document.getElementById('auth-avatar-status');
+        if (statusEl) statusEl.style.display = 'none';
+      }
     });
   };
 

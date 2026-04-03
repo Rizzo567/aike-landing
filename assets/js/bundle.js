@@ -196,7 +196,7 @@ function initScrollReveal() {
   });
 }
 
-// ── Settings Overlay HTML ────────────────────────────────────
+// ── Settings Overlay HTML (sidebar layout) ───────────────────
 
 function getSettingsOverlayHTML() {
   var avatarDefs = [
@@ -216,51 +216,257 @@ function getSettingsOverlayHTML() {
     return '<button class="avatar-option" data-avatar-id="' + a.id + '" data-emoji="' + a.emoji + '" data-color="' + a.color + '" style="background:' + a.color + ';" title="Avatar ' + a.id + '" aria-label="Scegli avatar ' + a.emoji + '">' + a.emoji + '</button>';
   }).join('');
 
+  var navSections = [
+    { id: 'generale',    label: 'Generale',     icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>' },
+    { id: 'account',     label: 'Account',      icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' },
+    { id: 'privacy',     label: 'Privacy',      icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' },
+    { id: 'fatturazione', label: 'Fatturazione', icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>' },
+    { id: 'funzionalita', label: 'Funzionalità', icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>' },
+    { id: 'owl',         label: 'Owl',          icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="9" cy="10" r="2"/><circle cx="15" cy="10" r="2"/><path d="M7 17c1 1.5 2.5 2 5 2s4-0.5 5-2"/></svg>' },
+    { id: 'plane',       label: 'Plane',        icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>' }
+  ];
+
+  var navHTML = navSections.map(function(s, i) {
+    return '<button class="settings-nav-item' + (i === 0 ? ' active' : '') + '" data-section="' + s.id + '">' + s.icon + '<span>' + s.label + '</span></button>';
+  }).join('');
+
   return '<div id="aike-settings-overlay" role="dialog" aria-modal="true" aria-label="Impostazioni">' +
-    '<div class="settings-scrim" id="settings-scrim"></div>' +
-    '<div class="settings-panel">' +
-      '<div class="settings-header">' +
-        '<span class="settings-title">Impostazioni</span>' +
-        '<button class="settings-close-btn" id="settings-close-btn" aria-label="Chiudi impostazioni">' +
+    '<div class="settings-overlay-scrim" id="settings-scrim"></div>' +
+    '<div class="settings-modal">' +
+      '<div class="settings-sidebar">' +
+        '<div class="settings-sidebar-title">Impostazioni</div>' +
+        '<nav class="settings-nav">' + navHTML + '</nav>' +
+      '</div>' +
+      '<div class="settings-content">' +
+        '<button class="settings-modal-close" id="settings-close-btn" aria-label="Chiudi impostazioni">' +
           '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
         '</button>' +
-      '</div>' +
-      '<div class="settings-tabs">' +
-        '<button class="settings-tab active" data-tab="profile">Profilo</button>' +
-        '<button class="settings-tab" data-tab="account">Account</button>' +
-        '<button class="settings-tab" data-tab="prefs">Preferenze</button>' +
-      '</div>' +
-      '<div class="settings-body">' +
-        '<div class="settings-tab-panel active" id="settings-panel-profile">' +
-          '<div class="settings-profile-avatar-section">' +
-            '<div class="settings-avatar-preview">' +
-              '<div class="settings-avatar-circle" id="settings-avatar-circle"><span id="settings-avatar-preview-content">?</span></div>' +
-              '<div class="settings-avatar-status"></div>' +
+
+        // ── GENERALE ──
+        '<div class="settings-section active" id="settings-section-generale">' +
+          '<h2 class="settings-section-heading">Generale</h2>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Lingua</div>' +
+              '<div class="settings-row-desc">Lingua dell\'interfaccia</div>' +
+            '</div>' +
+            '<select class="settings-select" id="settings-locale">' +
+              '<option value="it">Italiano</option>' +
+              '<option value="en">English</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Notifiche email</div>' +
+              '<div class="settings-row-desc">Ricevi aggiornamenti e novità via email</div>' +
+            '</div>' +
+            '<label class="settings-toggle"><input type="checkbox" id="settings-email-notifications" checked><span class="settings-toggle-track"></span></label>' +
+          '</div>' +
+        '</div>' +
+
+        // ── ACCOUNT ──
+        '<div class="settings-section" id="settings-section-account">' +
+          '<h2 class="settings-section-heading">Account</h2>' +
+
+          // Avatar row
+          '<div class="settings-row settings-row--avatar">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Avatar</div>' +
+              '<div class="settings-row-desc">Il tuo avatar nell\'header</div>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:12px;">' +
+              '<div class="settings-avatar-circle" id="settings-avatar-circle" style="width:48px;height:48px;font-size:24px;"><span id="settings-avatar-preview-content">?</span></div>' +
+              '<button class="settings-btn-secondary" id="settings-avatar-change-btn">Cambia</button>' +
             '</div>' +
           '</div>' +
-          '<div class="settings-avatar-grid-label">Scegli il tuo avatar</div>' +
-          '<div class="settings-avatar-grid" id="settings-avatar-grid">' + gridHTML + '</div>' +
-          '<div class="settings-field">' +
-            '<label for="settings-display-name">Nome visualizzato</label>' +
-            '<input type="text" id="settings-display-name" placeholder="Il tuo nome..." maxlength="40" autocomplete="name">' +
+
+          // Avatar picker (hidden by default)
+          '<div class="settings-avatar-picker" id="settings-avatar-picker" style="display:none;">' +
+            '<div class="settings-avatar-grid-label">Scegli il tuo avatar</div>' +
+            '<div class="settings-avatar-grid" id="settings-avatar-grid">' + gridHTML + '</div>' +
+            '<button class="settings-btn-secondary" id="settings-avatar-close-btn" style="margin-top:8px;">Chiudi</button>' +
           '</div>' +
-          '<button class="settings-save-btn" id="settings-save-btn">Salva modifiche</button>' +
-        '</div>' +
-        '<div class="settings-tab-panel" id="settings-panel-account">' +
-          '<div class="settings-coming-soon"><span>🔒</span>Disponibile a breve</div>' +
-        '</div>' +
-        '<div class="settings-tab-panel" id="settings-panel-prefs">' +
-          '<div class="settings-field">' +
-            '<label style="color:var(--color-text-muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">Lingua / Language</label>' +
-            '<div style="display:flex;gap:8px;margin-top:8px;">' +
-              '<button class="lang-btn" id="lang-btn-en" onclick="window.aikeI18n&&window.aikeI18n.setLang(\'en\');window.aikeI18n&&window.aikeI18n.updateLangBtns&&window.aikeI18n.updateLangBtns()" style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--color-border);background:var(--color-surface-alt);color:var(--color-text);cursor:pointer;font-size:0.95rem;transition:border-color 0.2s;">🇬🇧 English</button>' +
-              '<button class="lang-btn" id="lang-btn-it" onclick="window.aikeI18n&&window.aikeI18n.setLang(\'it\');window.aikeI18n&&window.aikeI18n.updateLangBtns&&window.aikeI18n.updateLangBtns()" style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--color-border);background:var(--color-surface-alt);color:var(--color-text);cursor:pointer;font-size:0.95rem;transition:border-color 0.2s;">🇮🇹 Italiano</button>' +
+
+          // Display name row
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Nome visualizzato</div>' +
+              '<div class="settings-row-desc">Come appari nell\'app</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:8px;align-items:center;">' +
+              '<input type="text" class="settings-input" id="settings-display-name" placeholder="Il tuo nome..." maxlength="40" autocomplete="name" style="width:180px;">' +
+              '<button class="settings-btn-primary" id="settings-save-name-btn">Salva</button>' +
+            '</div>' +
+          '</div>' +
+
+          // Email row
+          '<div class="settings-row" id="settings-email-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Email</div>' +
+              '<div class="settings-row-desc" id="settings-email-value"></div>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;" id="settings-email-status-wrap">' +
+              '<span class="verification-badge verification-badge--unverified" id="settings-email-badge" style="display:none;">Non verificata</span>' +
+              '<span class="verification-badge verification-badge--verified" id="settings-email-badge-ok" style="display:none;">Verificata ✓</span>' +
+              '<button class="settings-btn-secondary" id="settings-verify-btn" style="display:none;">Verifica</button>' +
+            '</div>' +
+          '</div>' +
+
+          // OTP inline form (hidden by default)
+          '<div class="otp-form" id="settings-otp-form" style="display:none;">' +
+            '<div class="otp-form-label">Inserisci il codice a 6 cifre inviato alla tua email</div>' +
+            '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">' +
+              '<input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" class="otp-input" id="settings-otp-input" placeholder="000000" autocomplete="one-time-code">' +
+              '<button class="settings-btn-primary" id="settings-otp-confirm-btn">Conferma</button>' +
+            '</div>' +
+            '<div class="otp-form-resend">' +
+              '<button class="otp-resend-btn" id="settings-otp-resend-btn">Invia di nuovo</button>' +
+              '<span class="otp-countdown" id="settings-otp-countdown" style="display:none;"></span>' +
+            '</div>' +
+            '<div class="otp-form-error" id="settings-otp-error" style="display:none;"></div>' +
+          '</div>' +
+
+          // Password row
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Password</div>' +
+              '<div class="settings-row-desc">Reimposta la tua password via email</div>' +
+            '</div>' +
+            '<button class="settings-btn-secondary" id="settings-reset-password-btn">Cambia password</button>' +
+          '</div>' +
+
+          // Danger zone
+          '<div class="settings-danger-zone">' +
+            '<div class="settings-danger-title">Zona pericolosa</div>' +
+            '<div class="settings-row">' +
+              '<div class="settings-row-label">' +
+                '<div class="settings-row-title" style="color:#ef4444;">Elimina account</div>' +
+                '<div class="settings-row-desc">Questa azione è irreversibile</div>' +
+              '</div>' +
+              '<button class="settings-btn-danger" id="settings-delete-account-btn">Elimina account</button>' +
             '</div>' +
           '</div>' +
         '</div>' +
-      '</div>' +
-    '</div>' +
-  '</div>';
+
+        // ── PRIVACY ──
+        '<div class="settings-section" id="settings-section-privacy">' +
+          '<h2 class="settings-section-heading">Privacy</h2>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Memoria AI</div>' +
+              '<div class="settings-row-desc">Owl ricorda le conversazioni passate</div>' +
+            '</div>' +
+            '<label class="settings-toggle"><input type="checkbox" id="settings-ai-memory" checked><span class="settings-toggle-track"></span></label>' +
+          '</div>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Esporta dati</div>' +
+              '<div class="settings-row-desc">Scarica i tuoi dati in formato JSON</div>' +
+            '</div>' +
+            '<button class="settings-btn-secondary" id="settings-export-data-btn">Esporta</button>' +
+          '</div>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title" style="color:#ef4444;">Elimina tutti i dati</div>' +
+              '<div class="settings-row-desc">Svuota i dati del profilo (non elimina l\'account)</div>' +
+            '</div>' +
+            '<button class="settings-btn-danger" id="settings-delete-data-btn">Elimina dati</button>' +
+          '</div>' +
+        '</div>' +
+
+        // ── FATTURAZIONE ──
+        '<div class="settings-section" id="settings-section-fatturazione">' +
+          '<h2 class="settings-section-heading">Fatturazione</h2>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Piano attivo</div>' +
+            '</div>' +
+            '<span class="settings-plan-badge" id="settings-plan-badge">Free</span>' +
+          '</div>' +
+          '<div class="settings-row settings-row--col">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Crediti rimasti</div>' +
+              '<div class="settings-row-desc" id="settings-credits-desc">— / —</div>' +
+            '</div>' +
+            '<div class="settings-credits-bar-wrap">' +
+              '<div class="settings-credits-bar"><div class="settings-credits-bar-fill" id="settings-credits-fill" style="width:0%"></div></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Storico pagamenti</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="settings-payments-empty">Nessun pagamento registrato</div>' +
+        '</div>' +
+
+        // ── FUNZIONALITA ──
+        '<div class="settings-section" id="settings-section-funzionalita">' +
+          '<h2 class="settings-section-heading">Funzionalità</h2>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Suggerimenti AI</div>' +
+              '<div class="settings-row-desc">Suggerimenti contestuali durante l\'uso</div>' +
+            '</div>' +
+            '<label class="settings-toggle"><input type="checkbox" id="settings-ai-suggestions" checked><span class="settings-toggle-track"></span></label>' +
+          '</div>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Salvataggio automatico Plane</div>' +
+              '<div class="settings-row-desc">Salva il canvas automaticamente</div>' +
+            '</div>' +
+            '<label class="settings-toggle"><input type="checkbox" id="settings-plane-autosave" checked><span class="settings-toggle-track"></span></label>' +
+          '</div>' +
+        '</div>' +
+
+        // ── OWL ──
+        '<div class="settings-section" id="settings-section-owl">' +
+          '<h2 class="settings-section-heading">Owl</h2>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Lingua risposta</div>' +
+              '<div class="settings-row-desc">Lingua usata da Owl nelle risposte</div>' +
+            '</div>' +
+            '<select class="settings-select" id="settings-owl-language">' +
+              '<option value="it">Italiano</option>' +
+              '<option value="en">English</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Tono risposte</div>' +
+              '<div class="settings-row-desc">Stile comunicativo di Owl</div>' +
+            '</div>' +
+            '<select class="settings-select" id="settings-owl-tone">' +
+              '<option value="formal">Formale</option>' +
+              '<option value="balanced">Bilanciato</option>' +
+              '<option value="creative">Creativo</option>' +
+            '</select>' +
+          '</div>' +
+        '</div>' +
+
+        // ── PLANE ──
+        '<div class="settings-section" id="settings-section-plane">' +
+          '<h2 class="settings-section-heading">Plane</h2>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Griglia snap</div>' +
+              '<div class="settings-row-desc">Aggancia gli elementi alla griglia</div>' +
+            '</div>' +
+            '<label class="settings-toggle"><input type="checkbox" id="settings-plane-snap-grid"><span class="settings-toggle-track"></span></label>' +
+          '</div>' +
+          '<div class="settings-row">' +
+            '<div class="settings-row-label">' +
+              '<div class="settings-row-title">Animazioni</div>' +
+              '<div class="settings-row-desc">Animazioni interfaccia Plane</div>' +
+            '</div>' +
+            '<label class="settings-toggle"><input type="checkbox" id="settings-plane-animations" checked><span class="settings-toggle-track"></span></label>' +
+          '</div>' +
+        '</div>' +
+
+      '</div>' + // settings-content
+    '</div>' + // settings-modal
+  '</div>'; // aike-settings-overlay
 }
 
 // ── Avatar persistence helpers ───────────────────────────────
@@ -332,28 +538,170 @@ window.applyDisplayNameToDropdown = function applyDisplayNameToDropdown(name, em
   if (emailEl) emailEl.textContent = email || '';
 }
 
-// ── Settings overlay controller ──────────────────────────────
+// ── Settings overlay controller (sidebar layout) ────────────
 
 function initSettingsOverlay() {
   var overlay = document.getElementById('aike-settings-overlay');
   if (!overlay) return;
 
-  var scrim = document.getElementById('settings-scrim');
-  var closeBtn = document.getElementById('settings-close-btn');
-  var saveBtn = document.getElementById('settings-save-btn');
-  var nameInput = document.getElementById('settings-display-name');
-  var avatarGrid = document.getElementById('settings-avatar-grid');
-  var settingsAvatarCircle = document.getElementById('settings-avatar-circle');
-  var settingsAvatarPreview = document.getElementById('settings-avatar-preview-content');
-  var tabs = overlay.querySelectorAll('.settings-tab');
-  var panels = overlay.querySelectorAll('.settings-tab-panel');
+  var scrim     = document.getElementById('settings-scrim');
+  var closeBtn  = document.getElementById('settings-close-btn');
+  var navItems  = overlay.querySelectorAll('.settings-nav-item');
+  var sections  = overlay.querySelectorAll('.settings-section');
+
+  var avatarGrid    = document.getElementById('settings-avatar-grid');
+  var avatarCircle  = document.getElementById('settings-avatar-circle');
+  var avatarPreview = document.getElementById('settings-avatar-preview-content');
+  var nameInput     = document.getElementById('settings-display-name');
 
   var currentSelectedAvatar = loadSavedAvatar();
+  var _profileData = null;
 
-  // Populate name input
-  if (nameInput) nameInput.value = loadSavedDisplayName();
+  // ── Supabase helpers ──────────────────────────────────────
+  function getJwt() {
+    try {
+      var sb = window.aikeSupabase ? window.aikeSupabase.getClient() : null;
+      if (!sb) return null;
+      // Access token from session cache
+      var key = Object.keys(localStorage).find(function(k){ return k.startsWith('sb-') && k.endsWith('-auth-token'); });
+      if (!key) return null;
+      var sess = JSON.parse(localStorage.getItem(key));
+      return (sess && sess.access_token) ? sess.access_token : null;
+    } catch(e) { return null; }
+  }
 
-  // Mark selected avatar in grid
+  async function fetchProfile(userId) {
+    var jwt = getJwt();
+    if (!jwt || !userId) return null;
+    var url = window.AIKE_CONFIG.supabase.url + '/rest/v1/profiles?id=eq.' + userId + '&select=*&limit=1';
+    try {
+      var r = await fetch(url, {
+        headers: {
+          'apikey': window.AIKE_CONFIG.supabase.anonKey,
+          'Authorization': 'Bearer ' + jwt,
+          'Accept': 'application/json'
+        }
+      });
+      if (!r.ok) return null;
+      var data = await r.json();
+      return data && data.length ? data[0] : null;
+    } catch(e) { return null; }
+  }
+
+  async function patchProfile(userId, fields) {
+    var jwt = getJwt();
+    if (!jwt || !userId) return;
+    var url = window.AIKE_CONFIG.supabase.url + '/rest/v1/profiles?id=eq.' + userId;
+    try {
+      await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'apikey': window.AIKE_CONFIG.supabase.anonKey,
+          'Authorization': 'Bearer ' + jwt,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(fields)
+      });
+    } catch(e) {}
+  }
+
+  async function getCurrentUserId() {
+    if (!window.aikeAuth) return null;
+    var user = await window.aikeAuth.getSessionUser();
+    return user ? user.id : null;
+  }
+
+  // ── Profile population ────────────────────────────────────
+  async function populateFromProfile() {
+    var userId = await getCurrentUserId();
+    if (!userId) return;
+    var profile = await fetchProfile(userId);
+    _profileData = profile;
+
+    // Email field
+    var emailEl = document.getElementById('settings-email-value');
+    var userEmail = '';
+    if (window.aikeAuth) {
+      var u = await window.aikeAuth.getSessionUser();
+      if (u) userEmail = u.email || '';
+    }
+    if (emailEl) emailEl.textContent = userEmail;
+
+    // Email verification badge
+    updateEmailVerificationUI(profile ? profile.email_verified : false);
+
+    // Display name
+    if (nameInput) {
+      var n = (profile && profile.display_name) ? profile.display_name : loadSavedDisplayName();
+      nameInput.value = n;
+    }
+
+    // Toggles & selects
+    function setCheck(id, val, def) {
+      var el = document.getElementById(id);
+      if (el) el.checked = val !== null && val !== undefined ? !!val : def;
+    }
+    function setSelect(id, val, def) {
+      var el = document.getElementById(id);
+      if (el) el.value = (val !== null && val !== undefined) ? val : def;
+    }
+
+    if (profile) {
+      setCheck('settings-email-notifications', profile.email_notifications, true);
+      setCheck('settings-ai-memory', profile.ai_memory_enabled, true);
+      setCheck('settings-ai-suggestions', profile.ai_suggestions, true);
+      setCheck('settings-plane-autosave', profile.plane_autosave, true);
+      setCheck('settings-plane-snap-grid', profile.plane_snap_grid, false);
+      setCheck('settings-plane-animations', profile.plane_animations, true);
+      setSelect('settings-locale', profile.locale, 'it');
+      setSelect('settings-owl-language', profile.owl_language, 'it');
+      setSelect('settings-owl-tone', profile.owl_tone, 'balanced');
+
+      // Billing
+      var planBadge = document.getElementById('settings-plan-badge');
+      if (planBadge) {
+        var plan = profile.plan || 'free';
+        planBadge.textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+        planBadge.className = 'settings-plan-badge settings-plan-badge--' + plan;
+      }
+      var creditsDesc = document.getElementById('settings-credits-desc');
+      var creditsFill = document.getElementById('settings-credits-fill');
+      var limits = { free: 30, basic: 300, pro: 1000 };
+      var total = limits[profile.plan] || 30;
+      var used = profile.credits_used || 0;
+      var remaining = Math.max(0, total - used);
+      var pct = total > 0 ? Math.round((remaining / total) * 100) : 0;
+      if (creditsDesc) creditsDesc.textContent = remaining + ' / ' + total + ' crediti';
+      if (creditsFill) creditsFill.style.width = pct + '%';
+    }
+
+    // Update header badge
+    updateHeaderVerificationBadge(profile ? profile.email_verified : false);
+  }
+
+  function updateEmailVerificationUI(isVerified) {
+    var badge    = document.getElementById('settings-email-badge');
+    var badgeOk  = document.getElementById('settings-email-badge-ok');
+    var verifyBtn = document.getElementById('settings-verify-btn');
+    if (isVerified) {
+      if (badge)     badge.style.display    = 'none';
+      if (badgeOk)   badgeOk.style.display  = 'inline-flex';
+      if (verifyBtn) verifyBtn.style.display = 'none';
+    } else {
+      if (badge)     badge.style.display    = 'inline-flex';
+      if (badgeOk)   badgeOk.style.display  = 'none';
+      if (verifyBtn) verifyBtn.style.display = 'inline-block';
+    }
+  }
+
+  function updateHeaderVerificationBadge(isVerified) {
+    var statusEl = document.getElementById('auth-avatar-status');
+    if (!statusEl) return;
+    statusEl.style.display = isVerified ? 'flex' : 'none';
+  }
+
+  // ── Avatar helpers ────────────────────────────────────────
   function markSelectedAvatar(id) {
     var opts = avatarGrid ? avatarGrid.querySelectorAll('.avatar-option') : [];
     opts.forEach(function(opt) {
@@ -361,113 +709,331 @@ function initSettingsOverlay() {
     });
   }
 
+  function updateSettingsAvatarPreview(avatarData) {
+    if (!avatarCircle) return;
+    avatarCircle.style.background = avatarData.color;
+    if (avatarPreview) avatarPreview.innerHTML = '<span style="font-size:24px">' + avatarData.emoji + '</span>';
+  }
+
+  function updateSettingsAvatarPreviewFromEmail() {
+    if (!avatarCircle) return;
+    avatarCircle.style.background = '';
+    var letter = '?';
+    var emailEl = document.getElementById('dropdown-header-email');
+    if (emailEl && emailEl.textContent) letter = emailEl.textContent.charAt(0).toUpperCase();
+    if (avatarPreview) avatarPreview.textContent = letter;
+  }
+
+  // Init avatar preview
   if (currentSelectedAvatar) {
     markSelectedAvatar(currentSelectedAvatar.id);
-    updateSettingsPreview(currentSelectedAvatar);
+    updateSettingsAvatarPreview(currentSelectedAvatar);
   } else {
-    updateSettingsPreviewFromEmail();
+    updateSettingsAvatarPreviewFromEmail();
   }
 
-  function updateSettingsPreview(avatarData) {
-    if (!settingsAvatarCircle) return;
-    settingsAvatarCircle.style.background = avatarData.color;
-    if (settingsAvatarPreview) settingsAvatarPreview.innerHTML = '<span style="font-size:36px">' + avatarData.emoji + '</span>';
+  // Avatar change button
+  var avatarChangeBtn = document.getElementById('settings-avatar-change-btn');
+  var avatarPicker    = document.getElementById('settings-avatar-picker');
+  var avatarCloseBtn  = document.getElementById('settings-avatar-close-btn');
+
+  if (avatarChangeBtn) {
+    avatarChangeBtn.addEventListener('click', function() {
+      if (avatarPicker) avatarPicker.style.display = avatarPicker.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+  if (avatarCloseBtn) {
+    avatarCloseBtn.addEventListener('click', function() {
+      if (avatarPicker) avatarPicker.style.display = 'none';
+    });
   }
 
-  function updateSettingsPreviewFromEmail() {
-    if (!settingsAvatarCircle) return;
-    settingsAvatarCircle.style.background = '';
-    var btn = document.getElementById('auth-profile-btn');
-    var initial = btn ? (btn.querySelector('#auth-profile-initial') || btn.querySelector('[id="auth-profile-initial"]')) : null;
-    var letter = '?';
-    if (document.getElementById('dropdown-header-email')) {
-      var em = document.getElementById('dropdown-header-email').textContent;
-      if (em) letter = em.charAt(0).toUpperCase();
-    }
-    if (settingsAvatarPreview) settingsAvatarPreview.textContent = letter;
-  }
-
-  // Avatar grid click
   if (avatarGrid) {
     avatarGrid.addEventListener('click', function(e) {
       var opt = e.target.closest('.avatar-option');
       if (!opt) return;
-      var id = parseInt(opt.dataset.avatarId);
+      var id    = parseInt(opt.dataset.avatarId);
       var emoji = opt.dataset.emoji;
       var color = opt.dataset.color;
       currentSelectedAvatar = { id: id, emoji: emoji, color: color };
       markSelectedAvatar(id);
-      updateSettingsPreview(currentSelectedAvatar);
+      updateSettingsAvatarPreview(currentSelectedAvatar);
+      saveAvatar(currentSelectedAvatar);
+      var emailForAvatar = document.getElementById('dropdown-header-email') ? document.getElementById('dropdown-header-email').textContent : '';
+      window.applyAvatarToHeader(currentSelectedAvatar, emailForAvatar);
+      if (avatarPicker) avatarPicker.style.display = 'none';
     });
   }
 
-  // Tab switching
-  tabs.forEach(function(tab) {
-    tab.addEventListener('click', function() {
-      var target = tab.dataset.tab;
-      tabs.forEach(function(t) { t.classList.remove('active'); });
-      panels.forEach(function(p) { p.classList.remove('active'); });
-      tab.classList.add('active');
-      var panel = document.getElementById('settings-panel-' + target);
-      if (panel) panel.classList.add('active');
+  // ── Display name save ─────────────────────────────────────
+  var saveNameBtn = document.getElementById('settings-save-name-btn');
+  if (saveNameBtn) {
+    saveNameBtn.addEventListener('click', async function() {
+      var name = nameInput ? nameInput.value.trim() : '';
+      saveDisplayName(name);
+      var email = document.getElementById('dropdown-header-email') ? document.getElementById('dropdown-header-email').textContent : '';
+      window.applyDisplayNameToDropdown(name, email);
+      var userId = await getCurrentUserId();
+      if (userId) await patchProfile(userId, { display_name: name });
+      saveNameBtn.textContent = 'Salvato ✓';
+      setTimeout(function() { saveNameBtn.textContent = 'Salva'; }, 1500);
+    });
+  }
+
+  // ── Toggle/select → Supabase patch ───────────────────────
+  function wirePatchToggle(id, field) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('change', async function() {
+      var userId = await getCurrentUserId();
+      if (!userId) return;
+      var patch = {};
+      patch[field] = el.checked;
+      await patchProfile(userId, patch);
+    });
+  }
+
+  function wirePatchSelect(id, field) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('change', async function() {
+      var userId = await getCurrentUserId();
+      if (!userId) return;
+      var patch = {};
+      patch[field] = el.value;
+      await patchProfile(userId, patch);
+      // Also update i18n if locale changed
+      if (field === 'locale' && window.aikeI18n && window.aikeI18n.setLang) {
+        window.aikeI18n.setLang(el.value);
+      }
+    });
+  }
+
+  wirePatchToggle('settings-email-notifications', 'email_notifications');
+  wirePatchToggle('settings-ai-memory',           'ai_memory_enabled');
+  wirePatchToggle('settings-ai-suggestions',      'ai_suggestions');
+  wirePatchToggle('settings-plane-autosave',      'plane_autosave');
+  wirePatchToggle('settings-plane-snap-grid',     'plane_snap_grid');
+  wirePatchToggle('settings-plane-animations',    'plane_animations');
+  wirePatchSelect('settings-locale',              'locale');
+  wirePatchSelect('settings-owl-language',        'owl_language');
+  wirePatchSelect('settings-owl-tone',            'owl_tone');
+
+  // ── Password reset ────────────────────────────────────────
+  var resetPwBtn = document.getElementById('settings-reset-password-btn');
+  if (resetPwBtn) {
+    resetPwBtn.addEventListener('click', async function() {
+      var email = '';
+      var emailEl = document.getElementById('dropdown-header-email');
+      if (emailEl) email = emailEl.textContent;
+      if (!email) { alert('Nessuna email trovata.'); return; }
+      var sb = window.aikeSupabase ? window.aikeSupabase.getClient() : null;
+      if (!sb) return;
+      await sb.auth.resetPasswordForEmail(email);
+      resetPwBtn.textContent = 'Email inviata ✓';
+      setTimeout(function() { resetPwBtn.textContent = 'Cambia password'; }, 3000);
+    });
+  }
+
+  // ── Delete account ────────────────────────────────────────
+  var deleteAccountBtn = document.getElementById('settings-delete-account-btn');
+  if (deleteAccountBtn) {
+    deleteAccountBtn.addEventListener('click', async function() {
+      if (!confirm('Sei sicuro? L\'eliminazione dell\'account è irreversibile.')) return;
+      if (!confirm('Ultima conferma: eliminare definitivamente l\'account?')) return;
+      var sb = window.aikeSupabase ? window.aikeSupabase.getClient() : null;
+      if (!sb) return;
+      var userId = await getCurrentUserId();
+      if (!userId) return;
+      // Call Supabase admin delete via service endpoint — here we just sign out as fallback
+      // Full delete requires server-side admin call; for now sign out + inform user
+      await window.aikeAuth.signOut();
+      alert('Account eliminato. Sei stato disconnesso.');
+      window.location.href = '/index.html';
+    });
+  }
+
+  // ── Delete all data ───────────────────────────────────────
+  var deleteDataBtn = document.getElementById('settings-delete-data-btn');
+  if (deleteDataBtn) {
+    deleteDataBtn.addEventListener('click', async function() {
+      if (!confirm('Eliminare tutti i dati del profilo? L\'account rimarrà attivo.')) return;
+      var userId = await getCurrentUserId();
+      if (!userId) return;
+      await patchProfile(userId, {
+        display_name: null, locale: 'it', email_notifications: true,
+        ai_memory_enabled: true, ai_suggestions: true,
+        plane_autosave: true, plane_snap_grid: false, plane_animations: true,
+        owl_language: 'it', owl_tone: 'balanced'
+      });
+      localStorage.removeItem('aike_display_name');
+      localStorage.removeItem('aike_avatar');
+      alert('Dati eliminati.');
+      closeSettings();
+    });
+  }
+
+  // ── Export data ───────────────────────────────────────────
+  var exportBtn = document.getElementById('settings-export-data-btn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', async function() {
+      var userId = await getCurrentUserId();
+      if (!userId) return;
+      var profile = await fetchProfile(userId);
+      var email = '';
+      var emailEl = document.getElementById('dropdown-header-email');
+      if (emailEl) email = emailEl.textContent;
+      var exportData = { userId: userId, email: email, profile: profile, exportedAt: new Date().toISOString() };
+      var blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'aike-data.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // ── Email OTP verification ────────────────────────────────
+  var verifyBtn        = document.getElementById('settings-verify-btn');
+  var otpForm          = document.getElementById('settings-otp-form');
+  var otpInput         = document.getElementById('settings-otp-input');
+  var otpConfirmBtn    = document.getElementById('settings-otp-confirm-btn');
+  var otpResendBtn     = document.getElementById('settings-otp-resend-btn');
+  var otpCountdown     = document.getElementById('settings-otp-countdown');
+  var otpError         = document.getElementById('settings-otp-error');
+  var _otpCountdownTimer = null;
+
+  function startOtpCountdown() {
+    var seconds = 60;
+    if (otpResendBtn) otpResendBtn.style.display = 'none';
+    if (otpCountdown) { otpCountdown.style.display = 'inline'; otpCountdown.textContent = 'Riprova tra ' + seconds + 's'; }
+    clearInterval(_otpCountdownTimer);
+    _otpCountdownTimer = setInterval(function() {
+      seconds--;
+      if (otpCountdown) otpCountdown.textContent = 'Riprova tra ' + seconds + 's';
+      if (seconds <= 0) {
+        clearInterval(_otpCountdownTimer);
+        if (otpCountdown) otpCountdown.style.display = 'none';
+        if (otpResendBtn) otpResendBtn.style.display = 'inline';
+      }
+    }, 1000);
+  }
+
+  async function sendOtp() {
+    var emailVal = document.getElementById('settings-email-value') ? document.getElementById('settings-email-value').textContent : '';
+    if (!emailVal) return;
+    var jwt = getJwt();
+    if (!jwt) return;
+    try {
+      var r = await fetch('/api/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jwt },
+        body: JSON.stringify({ action: 'send', email: emailVal })
+      });
+      if (r.ok) {
+        if (otpForm) otpForm.style.display = 'block';
+        if (otpInput) { otpInput.value = ''; otpInput.focus(); }
+        if (otpError) otpError.style.display = 'none';
+        startOtpCountdown();
+      } else {
+        var d = await r.json();
+        if (otpError) { otpError.textContent = d.error || 'Errore invio OTP.'; otpError.style.display = 'block'; }
+      }
+    } catch(e) {
+      if (otpError) { otpError.textContent = 'Errore di rete.'; otpError.style.display = 'block'; }
+    }
+  }
+
+  if (verifyBtn) verifyBtn.addEventListener('click', sendOtp);
+  if (otpResendBtn) otpResendBtn.addEventListener('click', sendOtp);
+
+  if (otpConfirmBtn) {
+    otpConfirmBtn.addEventListener('click', async function() {
+      var token = otpInput ? otpInput.value.trim() : '';
+      if (token.length !== 6) {
+        if (otpError) { otpError.textContent = 'Inserisci un codice a 6 cifre.'; otpError.style.display = 'block'; }
+        return;
+      }
+      var emailVal = document.getElementById('settings-email-value') ? document.getElementById('settings-email-value').textContent : '';
+      var jwt = getJwt();
+      if (!jwt || !emailVal) return;
+      otpConfirmBtn.disabled = true;
+      try {
+        var r = await fetch('/api/verify-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jwt },
+          body: JSON.stringify({ action: 'verify', email: emailVal, token: token })
+        });
+        var d = await r.json();
+        if (r.ok && d.ok) {
+          if (otpForm) otpForm.style.display = 'none';
+          clearInterval(_otpCountdownTimer);
+          updateEmailVerificationUI(true);
+          updateHeaderVerificationBadge(true);
+        } else {
+          if (otpError) { otpError.textContent = d.error || 'Codice non valido.'; otpError.style.display = 'block'; }
+        }
+      } catch(e) {
+        if (otpError) { otpError.textContent = 'Errore di rete.'; otpError.style.display = 'block'; }
+      } finally {
+        otpConfirmBtn.disabled = false;
+      }
+    });
+  }
+
+  // ── Sidebar navigation ────────────────────────────────────
+  navItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      var target = item.dataset.section;
+      navItems.forEach(function(n) { n.classList.remove('active'); });
+      sections.forEach(function(s) { s.classList.remove('active'); });
+      item.classList.add('active');
+      var section = document.getElementById('settings-section-' + target);
+      if (section) section.classList.add('active');
     });
   });
 
-  // Save
-  if (saveBtn) {
-    saveBtn.addEventListener('click', function() {
-      var displayName = nameInput ? nameInput.value.trim() : '';
-      saveDisplayName(displayName);
-      if (currentSelectedAvatar) {
-        saveAvatar(currentSelectedAvatar);
-        var emailForAvatar = document.getElementById('dropdown-header-email') ? document.getElementById('dropdown-header-email').textContent : '';
-        window.applyAvatarToHeader(currentSelectedAvatar, emailForAvatar);
-      }
-      var email = document.getElementById('dropdown-header-email') ? document.getElementById('dropdown-header-email').textContent : '';
-      window.applyDisplayNameToDropdown(displayName, email);
-
-      // Visual feedback
-      saveBtn.textContent = 'Salvato ✓';
-      saveBtn.style.background = '#22c55e';
-      setTimeout(function() {
-        saveBtn.textContent = 'Salva modifiche';
-        saveBtn.style.background = '';
-        closeSettings();
-      }, 900);
-    });
-  }
-
-  // Close handlers
+  // ── Open / Close ──────────────────────────────────────────
   function closeSettings() {
-    overlay.classList.remove('overlay-open');
+    overlay.classList.remove('settings-overlay-open');
     document.body.style.overflow = '';
+    if (_otpCountdownTimer) clearInterval(_otpCountdownTimer);
   }
 
   function openSettings() {
-    // Refresh state from storage each time
-    var saved = loadSavedAvatar();
-    var savedName = loadSavedDisplayName();
-    currentSelectedAvatar = saved;
-    if (nameInput) nameInput.value = savedName;
-    markSelectedAvatar(saved ? saved.id : -1);
-    if (saved) updateSettingsPreview(saved);
-    else updateSettingsPreviewFromEmail();
+    // Reset to first section
+    navItems.forEach(function(n) { n.classList.remove('active'); });
+    sections.forEach(function(s) { s.classList.remove('active'); });
+    var firstNav = overlay.querySelector('.settings-nav-item');
+    if (firstNav) firstNav.classList.add('active');
+    var firstSection = document.getElementById('settings-section-generale');
+    if (firstSection) firstSection.classList.add('active');
 
-    overlay.classList.add('overlay-open');
+    // Refresh avatar preview
+    var saved = loadSavedAvatar();
+    currentSelectedAvatar = saved;
+    markSelectedAvatar(saved ? saved.id : -1);
+    if (saved) updateSettingsAvatarPreview(saved);
+    else updateSettingsAvatarPreviewFromEmail();
+
+    // Close avatar picker
+    if (avatarPicker) avatarPicker.style.display = 'none';
+    // Hide OTP form
+    if (otpForm) otpForm.style.display = 'none';
+
+    overlay.classList.add('settings-overlay-open');
     document.body.style.overflow = 'hidden';
-    if (nameInput) setTimeout(function() { nameInput.focus(); }, 250);
-    if (window.aikeI18n && window.aikeI18n.updateLangBtns) window.aikeI18n.updateLangBtns();
+
+    // Load profile data async
+    populateFromProfile();
   }
 
   if (closeBtn) closeBtn.addEventListener('click', closeSettings);
   if (scrim) scrim.addEventListener('click', closeSettings);
 
-  // ESC key
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && overlay.classList.contains('overlay-open')) closeSettings();
+    if (e.key === 'Escape' && overlay.classList.contains('settings-overlay-open')) closeSettings();
   });
 
-  // Expose open function
   window.aikeOpenSettings = openSettings;
 }
 

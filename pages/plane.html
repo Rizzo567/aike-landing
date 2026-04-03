@@ -1068,6 +1068,114 @@
   @keyframes srch-item-in {
     to { opacity: 1; transform: translateY(0); }
   }
+
+/* ─────────────────────────────────────────
+   NODE LIBRARY — CHIP FILTER SYSTEM
+───────────────────────────────────────── */
+#pnl-search-wrap {
+  padding: 10px 10px 6px;
+  flex-shrink: 0;
+}
+#pnl-search {
+  width: 100%;
+  background: var(--h-surface);
+  border: 1px solid var(--h-border);
+  border-radius: var(--h-r-sm);
+  padding: 7px 10px;
+  font-size: 0.78rem;
+  font-family: var(--h-font);
+  color: var(--h-text-sec);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+#pnl-search::placeholder { color: var(--h-text-dim); }
+#pnl-search:focus { border-color: rgba(255,250,240,0.16); }
+
+#pnl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 10px 6px;
+  flex-shrink: 0;
+}
+.pnl-chip {
+  padding: 3px 9px;
+  border: 1px solid var(--h-border);
+  border-radius: 99px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  font-family: var(--h-font);
+  color: var(--h-text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  white-space: nowrap;
+}
+.pnl-chip:hover {
+  background: var(--h-surface);
+  color: var(--h-text-sec);
+}
+.pnl-chip.active {
+  background: var(--h-purple-dim);
+  border-color: rgba(224,112,80,0.3);
+  color: var(--h-purple);
+}
+#pnl-chip-sep {
+  height: 1px;
+  background: var(--h-border-sub);
+  margin: 4px 10px;
+  flex-shrink: 0;
+}
+#pnl-node-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 6px 16px;
+}
+#pnl-node-list::-webkit-scrollbar { width: 3px; }
+#pnl-node-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 99px; }
+
+.pnl-node-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--h-r-sm);
+  font-size: 0.82rem;
+  color: var(--h-text-sec);
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.pnl-node-item:hover {
+  background: var(--h-surface);
+}
+.pnl-node-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.pnl-no-results {
+  padding: 20px 12px;
+  font-size: 0.78rem;
+  color: var(--h-text-dim);
+  text-align: center;
+}
+
+/* Dot colors per categoria */
+.pnl-dot-ai      { background: #4e9eff; }
+.pnl-dot-creativa { background: #e07050; }
+.pnl-dot-auto    { background: #7cc87c; }
+.pnl-dot-dati    { background: #c77dff; }
+.pnl-dot-code    { background: #ffca3a; }
+.pnl-dot-iot     { background: #ff6b6b; }
+.pnl-dot-com     { background: #52b2cf; }
+.pnl-dot-biz     { background: #f4a261; }
+.pnl-dot-web     { background: #a8d8a8; }
+.pnl-dot-media   { background: #ff9ff3; }
+.pnl-dot-social  { background: #feca57; }
+.pnl-dot-chain   { background: #a29bfe; }
+.pnl-dot-viz     { background: #fd79a8; }
+.pnl-dot-collab  { background: #81ecec; }
   </style>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -1315,89 +1423,34 @@
     </div>
     <div id="plane-elements-list">
 
-      <!-- Categoria: Base -->
-      <div class="plane-elem-category">Base</div>
-      <div class="plane-elem-item" data-elem-type="testo" data-elem-label="Testo">
-        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-          <line x1="3" y1="4" x2="13" y2="4"/>
-          <line x1="8" y1="4" x2="8" y2="13"/>
-          <line x1="5" y1="13" x2="11" y2="13"/>
-        </svg>
-        <span>Testo</span>
-      </div>
-      <div class="plane-elem-item" data-elem-type="nota" data-elem-label="Nota">
-        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="2" width="10" height="12" rx="1.5"/>
-          <line x1="5.5" y1="6" x2="10.5" y2="6"/>
-          <line x1="5.5" y1="9" x2="9" y2="9"/>
-        </svg>
-        <span>Nota</span>
-      </div>
-      <div class="plane-elem-item" data-elem-type="immagine" data-elem-label="Immagine">
-        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="3" width="12" height="10" rx="1.5"/>
-          <circle cx="5.5" cy="6.5" r="1.2"/>
-          <path d="M2 11l3-3 2.5 2.5L10 7.5l4 4"/>
-        </svg>
-        <span>Immagine</span>
-      </div>
+  <!-- SEARCH -->
+  <div id="pnl-search-wrap">
+    <input id="pnl-search" type="text" placeholder="Cerca nodo…" autocomplete="off" spellcheck="false" />
+  </div>
 
-      <!-- Categoria: Struttura -->
-      <div class="plane-elem-category">Struttura</div>
-      <div class="plane-elem-item" data-elem-type="frame" data-elem-label="Frame">
-        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="10" height="10" rx="1"/>
-          <line x1="6" y1="1" x2="6" y2="3"/>
-          <line x1="10" y1="1" x2="10" y2="3"/>
-          <line x1="6" y1="13" x2="6" y2="15"/>
-          <line x1="10" y1="13" x2="10" y2="15"/>
-          <line x1="1" y1="6" x2="3" y2="6"/>
-          <line x1="1" y1="10" x2="3" y2="10"/>
-          <line x1="13" y1="6" x2="15" y2="6"/>
-          <line x1="13" y1="10" x2="15" y2="10"/>
-        </svg>
-        <span>Frame</span>
-      </div>
-      <div class="plane-elem-item" data-elem-type="forma" data-elem-label="Forma">
-        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4">
-          <circle cx="8" cy="8" r="5.5"/>
-        </svg>
-        <span>Forma</span>
-      </div>
-      <div class="plane-elem-item" data-elem-type="separatore" data-elem-label="Separatore">
-        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-          <line x1="2" y1="8" x2="14" y2="8"/>
-        </svg>
-        <span>Separatore</span>
-      </div>
+  <!-- CHIP CATEGORIES -->
+  <div id="pnl-chips">
+    <button class="pnl-chip active" data-cat="ai">AI</button>
+    <button class="pnl-chip" data-cat="creativa">Creativa</button>
+    <button class="pnl-chip" data-cat="auto">Auto</button>
+    <button class="pnl-chip" data-cat="dati">Dati</button>
+    <button class="pnl-chip" data-cat="code">Codice</button>
+    <button class="pnl-chip" data-cat="iot">IoT</button>
+    <button class="pnl-chip" data-cat="com">Com</button>
+    <button class="pnl-chip" data-cat="biz">Business</button>
+    <button class="pnl-chip" data-cat="web">Web</button>
+    <button class="pnl-chip" data-cat="media">Media</button>
+    <button class="pnl-chip" data-cat="social">Social</button>
+    <button class="pnl-chip" data-cat="chain">Blockchain</button>
+    <button class="pnl-chip" data-cat="viz">Viz</button>
+    <button class="pnl-chip" data-cat="collab">Collab</button>
+  </div>
 
-      <!-- Categoria: Dati -->
-      <div class="plane-elem-category">Dati</div>
-      <div class="plane-elem-item" data-elem-type="grafico" data-elem-label="Grafico">
-        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="9" width="3" height="5" rx="0.5"/>
-          <rect x="6.5" y="5" width="3" height="9" rx="0.5"/>
-          <rect x="11" y="2" width="3" height="12" rx="0.5"/>
-        </svg>
-        <span>Grafico</span>
-      </div>
-      <div class="plane-elem-item" data-elem-type="tabella" data-elem-label="Tabella">
-        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="3" width="12" height="10" rx="1"/>
-          <line x1="2" y1="7" x2="14" y2="7"/>
-          <line x1="7" y1="3" x2="7" y2="13"/>
-        </svg>
-        <span>Tabella</span>
-      </div>
-      <div class="plane-elem-item" data-elem-type="connessione" data-elem-label="Connessione">
-        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="3" cy="8" r="1.8"/>
-          <circle cx="13" cy="8" r="1.8"/>
-          <line x1="4.8" y1="8" x2="11.2" y2="8"/>
-          <path d="M9.5 5.5L12.5 8l-3 2.5"/>
-        </svg>
-        <span>Connessione</span>
-      </div>
+  <!-- SEPARATOR -->
+  <div id="pnl-chip-sep"></div>
+
+  <!-- NODE LIST (filled by JS) -->
+  <div id="pnl-node-list"></div>
 
     </div>
   </div>
@@ -2139,17 +2192,256 @@ function addNodeToCanvas(type, label) {
   toggleElementsPanel(true);
 }
 
-// Wire up element items
-document.querySelectorAll('.plane-elem-item').forEach(item => {
-  item.addEventListener('click', () => {
-    const type  = item.dataset.elemType;
-    const label = item.dataset.elemLabel;
-    addNodeToCanvas(type, label);
-  });
-});
-
 // Also update pan exclusion to include panel + add button
 // (handled via existing click listener — panel/add-btn clicks stopPropagation or are fixed)
+
+/* ════════════════════════════════════════════
+   NODE LIBRARY — CHIP FILTER SYSTEM
+════════════════════════════════════════════ */
+const NODE_LIBRARY = {
+  ai: {
+    label: 'AI & Modelli',
+    nodes: [
+      { type: 'llm',              label: 'LLM' },
+      { type: 'embedding',        label: 'Embedding' },
+      { type: 'classifier',       label: 'Classifier' },
+      { type: 'prompt-template',  label: 'Prompt Template' },
+      { type: 'model-router',     label: 'Model Router' },
+      { type: 'context-manager',  label: 'Context Manager' },
+    ]
+  },
+  creativa: {
+    label: 'Generazione Creativa',
+    nodes: [
+      { type: 'image-gen',     label: 'Image Gen' },
+      { type: 'video-gen',     label: 'Video Gen' },
+      { type: 'audio-synth',   label: 'Audio Synthesis' },
+      { type: 'tts',           label: 'TTS' },
+      { type: 'voice-clone',   label: 'Voice Cloning' },
+      { type: 'style-transfer',label: 'Style Transfer' },
+      { type: 'asset-library', label: 'Asset Library' },
+    ]
+  },
+  auto: {
+    label: 'Automazione',
+    nodes: [
+      { type: 'webhook',       label: 'Webhook Trigger' },
+      { type: 'schedule',      label: 'Schedule' },
+      { type: 'conditional',   label: 'Conditional' },
+      { type: 'loop',          label: 'Loop' },
+      { type: 'branch',        label: 'Branch' },
+      { type: 'error-handler', label: 'Error Handler' },
+      { type: 'retry',         label: 'Retry' },
+      { type: 'queue',         label: 'Queue' },
+    ]
+  },
+  dati: {
+    label: 'Dati & Storage',
+    nodes: [
+      { type: 'sql-query',        label: 'SQL Query' },
+      { type: 'nosql',            label: 'NoSQL' },
+      { type: 'vector-store',     label: 'Vector Store' },
+      { type: 'file-storage',     label: 'File Storage' },
+      { type: 'cache',            label: 'Cache' },
+      { type: 'data-transformer', label: 'Data Transformer' },
+      { type: 'schema-validator', label: 'Schema Validator' },
+    ]
+  },
+  code: {
+    label: 'Codice & Runtime',
+    nodes: [
+      { type: 'python',      label: 'Python' },
+      { type: 'javascript',  label: 'JavaScript' },
+      { type: 'bash',        label: 'Bash' },
+      { type: 'dockerfile',  label: 'Dockerfile' },
+      { type: 'serverless',  label: 'Serverless Function' },
+      { type: 'pkg-manager', label: 'Package Manager' },
+      { type: 'environment', label: 'Environment' },
+    ]
+  },
+  iot: {
+    label: 'Hardware & IoT',
+    nodes: [
+      { type: 'mqtt',            label: 'MQTT Subscriber' },
+      { type: 'serial-port',     label: 'Serial Port' },
+      { type: 'http-device',     label: 'HTTP Device' },
+      { type: 'sensor-data',     label: 'Sensor Data' },
+      { type: 'threshold-alert', label: 'Threshold Alert' },
+      { type: 'device-command',  label: 'Device Command' },
+    ]
+  },
+  com: {
+    label: 'Comunicazione',
+    nodes: [
+      { type: 'email',           label: 'Email' },
+      { type: 'sms',             label: 'SMS' },
+      { type: 'push-notif',      label: 'Push Notification' },
+      { type: 'slack-discord',   label: 'Slack / Discord' },
+      { type: 'whatsapp',        label: 'WhatsApp Business' },
+      { type: 'inapp-notif',     label: 'In-app Notification' },
+    ]
+  },
+  biz: {
+    label: 'Business & Commerce',
+    nodes: [
+      { type: 'payment',       label: 'Payment Processor' },
+      { type: 'invoice',       label: 'Invoice' },
+      { type: 'crm',           label: 'CRM' },
+      { type: 'order-mgmt',    label: 'Order Management' },
+      { type: 'pricing-rule',  label: 'Pricing Rule' },
+      { type: 'subscription',  label: 'Subscription' },
+      { type: 'biz-analytics', label: 'Analytics' },
+    ]
+  },
+  web: {
+    label: 'Web & Scraping',
+    nodes: [
+      { type: 'browser',        label: 'Browser' },
+      { type: 'scraper',        label: 'Scraper' },
+      { type: 'page-monitor',   label: 'Page Monitor' },
+      { type: 'form-filler',    label: 'Form Filler' },
+      { type: 'screenshot',     label: 'Screenshot' },
+      { type: 'html-parser',    label: 'HTML Parser' },
+      { type: 'sitemap-crawler',label: 'Sitemap Crawler' },
+    ]
+  },
+  media: {
+    label: 'Media Processing',
+    nodes: [
+      { type: 'video-transcoder', label: 'Video Transcoder' },
+      { type: 'audio-processor',  label: 'Audio Processor' },
+      { type: 'image-optimizer',  label: 'Image Optimizer' },
+      { type: 'ocr',              label: 'OCR' },
+      { type: 'speech-to-text',   label: 'Speech-to-Text' },
+      { type: 'subtitle-gen',     label: 'Subtitle Generator' },
+      { type: 'thumbnail-gen',    label: 'Thumbnail Generator' },
+    ]
+  },
+  social: {
+    label: 'Social & Distribution',
+    nodes: [
+      { type: 'post-scheduler',   label: 'Post Scheduler' },
+      { type: 'multi-publisher',  label: 'Multi-Platform Publisher' },
+      { type: 'engage-analytics', label: 'Engagement Analytics' },
+      { type: 'audience-segment', label: 'Audience Segment' },
+      { type: 'hashtag-opt',      label: 'Hashtag Optimizer' },
+      { type: 'ab-test',          label: 'A/B Test' },
+    ]
+  },
+  chain: {
+    label: 'Blockchain & Web3',
+    nodes: [
+      { type: 'smart-contract',   label: 'Smart Contract' },
+      { type: 'wallet',           label: 'Wallet' },
+      { type: 'tx-builder',       label: 'Transaction Builder' },
+      { type: 'event-listener',   label: 'Event Listener' },
+      { type: 'token-balance',    label: 'Token Balance' },
+      { type: 'ipfs',             label: 'IPFS' },
+      { type: 'ens-resolver',     label: 'ENS Resolver' },
+    ]
+  },
+  viz: {
+    label: 'Visualizzazione & Output',
+    nodes: [
+      { type: 'chart',          label: 'Chart' },
+      { type: 'dashboard',      label: 'Dashboard' },
+      { type: 'pdf-generator',  label: 'PDF Generator' },
+      { type: 'csv-exporter',   label: 'CSV Exporter' },
+      { type: 'json-formatter', label: 'JSON Formatter' },
+      { type: 'table-renderer', label: 'Table Renderer' },
+      { type: 'report-builder', label: 'Report Builder' },
+    ]
+  },
+  collab: {
+    label: 'Collaborazione',
+    nodes: [
+      { type: 'git-integration',   label: 'Git Integration' },
+      { type: 'canvas-versioning', label: 'Canvas Versioning' },
+      { type: 'comment',           label: 'Comment' },
+      { type: 'change-history',    label: 'Change History' },
+      { type: 'branch-canvas',     label: 'Branch Canvas' },
+      { type: 'diff-viewer',       label: 'Diff Viewer' },
+      { type: 'contributor',       label: 'Contributor' },
+    ]
+  },
+};
+
+(function initNodeLibrary() {
+  const chips      = document.querySelectorAll('.pnl-chip');
+  const nodeList   = document.getElementById('pnl-node-list');
+  const searchInput = document.getElementById('pnl-search');
+
+  if (!chips.length || !nodeList || !searchInput) return;
+
+  let activecat = 'ai';
+  let searchQuery = '';
+
+  function render() {
+    nodeList.innerHTML = '';
+
+    let allNodes = [];
+
+    if (searchQuery.trim().length > 0) {
+      // Search across all categories
+      const q = searchQuery.trim().toLowerCase();
+      Object.entries(NODE_LIBRARY).forEach(([cat, data]) => {
+        data.nodes.forEach(n => {
+          if (n.label.toLowerCase().includes(q)) {
+            allNodes.push({ ...n, cat });
+          }
+        });
+      });
+    } else {
+      // Show nodes of active category
+      const catData = NODE_LIBRARY[activecat];
+      if (catData) {
+        allNodes = catData.nodes.map(n => ({ ...n, cat: activecat }));
+      }
+    }
+
+    if (allNodes.length === 0) {
+      nodeList.innerHTML = '<div class="pnl-no-results">Nessun nodo trovato</div>';
+      return;
+    }
+
+    allNodes.forEach(n => {
+      const item = document.createElement('div');
+      item.className = 'pnl-node-item';
+      item.innerHTML = `<div class="pnl-node-dot pnl-dot-${n.cat}"></div><span>${n.label}</span>`;
+      item.addEventListener('click', () => {
+        addNodeToCanvas(n.type, n.label);
+      });
+      nodeList.appendChild(item);
+    });
+  }
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activecat = chip.dataset.cat;
+      searchQuery = '';
+      searchInput.value = '';
+      render();
+    });
+  });
+
+  searchInput.addEventListener('input', () => {
+    searchQuery = searchInput.value;
+    // If searching, remove active chip highlight
+    if (searchQuery.trim().length > 0) {
+      chips.forEach(c => c.classList.remove('active'));
+    } else {
+      chips.forEach(c => {
+        c.classList.toggle('active', c.dataset.cat === activecat);
+      });
+    }
+    render();
+  });
+
+  // Init render
+  render();
+})();
 
 /* ════════════════════════════════════════════
    INITIAL STATE

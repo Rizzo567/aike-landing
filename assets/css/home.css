@@ -1188,3 +1188,348 @@
 .marquee-item:hover {
   color: rgba(255, 255, 255, 0.75);
 }
+
+/* ── OperationsOS Section ───────────────────────────────────── */
+.ops-os-section {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-4xl) 0;
+}
+
+.ops-os-bg-glow {
+  position: absolute;
+  top: -80px;
+  right: -120px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ops-os-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 70% 50%, black 30%, transparent 80%);
+  mask-image: radial-gradient(ellipse 80% 60% at 70% 50%, black 30%, transparent 80%);
+}
+
+.ops-os-layout {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2xl);
+  align-items: center;
+}
+
+/* ── Copy side ─────────────────────────────────────────────── */
+.ops-os-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ops-os-eyebrow {
+  margin-bottom: 1.25rem;
+}
+
+.ops-os-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ops-os-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  color: var(--color-white);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.25rem;
+}
+
+.ops-os-desc {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 1.75rem;
+  max-width: 480px;
+}
+
+.ops-os-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ops-os-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.ops-os-features li strong {
+  color: var(--color-white);
+}
+
+.ops-os-feature-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(168, 85, 247, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ops-os-pricing-note {
+  display: inline-block;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  margin-bottom: 2rem;
+  letter-spacing: 0.01em;
+}
+
+.ops-os-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ops-os-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.ops-os-cta-ghost {
+  font-size: 0.9rem;
+}
+
+/* ── Visual / Phone mockup side ─────────────────────────────── */
+.ops-os-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ops-os-phone-wrap {
+  position: relative;
+  width: 320px;
+}
+
+.ops-os-phone {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(168, 85, 247, 0.08),
+    0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.ops-os-phone__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ops-os-phone__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(168, 85, 247, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ops-os-phone__name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1.2;
+}
+
+.ops-os-phone__status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.ops-os-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  animation: ops-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ops-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.ops-os-phone__body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ops-os-msg {
+  max-width: 85%;
+  padding: 9px 13px;
+  border-radius: 14px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: ops-msg-in 0.4s ease forwards;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ops-os-msg time {
+  font-size: 0.65rem;
+  opacity: 0.45;
+  align-self: flex-end;
+}
+
+.ops-os-msg--in {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  color: rgba(255, 255, 255, 0.85);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.ops-os-msg--out {
+  background: rgba(168, 85, 247, 0.18);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  color: rgba(255, 255, 255, 0.9);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.ops-os-msg--1 { animation-delay: 0.3s; }
+.ops-os-msg--2 { animation-delay: 0.7s; }
+.ops-os-msg--3 { animation-delay: 1.1s; }
+.ops-os-msg--4 { animation-delay: 1.5s; }
+
+@keyframes ops-msg-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Floating metric pills */
+.ops-os-pill {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: ops-float 3s ease-in-out infinite;
+}
+
+.ops-os-pill--1 {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #d8b4fe;
+  top: -18px;
+  right: -20px;
+  animation-delay: 0s;
+}
+
+.ops-os-pill--2 {
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  color: #6ee7b7;
+  bottom: -18px;
+  left: -20px;
+  animation-delay: 1.5s;
+}
+
+@keyframes ops-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .ops-os-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ops-os-visual {
+    order: -1;
+  }
+
+  .ops-os-phone-wrap {
+    width: 290px;
+  }
+
+  .ops-os-bg-glow {
+    top: -40px;
+    right: -60px;
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ops-os-phone-wrap {
+    width: 260px;
+  }
+
+  .ops-os-cta-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

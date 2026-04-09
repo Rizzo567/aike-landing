@@ -15,6 +15,7 @@ const getHeaderHTML = (b) => `
       <a href="${b}pages/pricing.html" class="header__link">Pricing</a>
       <a href="${b}pages/owl.html" class="header__link">Owl</a>
       <a href="${b}pages/plane.html" class="header__link">Plane</a>
+      <a href="${b}pages/operations-os.html" class="header__link">OperationsOS</a>
     </nav>
     <div class="header__actions">
       <!-- Desktop Log In -->
@@ -80,6 +81,7 @@ const getHeaderHTML = (b) => `
       <a href="${b}pages/pricing.html" class="mobile-nav-link">Pricing</a>
       <a href="${b}pages/owl.html" class="mobile-nav-link">Owl</a>
       <a href="${b}pages/plane.html" class="mobile-nav-link">Plane</a>
+      <a href="${b}pages/operations-os.html" class="mobile-nav-link">OperationsOS</a>
       <div class="mobile-nav-divider"></div>
       <a id="auth-login-btn-mobile" href="${b}pages/login.html" class="mobile-nav-link auth-btn-login" style="color:var(--color-primary)">Log in</a>
     </div>

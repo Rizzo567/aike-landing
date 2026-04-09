@@ -8,9 +8,11 @@
     "dev": "nodemon index.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.86.1",
     "@notionhq/client": "^2.2.15",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "node-cron": "^4.2.1",
     "telegraf": "^4.16.3"
   },
   "devDependencies": {

@@ -3,6 +3,9 @@
 const { Markup } = require('telegraf');
 const { getRecentLeads, getPipelineSummary, extractLeadData } = require('../notion/leads');
 const { escapeMarkdownV2 } = require('../telegram/alerts');
+const { collectDailyData } = require('../ai/collector');
+const { generateDigest } = require('../ai/digest');
+const { sendDigest } = require('../ai/sender');
 
 /**
  * Register all bot command handlers on the given Telegraf instance.
@@ -111,6 +114,22 @@ function registerCommands(bot) {
     }
   });
 
+  // /digest — genera e invia subito il briefing AI
+  bot.command('digest', async (ctx) => {
+    try {
+      await ctx.reply('🧠 Generando il briefing AI\\.\\.\\.', { parse_mode: 'MarkdownV2' });
+
+      const data = await collectDailyData();
+      const digestText = await generateDigest(data);
+      await sendDigest(ctx.chat.id, digestText, data);
+    } catch (err) {
+      console.error('[commands] /digest error:', err.message);
+      await ctx.reply('❌ Errore nella generazione del digest\\. Riprova\\.', {
+        parse_mode: 'MarkdownV2',
+      });
+    }
+  });
+
   // /help — command reference
   bot.command('help', async (ctx) => {
     const message =
@@ -118,6 +137,8 @@ function registerCommands(bot) {
       `*Lead Management*\n` +
       `• /leads — view your 5 most recent leads\n` +
       `• /pipeline — pipeline breakdown by status\n\n` +
+      `*AI Digest*\n` +
+      `• /digest — genera e invia subito il briefing AI\n\n` +
       `*Inline Buttons \\(on lead alerts\\)*\n` +
       `• ✅ *Qualify* — marks lead as Qualified\n` +
       `• ❌ *Discard* — marks lead as Cold\n` +

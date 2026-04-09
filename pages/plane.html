@@ -2246,6 +2246,264 @@ function setZoom(newScale, cx, cy) {
   }
   scale = newScale;
   applyTransform();
+
+/* ════════════════════════════════════════════
+   CANVAS PERSISTENCE — save / load
+════════════════════════════════════════════ */
+
+var CANVAS_LS_KEY  = 'plane-canvas-v1';
+var CANVAS_VERSION = 1;
+
+// -- Toast helper
+var _toastTimer = null;
+function showToast(msg, durationMs) {
+  durationMs = durationMs || 2000;
+  var el = document.getElementById('plane-toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('visible');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() { el.classList.remove('visible'); }, durationMs);
+}
+
+// -- Supabase getter (safe)
+function getSupabaseClient() {
+  return window.supabase || window._supabase || null;
+}
+
+async function getAuthSession() {
+  var sb = getSupabaseClient();
+  if (!sb) return null;
+  try {
+    var res = await sb.auth.getSession();
+    return (res.data && res.data.session) ? res.data.session : null;
+  } catch (e) { return null; }
+}
+
+// -- Serialization
+function serializeCanvas() {
+  var nodes = [];
+  document.querySelectorAll('#plane-canvas-inner .plane-node').forEach(function(node) {
+    var id      = node.dataset.nodeId;
+    var type    = node.dataset.type;
+    var labelEl = node.querySelector('.plane-node-label');
+    var label   = labelEl ? labelEl.textContent : '';
+    var x       = parseFloat(node.style.left) || 0;
+    var y       = parseFloat(node.style.top)  || 0;
+
+    var fieldValues = [];
+    node.querySelectorAll('textarea.node-prompt, select.node-select, input.node-number').forEach(function(el) {
+      fieldValues.push(el.value);
+    });
+
+    var outputData = null;
+    var outText = node.querySelector('.node-output-text');
+    var outImg  = node.querySelector('.node-output-img');
+    var outEl   = node.querySelector('.node-output');
+    if (outEl && outEl.classList.contains('visible')) {
+      if (outText)     outputData = { type: 'text',  content: outText.textContent };
+      else if (outImg) outputData = { type: 'image', url: outImg.src };
+    }
+
+    nodes.push({ id: id, type: type, label: label, x: x, y: y, fieldValues: fieldValues, outputData: outputData });
+  });
+
+  var conns = [];
+  connections.forEach(function(conn) {
+    conns.push({ fromId: conn.fromId, toId: conn.toId });
+  });
+
+  return {
+    version:     CANVAS_VERSION,
+    nodes:       nodes,
+    connections: conns,
+    savedAt:     new Date().toISOString(),
+  };
+}
+
+// -- Deserialization
+function deserializeCanvas(data) {
+  if (!data || data.version !== CANVAS_VERSION) return false;
+
+  // 1. Remove existing plane-node elements
+  document.querySelectorAll('#plane-canvas-inner .plane-node').forEach(function(n) { n.remove(); });
+
+  // 2. Clear all connections
+  connections.forEach(function(conn) { conn.pathEl.remove(); });
+  connections.clear();
+
+  // 3. Recreate nodes
+  (data.nodes || []).forEach(function(savedNode) {
+    addNodeToCanvas(savedNode.type, savedNode.label);
+    var allNodes = document.querySelectorAll('#plane-canvas-inner .plane-node');
+    var node = allNodes[allNodes.length - 1];
+    if (!node) return;
+
+    // Override auto-generated id with the saved one
+    node.dataset.nodeId = savedNode.id;
+
+    // Restore position
+    node.style.left = savedNode.x + 'px';
+    node.style.top  = savedNode.y + 'px';
+
+    // Restore config field values
+    var fields = node.querySelectorAll('textarea.node-prompt, select.node-select, input.node-number');
+    (savedNode.fieldValues || []).forEach(function(val, idx) {
+      if (fields[idx]) fields[idx].value = val;
+    });
+
+    // Restore output
+    if (savedNode.outputData) {
+      var outEl = node.querySelector('.node-output');
+      if (outEl) {
+        outEl.classList.add('visible');
+        if (savedNode.outputData.type === 'image') {
+          var url = savedNode.outputData.url;
+          outEl.innerHTML =
+            '<img class="node-output-img" src="' + url + '" alt="Generated"/>' +
+            '<div class="node-output-actions">' +
+              '<button class="node-output-action" onclick="window.open(\'' + url + '\',\'_blank\')">Apri</button>' +
+              '<button class="node-output-action" onclick="downloadImg(\'' + url + '\')">Scarica</button>' +
+            '</div>';
+        } else if (savedNode.outputData.type === 'text') {
+          var escaped = escapeHtml(savedNode.outputData.content);
+          var rawStr  = JSON.stringify(savedNode.outputData.content);
+          outEl.innerHTML =
+            '<div class="node-output-text">' + escaped + '</div>' +
+            '<div class="node-output-actions">' +
+              '<button class="node-output-action" onclick="navigator.clipboard.writeText(' + rawStr + ')">Copia</button>' +
+            '</div>';
+        }
+      }
+    }
+  });
+
+  // 4. Recreate connections after nodes are in DOM
+  requestAnimationFrame(function() {
+    (data.connections || []).forEach(function(conn) {
+      createConnection(conn.fromId, conn.toId);
+    });
+  });
+
+  return true;
+}
+
+// -- Save
+async function saveCanvas() {
+  var data = serializeCanvas();
+
+  // Always persist to localStorage as fallback
+  try {
+    localStorage.setItem(CANVAS_LS_KEY, JSON.stringify(data));
+  } catch (e) {
+    console.warn('[Plane] localStorage save failed:', e);
+  }
+
+  // Optionally save to Supabase if authenticated
+  var session = await getAuthSession();
+  if (session) {
+    var sb     = getSupabaseClient();
+    var userId = session.user && session.user.id;
+    if (sb && userId) {
+      try {
+        await sb.from('plane_canvases').upsert(
+          { user_id: userId, canvas_data: data, updated_at: new Date().toISOString() },
+          { onConflict: 'user_id' }
+        );
+      } catch (e) {
+        console.warn('[Plane] Supabase save failed (localStorage fallback):', e);
+      }
+    }
+  }
+
+  showToast('Salvato ✓');
+}
+
+// -- Load
+async function loadCanvas(silent) {
+  var data = null;
+
+  // Try Supabase first if authenticated
+  var session = await getAuthSession();
+  if (session) {
+    var sb     = getSupabaseClient();
+    var userId = session.user && session.user.id;
+    if (sb && userId) {
+      try {
+        var result = await sb
+          .from('plane_canvases')
+          .select('canvas_data')
+          .eq('user_id', userId)
+          .single();
+        if (!result.error && result.data && result.data.canvas_data) {
+          data = result.data.canvas_data;
+        }
+      } catch (e) {
+        console.warn('[Plane] Supabase load failed, trying localStorage:', e);
+      }
+    }
+  }
+
+  // Fall back to localStorage
+  if (!data) {
+    try {
+      var raw = localStorage.getItem(CANVAS_LS_KEY);
+      if (raw) data = JSON.parse(raw);
+    } catch (e) {
+      console.warn('[Plane] localStorage load failed:', e);
+    }
+  }
+
+  if (!data) {
+    if (!silent) showToast('Nessun canvas salvato trovato');
+    return false;
+  }
+
+  var ok = deserializeCanvas(data);
+  if (ok && !silent) showToast('Canvas caricato ✓');
+  return ok;
+}
+
+// -- Button wiring
+document.getElementById('planeSaveBtn').addEventListener('click', function() {
+  saveCanvas();
+});
+
+document.getElementById('planeLoadBtn').addEventListener('click', function() {
+  var existingNodes = document.querySelectorAll('#plane-canvas-inner .plane-node');
+  if (existingNodes.length > 0) {
+    if (!confirm('Caricare il canvas salvato? I nodi attuali verranno sostituiti.')) return;
+  }
+  loadCanvas(false);
+});
+
+// Ctrl+S / Cmd+S shortcut to save
+document.addEventListener('keydown', function(ev) {
+  if ((ev.ctrlKey || ev.metaKey) && ev.key === 's') {
+    ev.preventDefault();
+    saveCanvas();
+  }
+});
+
+// -- Auto-save every 60 seconds
+setInterval(function() {
+  if (document.querySelectorAll('#plane-canvas-inner .plane-node').length > 0) {
+    saveCanvas();
+  }
+}, 60000);
+
+// -- Save on page unload
+window.addEventListener('beforeunload', function() {
+  var data = serializeCanvas();
+  try { localStorage.setItem(CANVAS_LS_KEY, JSON.stringify(data)); } catch (e) {}
+});
+
+// -- Load on startup (silent — no toast if nothing saved yet)
+(async function initLoad() {
+  await new Promise(function(r) { setTimeout(r, 0); });
+  loadCanvas(true);
+})();
+
   document.getElementById('planeZoomLabel').textContent = Math.round(scale * 100) + '%';
 }
 
@@ -3130,6 +3388,130 @@ function buildNodeBody(type) {
         Salva nodo
       </button>
     `;
+  } else if (type === 'trigger') {
+    configHTML = `
+      <div class="node-cfg-label">Tipo trigger</div>
+      <select class="node-select node-trigger-type">
+        <option value="manual">Manuale</option>
+        <option value="schedule">Schedule</option>
+        <option value="webhook">Webhook</option>
+      </select>
+      <div class="node-trigger-cron" style="display:none">
+        <div class="node-cfg-label">Cron expression</div>
+        <input class="node-input node-cron-input" placeholder="0 9 * * *" />
+      </div>
+      <div class="node-trigger-webhook" style="display:none">
+        <div class="node-cfg-label">Webhook URL</div>
+        <input class="node-input node-webhook-url" readonly placeholder="Generato automaticamente…" />
+      </div>
+      <div class="node-cfg-label">Payload</div>
+      <textarea class="node-prompt node-trigger-payload" rows="2" placeholder="JSON payload…"></textarea>
+      <button class="node-gen-btn">
+        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="4,2 14,8 4,14"/></svg>
+        Esegui trigger
+      </button>
+    `;
+  } else if (type === 'condition') {
+    configHTML = `
+      <div class="node-cfg-label">Input (da nodo connesso)</div>
+      <textarea class="node-prompt node-condition-input" rows="2" placeholder="Connetti un nodo upstream o inserisci testo…"></textarea>
+      <div class="node-cfg-label">Operatore</div>
+      <select class="node-select node-condition-op">
+        <option value="contains">contiene</option>
+        <option value="not_contains">non contiene</option>
+        <option value="equals">uguale a</option>
+        <option value="greater">maggiore di</option>
+        <option value="starts_with">inizia con</option>
+      </select>
+      <div class="node-cfg-label">Valore</div>
+      <input class="node-input node-condition-value" placeholder="es. errore" />
+      <div style="display:flex;gap:6px;margin-top:4px">
+        <div style="flex:1;padding:4px 8px;border-radius:6px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);font-size:0.68rem;color:#34d399">TRUE →</div>
+        <div style="flex:1;padding:4px 8px;border-radius:6px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);font-size:0.68rem;color:#f87171">FALSE →</div>
+      </div>
+      <button class="node-gen-btn">
+        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="4,2 14,8 4,14"/></svg>
+        Valuta condizione
+      </button>
+    `;
+  } else if (type === 'supabase-query') {
+    configHTML = `
+      <div class="node-cfg-label">URL Supabase</div>
+      <input class="node-input node-sb-url" placeholder="https://xxx.supabase.co" />
+      <div class="node-cfg-label">Anon Key</div>
+      <input type="password" class="node-input node-sb-key" placeholder="eyJ…" />
+      <div class="node-cfg-label">Tabella</div>
+      <input class="node-input node-sb-table" placeholder="nome_tabella" />
+      <div class="node-cfg-label">Operazione</div>
+      <select class="node-select node-sb-op">
+        <option value="SELECT">SELECT</option>
+        <option value="INSERT">INSERT</option>
+        <option value="UPDATE">UPDATE</option>
+        <option value="DELETE">DELETE</option>
+      </select>
+      <div class="node-sb-filter-wrap">
+        <div class="node-cfg-label">Filtro (WHERE)</div>
+        <input class="node-input node-sb-filter" placeholder="colonna=valore" />
+      </div>
+      <div class="node-sb-data-wrap" style="display:none">
+        <div class="node-cfg-label">Dati (per INSERT/UPDATE)</div>
+        <textarea class="node-prompt node-sb-data" rows="2" placeholder='{"colonna": "valore"}'></textarea>
+      </div>
+      <div class="node-sb-limit-wrap">
+        <div class="node-cfg-label">Limit</div>
+        <input type="number" class="node-number node-sb-limit" value="10" min="1" max="1000" />
+      </div>
+      <button class="node-gen-btn">
+        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="4,2 14,8 4,14"/></svg>
+        Esegui query
+      </button>
+    `;
+  } else if (type === 'http-request') {
+    configHTML = `
+      <div class="node-cfg-label">URL</div>
+      <input class="node-input node-http-url" placeholder="https://api.example.com/endpoint" />
+      <div class="node-cfg-label">Metodo</div>
+      <select class="node-select node-http-method">
+        <option value="GET">GET</option>
+        <option value="POST">POST</option>
+        <option value="PUT">PUT</option>
+        <option value="PATCH">PATCH</option>
+        <option value="DELETE">DELETE</option>
+      </select>
+      <div class="node-cfg-label">Headers</div>
+      <textarea class="node-prompt node-http-headers" rows="2" placeholder='{"Authorization": "Bearer token"}'></textarea>
+      <div class="node-http-body-wrap" style="display:none">
+        <div class="node-cfg-label">Body</div>
+        <textarea class="node-prompt node-http-body" rows="2" placeholder='{"key": "value"}'></textarea>
+      </div>
+      <button class="node-gen-btn">
+        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="4,2 14,8 4,14"/></svg>
+        Invia richiesta
+      </button>
+    `;
+  } else if (type === 'notion-query') {
+    configHTML = `
+      <div class="node-cfg-label">Integration Token</div>
+      <input type="password" class="node-input node-notion-token" placeholder="secret_…" />
+      <div class="node-cfg-label">Database ID</div>
+      <input class="node-input node-notion-dbid" placeholder="ID del database Notion" />
+      <div class="node-cfg-label">Operazione</div>
+      <select class="node-select node-notion-op">
+        <option value="query">Query Database</option>
+        <option value="create">Crea Pagina</option>
+        <option value="update">Aggiorna Pagina</option>
+      </select>
+      <div class="node-cfg-label">Filtro (JSON)</div>
+      <textarea class="node-prompt node-notion-filter" rows="2" placeholder='{"property":"Status","select":{"equals":"Done"}}'></textarea>
+      <div class="node-notion-data-wrap" style="display:none">
+        <div class="node-cfg-label">Dati nuova pagina</div>
+        <textarea class="node-prompt node-notion-data" rows="2" placeholder='{"Name":"Titolo", "Status":"Done"}'></textarea>
+      </div>
+      <button class="node-gen-btn">
+        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="4,2 14,8 4,14"/></svg>
+        Esegui operazione
+      </button>
+    `;
   }
 
   return `
@@ -3391,6 +3773,75 @@ function initNodeInteractions(node, type) {
     strengthTrack._value = 0.65;
   }
 
+  // ── Trigger: show/hide cron vs webhook fields
+  if (type === 'trigger') {
+    const triggerTypeSelect = node.querySelector('.node-trigger-type');
+    const cronWrap    = node.querySelector('.node-trigger-cron');
+    const webhookWrap = node.querySelector('.node-trigger-webhook');
+    const webhookUrlInput = node.querySelector('.node-webhook-url');
+    if (triggerTypeSelect) {
+      const updateTriggerFields = () => {
+        const val = triggerTypeSelect.value;
+        if (cronWrap)    cronWrap.style.display    = (val === 'schedule') ? '' : 'none';
+        if (webhookWrap) webhookWrap.style.display  = (val === 'webhook')  ? '' : 'none';
+        if (val === 'webhook' && webhookUrlInput && !webhookUrlInput.value) {
+          webhookUrlInput.value = 'https://aike-plane.dev/webhook/' + node.dataset.nodeId;
+        }
+      };
+      triggerTypeSelect.addEventListener('change', updateTriggerFields);
+    }
+  }
+
+  // ── Condition: auto-fill input from upstream
+  if (type === 'condition') {
+    const condInput = node.querySelector('.node-condition-input');
+    if (condInput) {
+      const upstream = getUpstreamOutput(node.dataset.nodeId);
+      if (upstream) condInput.value = upstream;
+    }
+  }
+
+  // ── HTTP Request: show/hide body field based on method
+  if (type === 'http-request') {
+    const methodSel  = node.querySelector('.node-http-method');
+    const bodyWrap   = node.querySelector('.node-http-body-wrap');
+    if (methodSel && bodyWrap) {
+      const updateBodyField = () => {
+        const needsBody = ['POST','PUT','PATCH'].includes(methodSel.value);
+        bodyWrap.style.display = needsBody ? '' : 'none';
+      };
+      methodSel.addEventListener('change', updateBodyField);
+    }
+  }
+
+  // ── Supabase Query: show/hide data field based on operation
+  if (type === 'supabase-query') {
+    const sbOp      = node.querySelector('.node-sb-op');
+    const sbDataWrap = node.querySelector('.node-sb-data-wrap');
+    const sbLimitWrap = node.querySelector('.node-sb-limit-wrap');
+    if (sbOp) {
+      const updateSbFields = () => {
+        const needsData  = ['INSERT','UPDATE'].includes(sbOp.value);
+        const isSelect   = sbOp.value === 'SELECT';
+        if (sbDataWrap)  sbDataWrap.style.display  = needsData ? '' : 'none';
+        if (sbLimitWrap) sbLimitWrap.style.display = isSelect  ? '' : 'none';
+      };
+      sbOp.addEventListener('change', updateSbFields);
+    }
+  }
+
+  // ── Notion: show/hide data field based on operation
+  if (type === 'notion-query') {
+    const notionOp       = node.querySelector('.node-notion-op');
+    const notionDataWrap = node.querySelector('.node-notion-data-wrap');
+    if (notionOp && notionDataWrap) {
+      const updateNotionFields = () => {
+        notionDataWrap.style.display = (notionOp.value === 'create') ? '' : 'none';
+      };
+      notionOp.addEventListener('change', updateNotionFields);
+    }
+  }
+
   // ── Generate button
   const genBtn = node.querySelector('.node-gen-btn');
   const output = node.querySelector('.node-output');
@@ -3398,6 +3849,293 @@ function initNodeInteractions(node, type) {
 
   genBtn.addEventListener('click', async () => {
     // Determine action
+    // ── Trigger node
+    if (type === 'trigger') {
+      const triggerType = node.querySelector('.node-trigger-type')?.value || 'manual';
+      const payloadEl   = node.querySelector('.node-trigger-payload');
+      const payloadTxt  = payloadEl?.value.trim() || '';
+      output.classList.add('visible');
+      setBadge(node, 'done', 'pronto');
+      if (triggerType === 'manual') {
+        let payloadOut;
+        try {
+          payloadOut = payloadTxt ? JSON.stringify(JSON.parse(payloadTxt), null, 2) : JSON.stringify({ trigger: 'manual', ts: new Date().toISOString() }, null, 2);
+        } catch(e) {
+          payloadOut = payloadTxt || JSON.stringify({ trigger: 'manual', ts: new Date().toISOString() }, null, 2);
+        }
+        output.innerHTML = `
+          <div class="node-output-text">${escapeHtml(payloadOut)}</div>
+          <div class="node-output-actions">
+            <button class="node-output-action" onclick="navigator.clipboard.writeText(${JSON.stringify(payloadOut)})">Copia</button>
+          </div>
+        `;
+      } else if (triggerType === 'schedule') {
+        const cron = node.querySelector('.node-cron-input')?.value.trim() || '0 9 * * *';
+        const msg = `Trigger schedulato: \`${cron}\``;
+        output.innerHTML = `
+          <div class="node-output-text">${escapeHtml(msg)}</div>
+          <div class="node-output-actions">
+            <button class="node-output-action" onclick="navigator.clipboard.writeText(${JSON.stringify(cron)})">Copia cron</button>
+          </div>
+        `;
+      } else if (triggerType === 'webhook') {
+        const webhookUrl = node.querySelector('.node-webhook-url')?.value || ('https://aike-plane.dev/webhook/' + node.dataset.nodeId);
+        output.innerHTML = `
+          <div class="node-output-text">Webhook attivo:
+${escapeHtml(webhookUrl)}</div>
+          <div class="node-output-actions">
+            <button class="node-output-action" onclick="navigator.clipboard.writeText(${JSON.stringify(webhookUrl)})">Copia URL</button>
+          </div>
+        `;
+      }
+      return;
+    }
+
+    // ── Condition node
+    if (type === 'condition') {
+      const condInputEl = node.querySelector('.node-condition-input');
+      let inputVal = condInputEl?.value.trim() || '';
+      const upstream = getUpstreamOutput(node.dataset.nodeId);
+      if (upstream && !inputVal) inputVal = upstream;
+      const operator = node.querySelector('.node-condition-op')?.value || 'contains';
+      const compareVal = node.querySelector('.node-condition-value')?.value.trim() || '';
+      let result = false;
+      const inputLower = inputVal.toLowerCase();
+      const compareLower = compareVal.toLowerCase();
+      if (operator === 'contains')     result = inputLower.includes(compareLower);
+      else if (operator === 'not_contains') result = !inputLower.includes(compareLower);
+      else if (operator === 'equals')  result = inputLower === compareLower;
+      else if (operator === 'greater') result = parseFloat(inputVal) > parseFloat(compareVal);
+      else if (operator === 'starts_with') result = inputLower.startsWith(compareLower);
+      const branch = result ? 'TRUE' : 'FALSE';
+      const branchColor = result ? '#34d399' : '#f87171';
+      const branchBg    = result ? 'rgba(52,211,153,0.08)' : 'rgba(239,68,68,0.08)';
+      const outObj = { result, branch, input: inputVal };
+      const outJson = JSON.stringify(outObj, null, 2);
+      setBadge(node, 'done', 'pronto');
+      output.classList.add('visible');
+      output.innerHTML = `
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+          <span style="font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:4px;background:${branchBg};color:${branchColor};border:1px solid ${branchColor}40">${branch}</span>
+          <span style="font-size:0.68rem;color:var(--h-text-dim)">${escapeHtml(inputVal.slice(0,40))}</span>
+        </div>
+        <div class="node-output-text">${escapeHtml(outJson)}</div>
+        <div class="node-output-actions">
+          <button class="node-output-action" onclick="navigator.clipboard.writeText(${JSON.stringify(outJson)})">Copia</button>
+        </div>
+      `;
+      return;
+    }
+
+    // ── Supabase Query node
+    if (type === 'supabase-query') {
+      const sbUrl   = node.querySelector('.node-sb-url')?.value.trim() || '';
+      const sbKey   = node.querySelector('.node-sb-key')?.value.trim() || '';
+      const sbTable = node.querySelector('.node-sb-table')?.value.trim() || '';
+      const sbOp    = node.querySelector('.node-sb-op')?.value || 'SELECT';
+      const sbFilter = node.querySelector('.node-sb-filter')?.value.trim() || '';
+      const sbLimit  = node.querySelector('.node-sb-limit')?.value || '10';
+      const sbDataEl = node.querySelector('.node-sb-data')?.value.trim() || '';
+      if (!sbUrl || !sbKey || !sbTable) {
+        output.classList.add('visible');
+        output.innerHTML = `<div style="font-size:0.72rem;color:#e07070;padding:4px 2px">Compila URL, Anon Key e Tabella.</div>`;
+        return;
+      }
+      setBadge(node, 'running', 'eseguendo…');
+      genBtn.disabled = true;
+      genBtn.classList.add('loading');
+      genBtn.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path></svg> Eseguendo…`;
+      output.classList.remove('visible');
+      output.innerHTML = '';
+      try {
+        let res, data;
+        const baseHeaders = { 'apikey': sbKey, 'Authorization': `Bearer ${sbKey}`, 'Content-Type': 'application/json' };
+        if (sbOp === 'SELECT') {
+          let url = `${sbUrl}/rest/v1/${encodeURIComponent(sbTable)}?select=*&limit=${sbLimit}`;
+          if (sbFilter) {
+            const [col, val] = sbFilter.split('=');
+            if (col && val) url += `&${encodeURIComponent(col.trim())}=eq.${encodeURIComponent(val.trim())}`;
+          }
+          res = await fetch(url, { headers: baseHeaders });
+        } else if (sbOp === 'INSERT') {
+          let body = {};
+          try { body = JSON.parse(sbDataEl); } catch(e) {}
+          res = await fetch(`${sbUrl}/rest/v1/${encodeURIComponent(sbTable)}`, { method: 'POST', headers: { ...baseHeaders, 'Prefer': 'return=representation' }, body: JSON.stringify(body) });
+        } else if (sbOp === 'UPDATE') {
+          let body = {};
+          try { body = JSON.parse(sbDataEl); } catch(e) {}
+          let url = `${sbUrl}/rest/v1/${encodeURIComponent(sbTable)}`;
+          if (sbFilter) {
+            const [col, val] = sbFilter.split('=');
+            if (col && val) url += `?${encodeURIComponent(col.trim())}=eq.${encodeURIComponent(val.trim())}`;
+          }
+          res = await fetch(url, { method: 'PATCH', headers: { ...baseHeaders, 'Prefer': 'return=representation' }, body: JSON.stringify(body) });
+        } else if (sbOp === 'DELETE') {
+          let url = `${sbUrl}/rest/v1/${encodeURIComponent(sbTable)}`;
+          if (sbFilter) {
+            const [col, val] = sbFilter.split('=');
+            if (col && val) url += `?${encodeURIComponent(col.trim())}=eq.${encodeURIComponent(val.trim())}`;
+          }
+          res = await fetch(url, { method: 'DELETE', headers: baseHeaders });
+        }
+        if (res.status === 204) {
+          data = { message: `${sbOp} eseguito con successo.` };
+        } else {
+          data = await res.json();
+        }
+        if (!res.ok) throw new Error(data?.message || data?.error || `Errore ${res.status}`);
+        const preview = Array.isArray(data) ? data.slice(0, 5) : data;
+        const resultJson = JSON.stringify(preview, null, 2);
+        setBadge(node, 'done', 'pronto');
+        output.classList.add('visible');
+        output.innerHTML = `
+          <div class="node-output-text">${escapeHtml(resultJson)}</div>
+          <div class="node-output-actions">
+            <button class="node-output-action" onclick="navigator.clipboard.writeText(${JSON.stringify(resultJson)})">Copia</button>
+          </div>
+        `;
+      } catch(err) {
+        setBadge(node, 'error', 'errore');
+        output.classList.add('visible');
+        output.innerHTML = `<div style="font-size:0.72rem;color:#e07070;padding:4px 2px">${escapeHtml(err.message)}</div>`;
+      } finally {
+        genBtn.disabled = false;
+        genBtn.classList.remove('loading');
+        genBtn.innerHTML = `<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="4,2 14,8 4,14"/></svg> Esegui query`;
+      }
+      return;
+    }
+
+    // ── HTTP Request node
+    if (type === 'http-request') {
+      const httpUrl    = node.querySelector('.node-http-url')?.value.trim() || '';
+      const httpMethod = node.querySelector('.node-http-method')?.value || 'GET';
+      const headersRaw = node.querySelector('.node-http-headers')?.value.trim() || '';
+      const bodyRaw    = node.querySelector('.node-http-body')?.value.trim() || '';
+      if (!httpUrl) {
+        output.classList.add('visible');
+        output.innerHTML = `<div style="font-size:0.72rem;color:#e07070;padding:4px 2px">Inserisci un URL.</div>`;
+        return;
+      }
+      setBadge(node, 'running', 'eseguendo…');
+      genBtn.disabled = true;
+      genBtn.classList.add('loading');
+      genBtn.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path></svg> Eseguendo…`;
+      output.classList.remove('visible');
+      output.innerHTML = '';
+      try {
+        let parsedHeaders = {};
+        if (headersRaw) { try { parsedHeaders = JSON.parse(headersRaw); } catch(e) { throw new Error('Headers JSON non valido: ' + e.message); } }
+        let fetchOpts = { method: httpMethod, headers: parsedHeaders };
+        if (['POST','PUT','PATCH'].includes(httpMethod) && bodyRaw) {
+          let parsedBody = {};
+          try { parsedBody = JSON.parse(bodyRaw); } catch(e) { throw new Error('Body JSON non valido: ' + e.message); }
+          fetchOpts.body = JSON.stringify(parsedBody);
+          if (!parsedHeaders['Content-Type'] && !parsedHeaders['content-type']) {
+            fetchOpts.headers = { ...parsedHeaders, 'Content-Type': 'application/json' };
+          }
+        }
+        const res = await fetch(httpUrl, fetchOpts);
+        let responseData;
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          responseData = await res.json();
+        } else {
+          responseData = await res.text();
+        }
+        const resultStr = (`Status: ${res.status}
+
+` + (typeof responseData === 'string' ? responseData : JSON.stringify(responseData, null, 2))).slice(0, 2000);
+        setBadge(node, 'done', 'pronto');
+        output.classList.add('visible');
+        output.innerHTML = `
+          <div class="node-output-text">${escapeHtml(resultStr)}</div>
+          <div class="node-output-actions">
+            <button class="node-output-action" onclick="navigator.clipboard.writeText(${JSON.stringify(resultStr)})">Copia</button>
+          </div>
+        `;
+      } catch(err) {
+        setBadge(node, 'error', 'errore');
+        output.classList.add('visible');
+        output.innerHTML = `<div style="font-size:0.72rem;color:#e07070;padding:4px 2px">${escapeHtml(err.message)}</div>`;
+      } finally {
+        genBtn.disabled = false;
+        genBtn.classList.remove('loading');
+        genBtn.innerHTML = `<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="4,2 14,8 4,14"/></svg> Invia richiesta`;
+      }
+      return;
+    }
+
+    // ── Notion Query node
+    if (type === 'notion-query') {
+      const notionToken = node.querySelector('.node-notion-token')?.value.trim() || '';
+      const notionDbId  = node.querySelector('.node-notion-dbid')?.value.trim() || '';
+      const notionOp    = node.querySelector('.node-notion-op')?.value || 'query';
+      const filterRaw   = node.querySelector('.node-notion-filter')?.value.trim() || '';
+      const dataRaw     = node.querySelector('.node-notion-data')?.value.trim() || '';
+      if (!notionToken || !notionDbId) {
+        output.classList.add('visible');
+        output.innerHTML = `<div style="font-size:0.72rem;color:#e07070;padding:4px 2px">Inserisci Integration Token e Database ID.</div>`;
+        return;
+      }
+      setBadge(node, 'running', 'eseguendo…');
+      genBtn.disabled = true;
+      genBtn.classList.add('loading');
+      genBtn.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path></svg> Eseguendo…`;
+      output.classList.remove('visible');
+      output.innerHTML = '';
+      const notionHeaders = { 'Authorization': `Bearer ${notionToken}`, 'Notion-Version': '2022-06-28', 'Content-Type': 'application/json' };
+      try {
+        let res;
+        if (notionOp === 'query') {
+          let parsedFilter;
+          if (filterRaw) { try { parsedFilter = JSON.parse(filterRaw); } catch(e) {} }
+          res = await fetch(`https://api.notion.com/v1/databases/${encodeURIComponent(notionDbId)}/query`, {
+            method: 'POST', headers: notionHeaders,
+            body: JSON.stringify({ filter: parsedFilter || undefined, page_size: 5 })
+          });
+        } else if (notionOp === 'create') {
+          let props = {};
+          if (dataRaw) { try { props = JSON.parse(dataRaw); } catch(e) {} }
+          res = await fetch('https://api.notion.com/v1/pages', {
+            method: 'POST', headers: notionHeaders,
+            body: JSON.stringify({ parent: { database_id: notionDbId }, properties: props })
+          });
+        } else {
+          throw new Error('Operazione non ancora supportata in modalità diretta.');
+        }
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.message || `Errore ${res.status}`);
+        }
+        const data = await res.json();
+        const results = data.results ? data.results.slice(0, 3) : data;
+        const resultJson = JSON.stringify(results, null, 2);
+        setBadge(node, 'done', 'pronto');
+        output.classList.add('visible');
+        output.innerHTML = `
+          <div class="node-output-text">${escapeHtml(resultJson)}</div>
+          <div class="node-output-actions">
+            <button class="node-output-action" onclick="navigator.clipboard.writeText(${JSON.stringify(resultJson)})">Copia</button>
+          </div>
+        `;
+      } catch(err) {
+        setBadge(node, 'error', 'errore');
+        const isCors = err.message.includes('Failed to fetch') || err.message.includes('NetworkError') || err.message.includes('CORS');
+        output.classList.add('visible');
+        output.innerHTML = `
+          <div style="font-size:0.72rem;color:#e07070;padding:4px 2px">
+            ${isCors ? '⚠️ Notion richiede un proxy backend. Usa il nodo HTTP Request con un proxy CORS o configura una Cloudflare Function.' : escapeHtml(err.message)}
+          </div>
+        `;
+      } finally {
+        genBtn.disabled = false;
+        genBtn.classList.remove('loading');
+        genBtn.innerHTML = `<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="4,2 14,8 4,14"/></svg> Esegui operazione`;
+      }
+      return;
+    }
+
     if (type === 'prompt-chain') {
       const textareas = [...node.querySelectorAll('.node-prompt')];
       const sepBtns   = [...node.querySelectorAll('.node-ratio-row .node-ratio-btn')];
@@ -3574,7 +4312,7 @@ function initNodeInteractions(node, type) {
     } finally {
       genBtn.disabled = false;
       genBtn.classList.remove('loading');
-      const genLabelMap = { 'image-gen':'Genera immagine','video-gen':'Genera video','doc-gen':'Genera documento','table-gen':'Genera tabella','prompt-gen':'Genera prompt' };
+      const genLabelMap = { 'image-gen':'Genera immagine','video-gen':'Genera video','doc-gen':'Genera documento','table-gen':'Genera tabella','prompt-gen':'Genera prompt','trigger':'Esegui trigger','condition':'Valuta condizione','supabase-query':'Esegui query','http-request':'Invia richiesta','notion-query':'Esegui operazione' };
       genBtn.innerHTML = `<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="4,2 14,8 4,14"/></svg> ${genLabelMap[type] || 'Esegui'}`;
     }
   });

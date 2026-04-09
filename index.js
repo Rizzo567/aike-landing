@@ -76,6 +76,68 @@ app.listen(PORT, () => {
   console.log(`[index] Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
+
+// ─── Module 4: At-risk clients check every Sunday at 10:00 ─────────────────
+cron.schedule('0 10 * * 0', async () => {
+  console.log('[cron] Running at-risk client check (Sunday 10:00)');
+  try {
+    const pages = await getAtRiskClients();
+    const clients = pages.map(extractClientData);
+    if (clients.length === 0) {
+      console.log('[cron] No at-risk clients found');
+      return;
+    }
+    for (const client of clients) {
+      await sendAtRiskAlert(OPERATOR_CHAT_ID, client, client.id);
+    }
+    console.log(`[cron] At-risk client alerts sent — ${clients.length} client(s)`);
+  } catch (err) {
+    console.error('[cron] At-risk client check error:', err.message);
+  }
+}, { timezone: 'Europe/Rome' });
+
+// ─── Module 5: Overdue invoice check every day at 09:30 ─────────────────────
+cron.schedule('30 9 * * *', async () => {
+  console.log('[cron] Running overdue invoice check (09:30)');
+  try {
+    const pages = await getOverdueInvoices();
+    const entries = pages.map(extractRevenueData);
+    if (entries.length === 0) {
+      console.log('[cron] No overdue invoices found');
+      return;
+    }
+    for (const entry of entries) {
+      await sendOverdueAlert(OPERATOR_CHAT_ID, entry, entry.id);
+    }
+    console.log(`[cron] Overdue invoice alerts sent — ${entries.length} invoice(s)`);
+  } catch (err) {
+    console.error('[cron] Overdue invoice check error:', err.message);
+  }
+}, { timezone: 'Europe/Rome' });
+
+// ─── Module 5: Monthly revenue report on 1st of month at 08:00 ──────────────
+cron.schedule('0 8 1 * *', async () => {
+  console.log('[cron] Running monthly revenue report (1st of month 08:00)');
+  try {
+    const total = await getCurrentMonthRevenue();
+    const [pendingPages, paidPages, overduePages, cancelledPages] = await Promise.all([
+      getRevenueByStatus('Pending'),
+      getRevenueByStatus('Paid'),
+      getRevenueByStatus('Overdue'),
+      getRevenueByStatus('Cancelled'),
+    ]);
+    const breakdown = {
+      pending: pendingPages.length,
+      paid: paidPages.length,
+      overdue: overduePages.length,
+      cancelled: cancelledPages.length,
+    };
+    await sendMonthlyRevenueReport(OPERATOR_CHAT_ID, total, breakdown);
+    console.log(`[cron] Monthly revenue report sent — total: €${total}`);
+  } catch (err) {
+    console.error('[cron] Monthly revenue report error:', err.message);
+  }
+}, { timezone: 'Europe/Rome' });
 // ─── Graceful shutdown ───────────────────────────────────────────────────────
 process.once('SIGINT', () => {
   console.log('[index] SIGINT received — shutting down gracefully');

@@ -1,0 +1,328 @@
+{
+  "name": "OperationsOS - Client Health Score Update",
+  "flow": [
+    {
+      "id": 1,
+      "module": "builtin:BasicTrigger",
+      "version": 1,
+      "parameters": {
+        "type": "schedule",
+        "interval": 10080,
+        "unit": "minutes",
+        "time": "10:00",
+        "timezone": "Europe/Rome",
+        "weekday": "7",
+        "startDate": null
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": { "x": 0, "y": 0 },
+        "notes": "Scheduled trigger — runs every Sunday at 10:00 Rome time. In Make.com UI: set to 'Every week' → 'Sunday' at 10:00. The 'interval: 10080' represents 7 days in minutes (7 × 24 × 60)."
+      }
+    },
+    {
+      "id": 2,
+      "module": "notion:ActionQueryDatabase",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "NOTION_CONNECTION_ID"
+      },
+      "mapper": {
+        "databaseId": "NOTION_CLIENTS_DB_ID",
+        "filterType": "simple",
+        "filter": {
+          "property": "Status",
+          "select": {
+            "equals": "Active"
+          }
+        },
+        "sorts": [],
+        "pageSize": 100
+      },
+      "metadata": {
+        "designer": { "x": 300, "y": 0 },
+        "notes": "IMPORTANT: Replace NOTION_CLIENTS_DB_ID with your Clients database ID from Notion. Replace NOTION_CONNECTION_ID with your Notion integration connection. Queries all clients with Status = 'Active'. Max 100 per run — if you have more, add pagination logic.",
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Notion (connect your integration)"
+            }
+          }
+        },
+        "expect": [
+          { "name": "results", "type": "array", "label": "Client Records" },
+          { "name": "results[].id", "type": "text", "label": "Client Page ID" },
+          { "name": "results[].properties.Name.title[0].plain_text", "type": "text", "label": "Client Name" },
+          { "name": "results[].properties.Email.email", "type": "email", "label": "Client Email" }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "parameters": {
+        "moduleId": 2
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": { "x": 600, "y": 0 },
+        "notes": "Iterator over the array of Active clients returned by Notion. Each client goes through the next steps individually."
+      }
+    },
+    {
+      "id": 4,
+      "module": "notion:ActionQueryDatabase",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "NOTION_CONNECTION_ID"
+      },
+      "mapper": {
+        "databaseId": "NOTION_LEADS_DB_ID",
+        "filterType": "simple",
+        "filter": {
+          "property": "Email",
+          "email": {
+            "equals": "{{3.Email.email}}"
+          }
+        },
+        "sorts": [],
+        "pageSize": 100
+      },
+      "metadata": {
+        "designer": { "x": 900, "y": 0 },
+        "notes": "IMPORTANT: Replace NOTION_LEADS_DB_ID with your Leads database ID. Queries Leads DB filtered by the current client's email. Used to count how many leads this client has generated.",
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Notion (same connection)"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "module": "notion:ActionQueryDatabase",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "NOTION_CONNECTION_ID"
+      },
+      "mapper": {
+        "databaseId": "NOTION_TASKS_DB_ID",
+        "filterType": "and",
+        "filter": {
+          "and": [
+            {
+              "property": "ClientEmail",
+              "rich_text": {
+                "contains": "{{3.Email.email}}"
+              }
+            }
+          ]
+        },
+        "sorts": [],
+        "pageSize": 100
+      },
+      "metadata": {
+        "designer": { "x": 1200, "y": 0 },
+        "notes": "IMPORTANT: Replace NOTION_TASKS_DB_ID with your Tasks database ID. Queries Tasks DB filtered by the current client's email. Adjust the 'ClientEmail' property name to match your actual Tasks database schema.",
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Notion (same connection)"
+            }
+          }
+        },
+        "expect": [
+          { "name": "results", "type": "array", "label": "Task Records" },
+          { "name": "results[].properties.Status.select.name", "type": "text", "label": "Task Status" }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "module": "builtin:SetVariables",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "variables": [
+          {
+            "name": "client_id",
+            "value": "{{3.id}}"
+          },
+          {
+            "name": "client_email",
+            "value": "{{3.Email.email}}"
+          },
+          {
+            "name": "client_name",
+            "value": "{{3.Name.title[0].plain_text}}"
+          },
+          {
+            "name": "leads_count",
+            "value": "{{length(4.results)}}"
+          },
+          {
+            "name": "tasks_total",
+            "value": "{{length(5.results)}}"
+          },
+          {
+            "name": "tasks_completed",
+            "value": "{{length(filter(5.results; item.properties.Status.select.name = 'Done'))}}"
+          },
+          {
+            "name": "tasks_pending",
+            "value": "{{length(filter(5.results; item.properties.Status.select.name != 'Done'))}}"
+          }
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 1500, "y": 0 },
+        "notes": "Aggregates counts from both Notion queries. Adjust 'Done' to match the exact Status value used in your Tasks database for completed tasks (e.g. 'Completed', 'Closed', 'Done')."
+      }
+    },
+    {
+      "id": 7,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": true,
+        "useNewZLibDecompress": true
+      },
+      "mapper": {
+        "url": "WEBHOOK_URL/webhook/client-event",
+        "serializeUrl": false,
+        "method": "POST",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "name": "x-webhook-secret",
+            "value": "WEBHOOK_SECRET"
+          }
+        ],
+        "queryString": [],
+        "bodyType": "raw",
+        "parseResponse": true,
+        "authUser": "",
+        "authPass": "",
+        "timeout": 30,
+        "shareCookies": false,
+        "ca": "",
+        "rejectUnauthorized": true,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "gzip": true,
+        "useMtls": false,
+        "contentType": "application/json",
+        "data": "{\n  \"action\": \"health_score_update\",\n  \"clientId\": \"{{6.client_id}}\",\n  \"clientEmail\": \"{{6.client_email}}\",\n  \"clientName\": \"{{6.client_name}}\",\n  \"leadsCount\": {{6.leads_count}},\n  \"tasksCompleted\": {{6.tasks_completed}},\n  \"tasksPending\": {{6.tasks_pending}}\n}"
+      },
+      "metadata": {
+        "designer": { "x": 1800, "y": 0 },
+        "notes": "IMPORTANT: Replace WEBHOOK_URL with your actual bot URL. Replace WEBHOOK_SECRET with the value in your .env file. Sends health score data for each Active client.",
+        "expect": [
+          { "name": "status", "type": "number", "label": "HTTP Status Code" },
+          { "name": "data", "type": "collection", "label": "Response Body" }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "module": "notion:ActionCreatePage",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "NOTION_CONNECTION_ID"
+      },
+      "mapper": {
+        "databaseId": "NOTION_CLIENTS_DB_ID",
+        "properties": {
+          "Error Log": {
+            "rich_text": [
+              {
+                "text": {
+                  "content": "Health score update failed for client {{6.client_email}} at {{now}} — HTTP status: {{7.statusCode}}"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "filter": {
+        "name": "HTTP call failed — log error to Notion",
+        "conditions": [
+          [
+            {
+              "a": "{{7.statusCode}}",
+              "b": "200",
+              "o": "number:notequal"
+            }
+          ]
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 1800, "y": 200 },
+        "notes": "ERROR HANDLER: Only runs if HTTP call returned non-200 status. Logs the error to Notion. Requires an 'Error Log' text property on the Clients database — add this property if missing. Alternatively, you can delete this module and rely on Make.com execution history for error tracking.",
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Notion (same connection)"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": true,
+      "slots": null,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "eu1.make.com"
+  },
+  "_SETUP_NOTES": {
+    "description": "OperationsOS Client Health Score Update — Make.com Blueprint (Module 4)",
+    "version": "1.0.0",
+    "created": "2026-04-09",
+    "placeholders_to_replace": {
+      "NOTION_CONNECTION_ID": "Created when you connect Notion integration in Make.com UI",
+      "NOTION_CLIENTS_DB_ID": "Your Clients Notion database ID (32 characters)",
+      "NOTION_LEADS_DB_ID": "Your Leads Notion database ID (32 characters)",
+      "NOTION_TASKS_DB_ID": "Your Tasks Notion database ID (32 characters)",
+      "WEBHOOK_URL": "Your bot's public URL — e.g. https://abc123.ngrok.io OR your Railway deployment URL",
+      "WEBHOOK_SECRET": "Must match the WEBHOOK_SECRET value in your operations-os/.env file"
+    },
+    "trigger": "Schedule — every Sunday at 10:00 Europe/Rome",
+    "webhook_endpoint": "POST /webhook/client-event",
+    "webhook_payload": {
+      "action": "health_score_update (static)",
+      "clientId": "Notion page ID of the client",
+      "clientEmail": "Client email from Notion",
+      "clientName": "Client name from Notion",
+      "leadsCount": "Number of lead records linked to this client",
+      "tasksCompleted": "Number of tasks with Status = 'Done'",
+      "tasksPending": "Number of tasks with Status != 'Done'"
+    },
+    "schema_dependencies": {
+      "Clients DB": "Must have: Name (title), Email (email), Status (select with 'Active' option), optionally Error Log (rich_text)",
+      "Leads DB": "Must have: Email (email)",
+      "Tasks DB": "Must have: ClientEmail (rich_text), Status (select with 'Done' option)"
+    },
+    "error_handling": "If HTTP POST fails, an error entry is created in the Notion Clients database (requires 'Error Log' property). Processing continues for other clients."
+  }
+}

@@ -1,0 +1,338 @@
+{
+  "name": "OperationsOS - Invoice Alert + Revenue Tracking",
+  "flow": [
+    {
+      "id": 1,
+      "module": "gmail:TriggerNewEmail",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "GMAIL_CONNECTION_ID"
+      },
+      "mapper": {
+        "label": "Watch Emails — Invoice & Revenue Monitor",
+        "folder": "INBOX",
+        "maxResults": 5,
+        "criteria": "ALL",
+        "markSeen": false,
+        "fetchAttachments": false,
+        "includeSpamTrash": false
+      },
+      "metadata": {
+        "designer": { "x": 0, "y": 0 },
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Gmail (connect your account)",
+              "data": { "scopes": ["https://mail.google.com/"] }
+            }
+          }
+        },
+        "expect": [
+          { "name": "id", "type": "text", "label": "Email ID" },
+          { "name": "snippet", "type": "text", "label": "Snippet" },
+          { "name": "payload.subject", "type": "text", "label": "Subject" },
+          { "name": "payload.from", "type": "email", "label": "From" },
+          { "name": "payload.senderName", "type": "text", "label": "Sender Name" },
+          { "name": "payload.text", "type": "text", "label": "Body (plain text)" },
+          { "name": "payload.date", "type": "date", "label": "Date" }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "parameters": {},
+      "filter": {
+        "name": "Is this an invoice/payment email?",
+        "conditions": [
+          [
+            {
+              "a": "{{1.payload.subject}}",
+              "b": "fattura|invoice|pagamento|payment|ricevuta|receipt|bonifico|transfer|saldo|balance",
+              "o": "text:match"
+            }
+          ],
+          [
+            {
+              "a": "{{1.payload.text}}",
+              "b": "fattura|invoice|pagamento|payment|ricevuta|receipt|bonifico|transfer|saldo|balance",
+              "o": "text:match"
+            }
+          ]
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 300, "y": 0 },
+        "notes": "Filter uses OR logic. Matches Italian (fattura/pagamento/bonifico) and English (invoice/payment/receipt) keywords. The filter catches both outgoing invoices and incoming payment confirmations."
+      }
+    },
+    {
+      "id": 3,
+      "module": "builtin:SetVariables",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "variables": [
+          {
+            "name": "sender_name",
+            "value": "{{if(1.payload.senderName; 1.payload.senderName; split(1.payload.from; '@')[0])}}"
+          },
+          {
+            "name": "sender_email",
+            "value": "{{1.payload.from}}"
+          },
+          {
+            "name": "email_subject",
+            "value": "{{1.payload.subject}}"
+          },
+          {
+            "name": "body_preview",
+            "value": "{{substring(1.payload.text; 0; 400)}}"
+          }
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 600, "y": 0 },
+        "notes": "Extracts basic email metadata. The amount detection is handled by the regex module in the next step."
+      }
+    },
+    {
+      "id": 4,
+      "module": "regexp:match",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "pattern": "(?:€\\s*([\\d]{1,6}[.,][\\d]{2})|([\\d]{1,6}[.,][\\d]{2})\\s*€|([\\d]{1,6}[.,][\\d]{2})\\s*EUR)",
+        "global": false,
+        "multiline": false,
+        "sensitive": false,
+        "str": "{{1.payload.subject}} {{1.payload.text}}"
+      },
+      "metadata": {
+        "designer": { "x": 900, "y": 0 },
+        "notes": "Attempts to extract a monetary amount from the email subject + body combined. Pattern matches: '€1.234,56', '1.234,56€', '1234.56 EUR'. Returns null if no amount found — the webhook payload will include null for detectedAmount in that case. This is non-blocking."
+      }
+    },
+    {
+      "id": 5,
+      "module": "builtin:SetVariables",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "variables": [
+          {
+            "name": "detected_amount",
+            "value": "{{if(4[1]; 4[1]; if(4[2]; 4[2]; if(4[3]; 4[3]; null)))}}"
+          }
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 1200, "y": 0 },
+        "notes": "Picks the first non-null capture group from the regex match (groups 1, 2, or 3 correspond to the three amount formats). If none matched, sets detected_amount to null."
+      }
+    },
+    {
+      "id": 6,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": true,
+        "useNewZLibDecompress": true
+      },
+      "mapper": {
+        "url": "WEBHOOK_URL/webhook/revenue-event",
+        "serializeUrl": false,
+        "method": "POST",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "name": "x-webhook-secret",
+            "value": "WEBHOOK_SECRET"
+          }
+        ],
+        "queryString": [],
+        "bodyType": "raw",
+        "parseResponse": true,
+        "authUser": "",
+        "authPass": "",
+        "timeout": 30,
+        "shareCookies": false,
+        "ca": "",
+        "rejectUnauthorized": true,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "gzip": true,
+        "useMtls": false,
+        "contentType": "application/json",
+        "data": "{\n  \"senderName\": \"{{3.sender_name}}\",\n  \"senderEmail\": \"{{3.sender_email}}\",\n  \"subject\": \"{{3.email_subject}}\",\n  \"body_preview\": \"{{3.body_preview}}\",\n  \"detectedAmount\": \"{{5.detected_amount}}\",\n  \"source\": \"Gmail\"\n}"
+      },
+      "metadata": {
+        "designer": { "x": 1500, "y": 0 },
+        "notes": "IMPORTANT: Replace WEBHOOK_URL with your actual bot URL. Replace WEBHOOK_SECRET with the value in your .env file. detectedAmount will be null if no amount was found in the email — the Node.js server should handle this gracefully.",
+        "expect": [
+          { "name": "status", "type": "number", "label": "HTTP Status Code" },
+          { "name": "data", "type": "collection", "label": "Response Body" }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "module": "gmail:ActionMarkAsRead",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "GMAIL_CONNECTION_ID"
+      },
+      "mapper": {
+        "emailId": "{{1.id}}"
+      },
+      "filter": {
+        "name": "HTTP call succeeded — mark as read",
+        "conditions": [
+          [
+            {
+              "a": "{{6.statusCode}}",
+              "b": "200",
+              "o": "number:equal"
+            }
+          ]
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 1800, "y": 0 },
+        "notes": "Mark as read only after successful HTTP call.",
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Gmail (same connection as trigger)"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": 8,
+      "module": "gmail:ActionAddLabel",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "GMAIL_CONNECTION_ID"
+      },
+      "mapper": {
+        "emailId": "{{1.id}}",
+        "labelIds": ["OperationsOS-Revenue"]
+      },
+      "filter": {
+        "name": "HTTP call succeeded — apply Revenue label",
+        "conditions": [
+          [
+            {
+              "a": "{{6.statusCode}}",
+              "b": "200",
+              "o": "number:equal"
+            }
+          ]
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 2100, "y": 0 },
+        "notes": "Apply 'OperationsOS-Revenue' label to all successfully processed revenue emails. Create this label in Gmail first: Settings → Labels → Create new label → type 'OperationsOS-Revenue'.",
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Gmail (same connection as trigger)"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": 9,
+      "module": "gmail:ActionAddLabel",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "GMAIL_CONNECTION_ID"
+      },
+      "mapper": {
+        "emailId": "{{1.id}}",
+        "labelIds": ["OperationsOS-Error"]
+      },
+      "filter": {
+        "name": "HTTP call failed — apply Error label",
+        "conditions": [
+          [
+            {
+              "a": "{{6.statusCode}}",
+              "b": "200",
+              "o": "number:notequal"
+            }
+          ]
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 1800, "y": 200 },
+        "notes": "ERROR HANDLER: Only runs if HTTP call returned non-200 status. Applies 'OperationsOS-Error' label so the email can be reviewed and re-processed manually. Create this label in Gmail if it doesn't exist.",
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Gmail (same connection as trigger)"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "slots": null,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "eu1.make.com"
+  },
+  "_SETUP_NOTES": {
+    "description": "OperationsOS Invoice Alert + Revenue Tracking — Make.com Blueprint (Module 5)",
+    "version": "1.0.0",
+    "created": "2026-04-09",
+    "placeholders_to_replace": {
+      "GMAIL_CONNECTION_ID": "Created automatically when you connect Gmail in Make.com UI",
+      "WEBHOOK_URL": "Your bot's public URL — e.g. https://abc123.ngrok.io OR your Railway deployment URL",
+      "WEBHOOK_SECRET": "Must match the WEBHOOK_SECRET value in your operations-os/.env file"
+    },
+    "trigger": "Gmail — watches INBOX every 15 minutes",
+    "filter_keywords": "fattura, invoice, pagamento, payment, ricevuta, receipt, bonifico, transfer, saldo, balance",
+    "webhook_endpoint": "POST /webhook/revenue-event",
+    "webhook_payload": {
+      "senderName": "Sender display name (or email prefix as fallback)",
+      "senderEmail": "Sender email address",
+      "subject": "Email subject line",
+      "body_preview": "First 400 characters of email body",
+      "detectedAmount": "Extracted monetary amount (string like '1.234,56') or null if not found",
+      "source": "Gmail (static)"
+    },
+    "regex_patterns": {
+      "pattern_1": "€1.234,56 or €1234.56 (euro symbol before amount)",
+      "pattern_2": "1.234,56€ or 1234.56€ (euro symbol after amount)",
+      "pattern_3": "1.234,56 EUR or 1234.56 EUR (EUR suffix)"
+    },
+    "gmail_labels_required": [
+      "OperationsOS-Revenue — create in Gmail before activating (for successfully processed emails)",
+      "OperationsOS-Error — create in Gmail before activating (for failed processing)"
+    ],
+    "error_handling": "On HTTP failure: 'OperationsOS-Error' label applied. On success: email marked as read + 'OperationsOS-Revenue' label applied."
+  }
+}

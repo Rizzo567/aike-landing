@@ -1,0 +1,187 @@
+{
+  "name": "OperationsOS - Task Deadline Reminder",
+  "flow": [
+    {
+      "id": 1,
+      "module": "builtin:BasicTrigger",
+      "version": 1,
+      "parameters": {
+        "type": "schedule",
+        "interval": 1440,
+        "unit": "minutes",
+        "time": "07:30",
+        "timezone": "Europe/Rome",
+        "startDate": null
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": { "x": 0, "y": 0 },
+        "notes": "Scheduled trigger — runs daily at 07:30 Rome time. In Make.com UI: set to 'Every day' and configure start time to 07:30. The 'interval: 1440' represents 24 hours in minutes."
+      }
+    },
+    {
+      "id": 2,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": true,
+        "useNewZLibDecompress": true
+      },
+      "mapper": {
+        "url": "WEBHOOK_URL/webhook/task-update",
+        "serializeUrl": false,
+        "method": "POST",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "name": "x-webhook-secret",
+            "value": "WEBHOOK_SECRET"
+          }
+        ],
+        "queryString": [],
+        "bodyType": "raw",
+        "parseResponse": true,
+        "authUser": "",
+        "authPass": "",
+        "timeout": 30,
+        "shareCookies": false,
+        "ca": "",
+        "rejectUnauthorized": true,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "gzip": true,
+        "useMtls": false,
+        "contentType": "application/json",
+        "data": "{\n  \"action\": \"daily_brief_trigger\",\n  \"triggeredAt\": \"{{now}}\",\n  \"source\": \"Make.com Schedule\"\n}"
+      },
+      "metadata": {
+        "designer": { "x": 300, "y": 0 },
+        "notes": "IMPORTANT: Replace WEBHOOK_URL with your actual bot URL. Replace WEBHOOK_SECRET with the value in your .env file.\n\nThis sends a daily trigger to the Node.js server. The server is responsible for querying Notion for tasks due today and sending the Telegram brief. The payload includes the trigger timestamp so the server can log when the brief was requested.",
+        "expect": [
+          { "name": "status", "type": "number", "label": "HTTP Status Code" },
+          { "name": "data", "type": "collection", "label": "Response Body" },
+          { "name": "data.tasksFound", "type": "number", "label": "Tasks Found" },
+          { "name": "data.message", "type": "text", "label": "Server Message" }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "module": "builtin:SetVariables",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "variables": [
+          {
+            "name": "daily_brief_status",
+            "value": "{{2.statusCode}}"
+          },
+          {
+            "name": "tasks_found",
+            "value": "{{2.data.tasksFound}}"
+          },
+          {
+            "name": "trigger_timestamp",
+            "value": "{{now}}"
+          }
+        ]
+      },
+      "filter": {
+        "name": "HTTP call succeeded",
+        "conditions": [
+          [
+            {
+              "a": "{{2.statusCode}}",
+              "b": "200",
+              "o": "number:equal"
+            }
+          ]
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 600, "y": 0 },
+        "notes": "Captures response variables for logging/debugging. Only runs if HTTP call succeeded (200 OK)."
+      }
+    },
+    {
+      "id": 4,
+      "module": "builtin:SetVariables",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "variables": [
+          {
+            "name": "error_status",
+            "value": "{{2.statusCode}}"
+          },
+          {
+            "name": "error_timestamp",
+            "value": "{{now}}"
+          },
+          {
+            "name": "error_detail",
+            "value": "Daily brief trigger failed with status {{2.statusCode}} at {{now}}"
+          }
+        ]
+      },
+      "filter": {
+        "name": "HTTP call failed — log error and continue",
+        "conditions": [
+          [
+            {
+              "a": "{{2.statusCode}}",
+              "b": "200",
+              "o": "number:notequal"
+            }
+          ]
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 600, "y": 200 },
+        "notes": "ERROR HANDLER: Runs if HTTP call returned non-200. Logs the error details as variables. The scenario continues without blocking — this is intentional for a daily briefing that should never halt the workflow. Check Make.com execution history to review errors."
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": true,
+      "slots": null,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "eu1.make.com"
+  },
+  "_SETUP_NOTES": {
+    "description": "OperationsOS Task Deadline Reminder — Make.com Blueprint (Module 3)",
+    "version": "1.0.0",
+    "created": "2026-04-09",
+    "placeholders_to_replace": {
+      "WEBHOOK_URL": "Your bot's public URL — e.g. https://abc123.ngrok.io OR your Railway deployment URL",
+      "WEBHOOK_SECRET": "Must match the WEBHOOK_SECRET value in your operations-os/.env file"
+    },
+    "trigger": "Schedule — daily at 07:30 Europe/Rome",
+    "webhook_endpoint": "POST /webhook/task-update",
+    "webhook_payload": {
+      "action": "daily_brief_trigger (static)",
+      "triggeredAt": "ISO timestamp from Make.com {{now}}",
+      "source": "Make.com Schedule (static)"
+    },
+    "server_responsibility": "The Node.js server handles the Notion query for tasks due today and sends the Telegram daily brief. Make.com only triggers the process.",
+    "error_handling": "Errors are logged as variables in Make.com execution history. The scenario does NOT block or halt on error — the daily brief is non-critical.",
+    "scheduling_note": "In Make.com UI, after import, set the trigger to 'Every day' with start time 07:30. This cannot be fully configured in the JSON — you must set it in the scenario editor."
+  }
+}

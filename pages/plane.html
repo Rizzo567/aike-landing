@@ -2246,264 +2246,6 @@ function setZoom(newScale, cx, cy) {
   }
   scale = newScale;
   applyTransform();
-
-/* ════════════════════════════════════════════
-   CANVAS PERSISTENCE — save / load
-════════════════════════════════════════════ */
-
-var CANVAS_LS_KEY  = 'plane-canvas-v1';
-var CANVAS_VERSION = 1;
-
-// -- Toast helper
-var _toastTimer = null;
-function showToast(msg, durationMs) {
-  durationMs = durationMs || 2000;
-  var el = document.getElementById('plane-toast');
-  if (!el) return;
-  el.textContent = msg;
-  el.classList.add('visible');
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(function() { el.classList.remove('visible'); }, durationMs);
-}
-
-// -- Supabase getter (safe)
-function getSupabaseClient() {
-  return window.supabase || window._supabase || null;
-}
-
-async function getAuthSession() {
-  var sb = getSupabaseClient();
-  if (!sb) return null;
-  try {
-    var res = await sb.auth.getSession();
-    return (res.data && res.data.session) ? res.data.session : null;
-  } catch (e) { return null; }
-}
-
-// -- Serialization
-function serializeCanvas() {
-  var nodes = [];
-  document.querySelectorAll('#plane-canvas-inner .plane-node').forEach(function(node) {
-    var id      = node.dataset.nodeId;
-    var type    = node.dataset.type;
-    var labelEl = node.querySelector('.plane-node-label');
-    var label   = labelEl ? labelEl.textContent : '';
-    var x       = parseFloat(node.style.left) || 0;
-    var y       = parseFloat(node.style.top)  || 0;
-
-    var fieldValues = [];
-    node.querySelectorAll('textarea.node-prompt, select.node-select, input.node-number').forEach(function(el) {
-      fieldValues.push(el.value);
-    });
-
-    var outputData = null;
-    var outText = node.querySelector('.node-output-text');
-    var outImg  = node.querySelector('.node-output-img');
-    var outEl   = node.querySelector('.node-output');
-    if (outEl && outEl.classList.contains('visible')) {
-      if (outText)     outputData = { type: 'text',  content: outText.textContent };
-      else if (outImg) outputData = { type: 'image', url: outImg.src };
-    }
-
-    nodes.push({ id: id, type: type, label: label, x: x, y: y, fieldValues: fieldValues, outputData: outputData });
-  });
-
-  var conns = [];
-  connections.forEach(function(conn) {
-    conns.push({ fromId: conn.fromId, toId: conn.toId });
-  });
-
-  return {
-    version:     CANVAS_VERSION,
-    nodes:       nodes,
-    connections: conns,
-    savedAt:     new Date().toISOString(),
-  };
-}
-
-// -- Deserialization
-function deserializeCanvas(data) {
-  if (!data || data.version !== CANVAS_VERSION) return false;
-
-  // 1. Remove existing plane-node elements
-  document.querySelectorAll('#plane-canvas-inner .plane-node').forEach(function(n) { n.remove(); });
-
-  // 2. Clear all connections
-  connections.forEach(function(conn) { conn.pathEl.remove(); });
-  connections.clear();
-
-  // 3. Recreate nodes
-  (data.nodes || []).forEach(function(savedNode) {
-    addNodeToCanvas(savedNode.type, savedNode.label);
-    var allNodes = document.querySelectorAll('#plane-canvas-inner .plane-node');
-    var node = allNodes[allNodes.length - 1];
-    if (!node) return;
-
-    // Override auto-generated id with the saved one
-    node.dataset.nodeId = savedNode.id;
-
-    // Restore position
-    node.style.left = savedNode.x + 'px';
-    node.style.top  = savedNode.y + 'px';
-
-    // Restore config field values
-    var fields = node.querySelectorAll('textarea.node-prompt, select.node-select, input.node-number');
-    (savedNode.fieldValues || []).forEach(function(val, idx) {
-      if (fields[idx]) fields[idx].value = val;
-    });
-
-    // Restore output
-    if (savedNode.outputData) {
-      var outEl = node.querySelector('.node-output');
-      if (outEl) {
-        outEl.classList.add('visible');
-        if (savedNode.outputData.type === 'image') {
-          var url = savedNode.outputData.url;
-          outEl.innerHTML =
-            '<img class="node-output-img" src="' + url + '" alt="Generated"/>' +
-            '<div class="node-output-actions">' +
-              '<button class="node-output-action" onclick="window.open(\'' + url + '\',\'_blank\')">Apri</button>' +
-              '<button class="node-output-action" onclick="downloadImg(\'' + url + '\')">Scarica</button>' +
-            '</div>';
-        } else if (savedNode.outputData.type === 'text') {
-          var escaped = escapeHtml(savedNode.outputData.content);
-          var rawStr  = JSON.stringify(savedNode.outputData.content);
-          outEl.innerHTML =
-            '<div class="node-output-text">' + escaped + '</div>' +
-            '<div class="node-output-actions">' +
-              '<button class="node-output-action" onclick="navigator.clipboard.writeText(' + rawStr + ')">Copia</button>' +
-            '</div>';
-        }
-      }
-    }
-  });
-
-  // 4. Recreate connections after nodes are in DOM
-  requestAnimationFrame(function() {
-    (data.connections || []).forEach(function(conn) {
-      createConnection(conn.fromId, conn.toId);
-    });
-  });
-
-  return true;
-}
-
-// -- Save
-async function saveCanvas() {
-  var data = serializeCanvas();
-
-  // Always persist to localStorage as fallback
-  try {
-    localStorage.setItem(CANVAS_LS_KEY, JSON.stringify(data));
-  } catch (e) {
-    console.warn('[Plane] localStorage save failed:', e);
-  }
-
-  // Optionally save to Supabase if authenticated
-  var session = await getAuthSession();
-  if (session) {
-    var sb     = getSupabaseClient();
-    var userId = session.user && session.user.id;
-    if (sb && userId) {
-      try {
-        await sb.from('plane_canvases').upsert(
-          { user_id: userId, canvas_data: data, updated_at: new Date().toISOString() },
-          { onConflict: 'user_id' }
-        );
-      } catch (e) {
-        console.warn('[Plane] Supabase save failed (localStorage fallback):', e);
-      }
-    }
-  }
-
-  showToast('Salvato ✓');
-}
-
-// -- Load
-async function loadCanvas(silent) {
-  var data = null;
-
-  // Try Supabase first if authenticated
-  var session = await getAuthSession();
-  if (session) {
-    var sb     = getSupabaseClient();
-    var userId = session.user && session.user.id;
-    if (sb && userId) {
-      try {
-        var result = await sb
-          .from('plane_canvases')
-          .select('canvas_data')
-          .eq('user_id', userId)
-          .single();
-        if (!result.error && result.data && result.data.canvas_data) {
-          data = result.data.canvas_data;
-        }
-      } catch (e) {
-        console.warn('[Plane] Supabase load failed, trying localStorage:', e);
-      }
-    }
-  }
-
-  // Fall back to localStorage
-  if (!data) {
-    try {
-      var raw = localStorage.getItem(CANVAS_LS_KEY);
-      if (raw) data = JSON.parse(raw);
-    } catch (e) {
-      console.warn('[Plane] localStorage load failed:', e);
-    }
-  }
-
-  if (!data) {
-    if (!silent) showToast('Nessun canvas salvato trovato');
-    return false;
-  }
-
-  var ok = deserializeCanvas(data);
-  if (ok && !silent) showToast('Canvas caricato ✓');
-  return ok;
-}
-
-// -- Button wiring
-document.getElementById('planeSaveBtn').addEventListener('click', function() {
-  saveCanvas();
-});
-
-document.getElementById('planeLoadBtn').addEventListener('click', function() {
-  var existingNodes = document.querySelectorAll('#plane-canvas-inner .plane-node');
-  if (existingNodes.length > 0) {
-    if (!confirm('Caricare il canvas salvato? I nodi attuali verranno sostituiti.')) return;
-  }
-  loadCanvas(false);
-});
-
-// Ctrl+S / Cmd+S shortcut to save
-document.addEventListener('keydown', function(ev) {
-  if ((ev.ctrlKey || ev.metaKey) && ev.key === 's') {
-    ev.preventDefault();
-    saveCanvas();
-  }
-});
-
-// -- Auto-save every 60 seconds
-setInterval(function() {
-  if (document.querySelectorAll('#plane-canvas-inner .plane-node').length > 0) {
-    saveCanvas();
-  }
-}, 60000);
-
-// -- Save on page unload
-window.addEventListener('beforeunload', function() {
-  var data = serializeCanvas();
-  try { localStorage.setItem(CANVAS_LS_KEY, JSON.stringify(data)); } catch (e) {}
-});
-
-// -- Load on startup (silent — no toast if nothing saved yet)
-(async function initLoad() {
-  await new Promise(function(r) { setTimeout(r, 0); });
-  loadCanvas(true);
-})();
-
   document.getElementById('planeZoomLabel').textContent = Math.round(scale * 100) + '%';
 }
 
@@ -4519,6 +4261,264 @@ window.addEventListener('mouseup', (e) => {
 translateX = 60;
 translateY = 60;
 applyTransform();
+
+
+/* ════════════════════════════════════════════
+   CANVAS PERSISTENCE — save / load
+════════════════════════════════════════════ */
+
+var CANVAS_LS_KEY  = 'plane-canvas-v1';
+var CANVAS_VERSION = 1;
+
+// -- Toast helper
+var _toastTimer = null;
+function showToast(msg, durationMs) {
+  durationMs = durationMs || 2000;
+  var el = document.getElementById('plane-toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('visible');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() { el.classList.remove('visible'); }, durationMs);
+}
+
+// -- Supabase getter (safe)
+function getSupabaseClient() {
+  return window.supabase || window._supabase || null;
+}
+
+async function getAuthSession() {
+  var sb = getSupabaseClient();
+  if (!sb) return null;
+  try {
+    var res = await sb.auth.getSession();
+    return (res.data && res.data.session) ? res.data.session : null;
+  } catch (e) { return null; }
+}
+
+// -- Serialization
+function serializeCanvas() {
+  var nodes = [];
+  document.querySelectorAll('#plane-canvas-inner .plane-node').forEach(function(node) {
+    var id      = node.dataset.nodeId;
+    var type    = node.dataset.type;
+    var labelEl = node.querySelector('.plane-node-label');
+    var label   = labelEl ? labelEl.textContent : '';
+    var x       = parseFloat(node.style.left) || 0;
+    var y       = parseFloat(node.style.top)  || 0;
+
+    var fieldValues = [];
+    node.querySelectorAll('textarea.node-prompt, select.node-select, input.node-number').forEach(function(el) {
+      fieldValues.push(el.value);
+    });
+
+    var outputData = null;
+    var outText = node.querySelector('.node-output-text');
+    var outImg  = node.querySelector('.node-output-img');
+    var outEl   = node.querySelector('.node-output');
+    if (outEl && outEl.classList.contains('visible')) {
+      if (outText)     outputData = { type: 'text',  content: outText.textContent };
+      else if (outImg) outputData = { type: 'image', url: outImg.src };
+    }
+
+    nodes.push({ id: id, type: type, label: label, x: x, y: y, fieldValues: fieldValues, outputData: outputData });
+  });
+
+  var conns = [];
+  connections.forEach(function(conn) {
+    conns.push({ fromId: conn.fromId, toId: conn.toId });
+  });
+
+  return {
+    version:     CANVAS_VERSION,
+    nodes:       nodes,
+    connections: conns,
+    savedAt:     new Date().toISOString(),
+  };
+}
+
+// -- Deserialization
+function deserializeCanvas(data) {
+  if (!data || data.version !== CANVAS_VERSION) return false;
+
+  // 1. Remove existing plane-node elements
+  document.querySelectorAll('#plane-canvas-inner .plane-node').forEach(function(n) { n.remove(); });
+
+  // 2. Clear all connections
+  connections.forEach(function(conn) { conn.pathEl.remove(); });
+  connections.clear();
+
+  // 3. Recreate nodes
+  (data.nodes || []).forEach(function(savedNode) {
+    addNodeToCanvas(savedNode.type, savedNode.label);
+    var allNodes = document.querySelectorAll('#plane-canvas-inner .plane-node');
+    var node = allNodes[allNodes.length - 1];
+    if (!node) return;
+
+    // Override auto-generated id with the saved one
+    node.dataset.nodeId = savedNode.id;
+
+    // Restore position
+    node.style.left = savedNode.x + 'px';
+    node.style.top  = savedNode.y + 'px';
+
+    // Restore config field values
+    var fields = node.querySelectorAll('textarea.node-prompt, select.node-select, input.node-number');
+    (savedNode.fieldValues || []).forEach(function(val, idx) {
+      if (fields[idx]) fields[idx].value = val;
+    });
+
+    // Restore output
+    if (savedNode.outputData) {
+      var outEl = node.querySelector('.node-output');
+      if (outEl) {
+        outEl.classList.add('visible');
+        if (savedNode.outputData.type === 'image') {
+          var url = savedNode.outputData.url;
+          outEl.innerHTML =
+            '<img class="node-output-img" src="' + url + '" alt="Generated"/>' +
+            '<div class="node-output-actions">' +
+              '<button class="node-output-action" onclick="window.open(\'' + url + '\',\'_blank\')">Apri</button>' +
+              '<button class="node-output-action" onclick="downloadImg(\'' + url + '\')">Scarica</button>' +
+            '</div>';
+        } else if (savedNode.outputData.type === 'text') {
+          var escaped = escapeHtml(savedNode.outputData.content);
+          var rawStr  = JSON.stringify(savedNode.outputData.content);
+          outEl.innerHTML =
+            '<div class="node-output-text">' + escaped + '</div>' +
+            '<div class="node-output-actions">' +
+              '<button class="node-output-action" onclick="navigator.clipboard.writeText(' + rawStr + ')">Copia</button>' +
+            '</div>';
+        }
+      }
+    }
+  });
+
+  // 4. Recreate connections after nodes are in DOM
+  requestAnimationFrame(function() {
+    (data.connections || []).forEach(function(conn) {
+      createConnection(conn.fromId, conn.toId);
+    });
+  });
+
+  return true;
+}
+
+// -- Save
+async function saveCanvas() {
+  var data = serializeCanvas();
+
+  // Always persist to localStorage as fallback
+  try {
+    localStorage.setItem(CANVAS_LS_KEY, JSON.stringify(data));
+  } catch (e) {
+    console.warn('[Plane] localStorage save failed:', e);
+  }
+
+  // Optionally save to Supabase if authenticated
+  var session = await getAuthSession();
+  if (session) {
+    var sb     = getSupabaseClient();
+    var userId = session.user && session.user.id;
+    if (sb && userId) {
+      try {
+        await sb.from('plane_canvases').upsert(
+          { user_id: userId, canvas_data: data, updated_at: new Date().toISOString() },
+          { onConflict: 'user_id' }
+        );
+      } catch (e) {
+        console.warn('[Plane] Supabase save failed (localStorage fallback):', e);
+      }
+    }
+  }
+
+  showToast('Salvato ✓');
+}
+
+// -- Load
+async function loadCanvas(silent) {
+  var data = null;
+
+  // Try Supabase first if authenticated
+  var session = await getAuthSession();
+  if (session) {
+    var sb     = getSupabaseClient();
+    var userId = session.user && session.user.id;
+    if (sb && userId) {
+      try {
+        var result = await sb
+          .from('plane_canvases')
+          .select('canvas_data')
+          .eq('user_id', userId)
+          .single();
+        if (!result.error && result.data && result.data.canvas_data) {
+          data = result.data.canvas_data;
+        }
+      } catch (e) {
+        console.warn('[Plane] Supabase load failed, trying localStorage:', e);
+      }
+    }
+  }
+
+  // Fall back to localStorage
+  if (!data) {
+    try {
+      var raw = localStorage.getItem(CANVAS_LS_KEY);
+      if (raw) data = JSON.parse(raw);
+    } catch (e) {
+      console.warn('[Plane] localStorage load failed:', e);
+    }
+  }
+
+  if (!data) {
+    if (!silent) showToast('Nessun canvas salvato trovato');
+    return false;
+  }
+
+  var ok = deserializeCanvas(data);
+  if (ok && !silent) showToast('Canvas caricato ✓');
+  return ok;
+}
+
+// -- Button wiring
+document.getElementById('planeSaveBtn').addEventListener('click', function() {
+  saveCanvas();
+});
+
+document.getElementById('planeLoadBtn').addEventListener('click', function() {
+  var existingNodes = document.querySelectorAll('#plane-canvas-inner .plane-node');
+  if (existingNodes.length > 0) {
+    if (!confirm('Caricare il canvas salvato? I nodi attuali verranno sostituiti.')) return;
+  }
+  loadCanvas(false);
+});
+
+// Ctrl+S / Cmd+S shortcut to save
+document.addEventListener('keydown', function(ev) {
+  if ((ev.ctrlKey || ev.metaKey) && ev.key === 's') {
+    ev.preventDefault();
+    saveCanvas();
+  }
+});
+
+// -- Auto-save every 60 seconds
+setInterval(function() {
+  if (document.querySelectorAll('#plane-canvas-inner .plane-node').length > 0) {
+    saveCanvas();
+  }
+}, 60000);
+
+// -- Save on page unload
+window.addEventListener('beforeunload', function() {
+  var data = serializeCanvas();
+  try { localStorage.setItem(CANVAS_LS_KEY, JSON.stringify(data)); } catch (e) {}
+});
+
+// -- Load on startup (silent — no toast if nothing saved yet)
+(async function initLoad() {
+  await new Promise(function(r) { setTimeout(r, 0); });
+  loadCanvas(true);
+})();
 
 /* ════════════════════════════════════════════
    OWL INTEGRATION

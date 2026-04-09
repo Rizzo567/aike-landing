@@ -1,0 +1,250 @@
+{
+  "name": "OperationsOS - Quote Capture",
+  "flow": [
+    {
+      "id": 1,
+      "module": "gmail:TriggerNewEmail",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "GMAIL_CONNECTION_ID"
+      },
+      "mapper": {
+        "label": "Watch Emails — Quote Monitor",
+        "folder": "INBOX",
+        "maxResults": 5,
+        "criteria": "ALL",
+        "markSeen": false,
+        "fetchAttachments": false,
+        "includeSpamTrash": false
+      },
+      "metadata": {
+        "designer": { "x": 0, "y": 0 },
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Gmail (connect your account)",
+              "data": { "scopes": ["https://mail.google.com/"] }
+            }
+          }
+        },
+        "expect": [
+          { "name": "id", "type": "text", "label": "Email ID" },
+          { "name": "snippet", "type": "text", "label": "Snippet" },
+          { "name": "payload.subject", "type": "text", "label": "Subject" },
+          { "name": "payload.from", "type": "email", "label": "From" },
+          { "name": "payload.senderName", "type": "text", "label": "Sender Name" },
+          { "name": "payload.text", "type": "text", "label": "Body (plain text)" },
+          { "name": "payload.date", "type": "date", "label": "Date" }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "parameters": {},
+      "filter": {
+        "name": "Is this a quote request? (keyword filter)",
+        "conditions": [
+          [
+            {
+              "a": "{{1.payload.subject}}",
+              "b": "preventivo|quote|proposta|offerta|stima|quotation|proposal",
+              "o": "text:match"
+            }
+          ],
+          [
+            {
+              "a": "{{1.payload.text}}",
+              "b": "preventivo|quote|proposta|offerta|stima|quotation|proposal",
+              "o": "text:match"
+            }
+          ]
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 300, "y": 0 },
+        "notes": "Filter uses OR logic between subject and body. Matches Italian (preventivo/proposta) and English (quote/proposal) keywords. Spam emails typically won't contain these in context."
+      }
+    },
+    {
+      "id": 3,
+      "module": "builtin:SetVariables",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "variables": [
+          {
+            "name": "client_name",
+            "value": "{{if(1.payload.senderName; 1.payload.senderName; split(1.payload.from; '@')[0])}}"
+          },
+          {
+            "name": "client_email",
+            "value": "{{1.payload.from}}"
+          },
+          {
+            "name": "quote_subject",
+            "value": "{{1.payload.subject}}"
+          },
+          {
+            "name": "body_preview",
+            "value": "{{substring(1.payload.text; 0; 300)}}"
+          },
+          {
+            "name": "quote_source",
+            "value": "Email"
+          }
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 600, "y": 0 },
+        "notes": "Extracts sender name (falls back to email prefix if no display name), email, subject, and first 300 chars of body."
+      }
+    },
+    {
+      "id": 4,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": true,
+        "useNewZLibDecompress": true
+      },
+      "mapper": {
+        "url": "WEBHOOK_URL/webhook/new-quote",
+        "serializeUrl": false,
+        "method": "POST",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "name": "x-webhook-secret",
+            "value": "WEBHOOK_SECRET"
+          }
+        ],
+        "queryString": [],
+        "bodyType": "raw",
+        "parseResponse": true,
+        "authUser": "",
+        "authPass": "",
+        "timeout": 30,
+        "shareCookies": false,
+        "ca": "",
+        "rejectUnauthorized": true,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "gzip": true,
+        "useMtls": false,
+        "contentType": "application/json",
+        "data": "{\n  \"clientName\": \"{{3.client_name}}\",\n  \"email\": \"{{3.client_email}}\",\n  \"subject\": \"{{3.quote_subject}}\",\n  \"body_preview\": \"{{3.body_preview}}\",\n  \"source\": \"{{3.quote_source}}\"\n}"
+      },
+      "metadata": {
+        "designer": { "x": 900, "y": 0 },
+        "notes": "IMPORTANT: Replace WEBHOOK_URL with your actual bot URL. Replace WEBHOOK_SECRET with the value in your .env file. Expected response: 200 OK with JSON body.",
+        "expect": [
+          { "name": "status", "type": "number", "label": "HTTP Status Code" },
+          { "name": "data", "type": "collection", "label": "Response Body" }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "module": "gmail:ActionMarkAsRead",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "GMAIL_CONNECTION_ID"
+      },
+      "mapper": {
+        "emailId": "{{1.id}}"
+      },
+      "metadata": {
+        "designer": { "x": 1200, "y": 0 },
+        "notes": "Mark as read after successful processing.",
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Gmail (same connection as trigger)"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "module": "gmail:ActionAddLabel",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "GMAIL_CONNECTION_ID"
+      },
+      "mapper": {
+        "emailId": "{{1.id}}",
+        "labelIds": ["OperationsOS-Error"]
+      },
+      "filter": {
+        "name": "HTTP call failed",
+        "conditions": [
+          [
+            {
+              "a": "{{4.statusCode}}",
+              "b": "200",
+              "o": "number:notequal"
+            }
+          ]
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 900, "y": 200 },
+        "notes": "ERROR HANDLER: Only runs if HTTP call returned non-200 status. Applies 'OperationsOS-Error' label so the email can be reviewed and re-processed manually.",
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Gmail (same connection as trigger)"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "slots": null,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "eu1.make.com"
+  },
+  "_SETUP_NOTES": {
+    "description": "OperationsOS Quote Capture — Make.com Blueprint (Module 2)",
+    "version": "1.0.0",
+    "created": "2026-04-09",
+    "placeholders_to_replace": {
+      "GMAIL_CONNECTION_ID": "Created automatically when you connect Gmail in Make.com UI",
+      "WEBHOOK_URL": "Your bot's public URL — e.g. https://abc123.ngrok.io OR your Railway deployment URL",
+      "WEBHOOK_SECRET": "Must match the WEBHOOK_SECRET value in your operations-os/.env file"
+    },
+    "trigger": "Gmail — watches INBOX every 15 minutes",
+    "filter_keywords": "preventivo, quote, proposta, offerta, stima, quotation, proposal",
+    "error_handling": "If HTTP POST fails (non-200 response), Gmail label 'OperationsOS-Error' is applied to the email for manual review",
+    "webhook_endpoint": "POST /webhook/new-quote",
+    "webhook_payload": {
+      "clientName": "Sender display name (or email prefix as fallback)",
+      "email": "Sender email address",
+      "subject": "Email subject line",
+      "body_preview": "First 300 characters of email body",
+      "source": "Email (static)"
+    }
+  }
+}

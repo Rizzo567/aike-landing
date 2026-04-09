@@ -491,3 +491,301 @@ Gmail: mark email as read
 
 **Bot entry point:** `operations-os/src/` (webhook, notion, telegram modules)
 **Env template:** `operations-os/.env.example`
+
+---
+
+---
+
+# MODULI AGGIUNTIVI — Blueprint Make.com (Moduli 2–5)
+
+I seguenti scenari estendono OperationsOS con quattro automazioni aggiuntive. I file JSON si trovano in `setup/blueprints/`.
+
+---
+
+## MODULO 2 — Quote Capture (`modulo-2-quotes.json`)
+
+**Scopo:** Intercetta le email di richiesta preventivo e le invia al webhook Node.js per essere salvate in Notion e notificate su Telegram.
+
+```
+Gmail (nuova email con "preventivo/quote/proposta")
+      ↓  [filter keywords]
+Set Variables (nome cliente, email, subject, body preview)
+      ↓
+POST /webhook/new-quote
+      ↓
+Gmail: Mark as Read
+      ↓ [se errore HTTP]
+Gmail: Apply Label "OperationsOS-Error"
+```
+
+### Come importarlo in Make.com
+
+1. Vai su [make.com](https://make.com) e accedi al tuo account
+2. Nel menu a sinistra clicca **Scenarios**
+3. Clicca **Create a new scenario** (pulsante blu in alto a destra)
+4. Nel canvas vuoto, clicca il menu **tre punti** (in alto a destra dell'editor) → **Import Blueprint**
+5. Carica il file: `C:\Users\manue\Desktop\AIKE FULL\operations-os\setup\blueprints\modulo-2-quotes.json`
+6. Lo scenario si carica con 6 moduli. Clicca **Save** temporaneamente.
+
+### Variabili da configurare
+
+Clicca su ogni modulo indicato e sostituisci i segnaposto:
+
+| Modulo | Campo | Valore da inserire |
+|---|---|---|
+| Modulo 1 — Gmail Trigger | Connection | Connetti il tuo account Gmail |
+| Modulo 4 — HTTP Request | URL | `https://TUA-URL/webhook/new-quote` |
+| Modulo 4 — HTTP Request | Header `x-webhook-secret` | Il valore di `WEBHOOK_SECRET` nel tuo `.env` |
+| Modulo 5 — Mark as Read | Connection | Stesso account Gmail del Modulo 1 |
+| Modulo 6 — Add Label | Connection | Stesso account Gmail del Modulo 1 |
+
+**Nota:** Prima di attivare, crea la label `OperationsOS-Error` in Gmail:
+- Vai in Gmail → Impostazioni → Etichette → Crea nuova etichetta → digita `OperationsOS-Error`
+
+### Come testarlo
+
+1. Assicurati che il bot Node.js sia in esecuzione (`npm start`)
+2. Invia una email al tuo Gmail con oggetto: `Richiesta preventivo consulenza`
+3. In Make.com, apri lo scenario e clicca **Run once**
+4. Atteso: il modulo HTTP mostra status 200, l'email viene marcata come letta
+5. Verifica in Notion: deve apparire un nuovo record nel database Quote/Leads
+6. Verifica in Telegram: devi ricevere una notifica con i dettagli
+
+### Troubleshooting comune
+
+**Il filtro blocca tutte le email**
+- Controlla che l'oggetto contenga una delle parole chiave: `preventivo`, `quote`, `proposta`, `offerta`
+- Per testare senza filtro: clicca l'icona filtro tra modulo 1 e 2 → disabilita temporaneamente
+
+**HTTP restituisce 401 Unauthorized**
+- Il `WEBHOOK_SECRET` in Make.com non corrisponde a quello nel file `.env`
+- Copia il valore esatto da `.env` → incollalo nel campo header di Make.com (nessuno spazio extra)
+
+**HTTP restituisce connection error**
+- Il bot non è in esecuzione, oppure l'URL è sbagliato
+- Testa manualmente aprendo `https://TUA-URL/webhook/new-quote` nel browser (atteso: errore 401 o 405, NON un errore di connessione)
+
+---
+
+## MODULO 3 — Task Deadline Reminder (`modulo-3-tasks.json`)
+
+**Scopo:** Ogni giorno alle 07:30 invia un trigger al webhook Node.js, che interroga Notion per i task in scadenza oggi e manda un briefing su Telegram.
+
+```
+Schedule (ogni giorno alle 07:30)
+      ↓
+POST /webhook/task-update { action: "daily_brief_trigger" }
+      ↓ [se 200 OK]
+Set Variables (status, tasks found, timestamp)
+      ↓ [se errore]
+Set Variables (log errore — continua senza bloccare)
+```
+
+### Come importarlo in Make.com
+
+1. Segui gli stessi passi 1–4 del Modulo 2
+2. Carica: `C:\Users\manue\Desktop\AIKE FULL\operations-os\setup\blueprints\modulo-3-tasks.json`
+3. Lo scenario si carica con 4 moduli.
+
+### Variabili da configurare
+
+| Modulo | Campo | Valore da inserire |
+|---|---|---|
+| Modulo 1 — Schedule | Orario trigger | Verifica che sia impostato su 07:30 |
+| Modulo 2 — HTTP Request | URL | `https://TUA-URL/webhook/task-update` |
+| Modulo 2 — HTTP Request | Header `x-webhook-secret` | Il valore di `WEBHOOK_SECRET` nel tuo `.env` |
+
+**Configurazione scheduling (passaggio obbligatorio in UI):**
+- Dopo l'import, clicca l'icona **Scheduling** (orologio in basso a sinistra del canvas)
+- Imposta: **Every day** → orario di avvio **07:30**
+- Fuso orario: **Europe/Rome** (o il tuo fuso)
+- Clicca **OK** poi **Save**
+
+### Come testarlo
+
+1. Assicurati che il bot Node.js sia in esecuzione
+2. In Make.com, clicca **Run once** per forzare un'esecuzione immediata
+3. Atteso: il modulo HTTP mostra status 200
+4. Verifica in Telegram: devi ricevere il briefing giornaliero con i task in scadenza
+5. Se non arriva nulla su Telegram ma l'HTTP è 200: nessun task in scadenza oggi (comportamento corretto)
+
+### Troubleshooting comune
+
+**Lo scenario non parte all'orario previsto**
+- Verifica che lo scenario sia attivo (toggle ON)
+- Controlla il fuso orario nelle impostazioni di Make.com (icona profilo → Settings → Timezone)
+- Forza un test con **Run once** per escludere problemi di scheduling
+
+**HTTP restituisce 404 Not Found**
+- L'endpoint `/webhook/task-update` non è implementato nel tuo server Node.js
+- Verifica che `src/webhook.js` gestisca la route `POST /webhook/task-update`
+
+**Nessuna notifica Telegram ma il webhook risponde 200**
+- Il server ha ricevuto il trigger ma non ha trovato task in scadenza oggi — comportamento normale
+- Verifica le date di scadenza nel database Notion Tasks
+
+---
+
+## MODULO 4 — Client Health Score Update (`modulo-4-clients.json`)
+
+**Scopo:** Ogni domenica alle 10:00 interroga Notion per tutti i clienti attivi, conta le lead e i task associati, e invia un aggiornamento del punteggio salute per ciascun cliente.
+
+```
+Schedule (ogni domenica alle 10:00)
+      ↓
+Notion: Query Clients (Status = "Active")
+      ↓ [per ogni cliente]
+Notion: Query Leads (filtra per email cliente)
+Notion: Query Tasks (filtra per email cliente)
+Set Variables (conteggi)
+      ↓
+POST /webhook/client-event { action: "health_score_update", ... }
+      ↓ [se errore]
+Notion: Log errore nel database Clients
+```
+
+### Come importarlo in Make.com
+
+1. Segui gli stessi passi 1–4 del Modulo 2
+2. Carica: `C:\Users\manue\Desktop\AIKE FULL\operations-os\setup\blueprints\modulo-4-clients.json`
+3. Lo scenario si carica con 8 moduli.
+
+### Variabili da configurare
+
+| Modulo | Campo | Valore da inserire |
+|---|---|---|
+| Modulo 1 — Schedule | Orario trigger | Verifica domenica alle 10:00 |
+| Modulo 2 — Notion Query Clients | Connection | Connetti la tua integrazione Notion |
+| Modulo 2 — Notion Query Clients | Database ID | ID del tuo database Clients in Notion |
+| Modulo 4 — Notion Query Leads | Connection | Stessa integrazione Notion |
+| Modulo 4 — Notion Query Leads | Database ID | ID del tuo database Leads in Notion |
+| Modulo 5 — Notion Query Tasks | Connection | Stessa integrazione Notion |
+| Modulo 5 — Notion Query Tasks | Database ID | ID del tuo database Tasks in Notion |
+| Modulo 7 — HTTP Request | URL | `https://TUA-URL/webhook/client-event` |
+| Modulo 7 — HTTP Request | Header `x-webhook-secret` | Il valore di `WEBHOOK_SECRET` nel tuo `.env` |
+| Modulo 8 — Notion Error Log | Connection | Stessa integrazione Notion |
+| Modulo 8 — Notion Error Log | Database ID | ID del database Clients |
+
+**Struttura richiesta nei database Notion:**
+- **Clients DB**: campi `Name` (title), `Email` (email), `Status` (select con opzione `Active`), opzionale `Error Log` (rich_text)
+- **Leads DB**: campo `Email` (email)
+- **Tasks DB**: campi `ClientEmail` (rich_text), `Status` (select con opzione `Done`)
+
+> Adatta i nomi dei campi al tuo schema reale modificando i mapper in Make.com dopo l'import.
+
+### Come testarlo
+
+1. Aggiungi almeno un cliente con Status `Active` nel tuo database Notion Clients
+2. Assicurati che il bot Node.js sia in esecuzione
+3. In Make.com, clicca **Run once**
+4. Atteso: per ogni cliente attivo, il modulo HTTP mostra status 200
+5. Verifica in Telegram: devi ricevere un report con i punteggi salute dei clienti
+
+### Troubleshooting comune
+
+**Notion restituisce 404**
+- L'integrazione Notion non è collegata al database
+- Vai al database in Notion → tre puntini → Connessioni → Aggiungi la tua integrazione OperationsOS
+
+**Il modulo Iterator non elabora nessun cliente**
+- Nessun cliente con Status `Active` nel database
+- Oppure il nome del campo Status non corrisponde: verifica che si chiami esattamente `Status` con opzione `Active`
+
+**Errore "property not found" nel modulo 6 (Set Variables)**
+- I nomi dei campi nel mapper non corrispondono allo schema del tuo database
+- Clicca il modulo in Make.com → verifica la mappatura → aggiorna i riferimenti ai campi
+
+---
+
+## MODULO 5 — Invoice Alert + Revenue Tracking (`modulo-5-revenue.json`)
+
+**Scopo:** Intercetta le email di fatture e pagamenti, estrae automaticamente l'importo con regex, e invia i dati al webhook per il tracciamento delle entrate in Notion.
+
+```
+Gmail (nuova email con "fattura/invoice/pagamento")
+      ↓  [filter keywords]
+Set Variables (sender, subject, body preview)
+      ↓
+Regexp: estrai importo (€1.234,56 / 1234.56€ / EUR)
+Set Variables (detected_amount o null)
+      ↓
+POST /webhook/revenue-event
+      ↓ [se 200 OK]
+Gmail: Mark as Read + Apply Label "OperationsOS-Revenue"
+      ↓ [se errore HTTP]
+Gmail: Apply Label "OperationsOS-Error"
+```
+
+### Come importarlo in Make.com
+
+1. Segui gli stessi passi 1–4 del Modulo 2
+2. Carica: `C:\Users\manue\Desktop\AIKE FULL\operations-os\setup\blueprints\modulo-5-revenue.json`
+3. Lo scenario si carica con 9 moduli.
+
+### Variabili da configurare
+
+| Modulo | Campo | Valore da inserire |
+|---|---|---|
+| Modulo 1 — Gmail Trigger | Connection | Connetti il tuo account Gmail |
+| Modulo 6 — HTTP Request | URL | `https://TUA-URL/webhook/revenue-event` |
+| Modulo 6 — HTTP Request | Header `x-webhook-secret` | Il valore di `WEBHOOK_SECRET` nel tuo `.env` |
+| Modulo 7 — Mark as Read | Connection | Stesso account Gmail del Modulo 1 |
+| Modulo 8 — Add Label Revenue | Connection | Stesso account Gmail |
+| Modulo 9 — Add Label Error | Connection | Stesso account Gmail |
+
+**Label Gmail da creare prima dell'attivazione:**
+- `OperationsOS-Revenue` — per le email elaborate con successo
+- `OperationsOS-Error` — per le email con errori di processing
+
+Come creare le label:
+1. Apri Gmail → Impostazioni (ingranaggio) → Visualizza tutte le impostazioni
+2. Scheda **Etichette** → Crea nuova etichetta → digita il nome → Crea
+
+### Come testarlo
+
+1. Assicurati che il bot Node.js sia in esecuzione
+2. Invia una email al tuo Gmail con oggetto: `Fattura #001 — €1.500,00`
+3. Nel corpo: `In allegato la fattura per i servizi di gennaio. Totale: €1.500,00`
+4. In Make.com, clicca **Run once**
+5. Atteso:
+   - Modulo 4 (Regexp): trova il valore `1.500,00`
+   - Modulo 6 (HTTP): status 200
+   - Email marcata come letta con label `OperationsOS-Revenue`
+6. Verifica in Notion: deve apparire un record con `detectedAmount: "1.500,00"`
+7. Verifica in Telegram: devi ricevere una notifica con l'importo rilevato
+
+### Troubleshooting comune
+
+**`detectedAmount` è sempre null**
+- Il formato dell'importo nell'email non corrisponde al pattern regex
+- Pattern supportati: `€1.234,56`, `1234,56€`, `1234.56 EUR`
+- Formato NON supportato: `1500` (senza decimali) — aggiungi un formato decimale all'importo nel test
+- Puoi testare il regex su [regex101.com](https://regex101.com) con il pattern incluso nel blueprint
+
+**Label Gmail non applicata**
+- La label non esiste in Gmail — devi crearla manualmente (vedi istruzioni sopra)
+- Oppure il nome label nel blueprint non corrisponde esattamente — è case-sensitive
+
+**L'email viene processata due volte**
+- Il modulo Mark as Read (7) non viene eseguito perché il filtro "HTTP call succeeded" fallisce
+- Verifica che il modulo HTTP (6) restituisca effettivamente 200
+- Controlla i log del server Node.js per eventuali errori interni
+
+---
+
+## Riepilogo Blueprint Moduli 2–5
+
+| File | Scenario | Trigger | Endpoint |
+|---|---|---|---|
+| `modulo-2-quotes.json` | Quote Capture | Gmail ogni 15 min | `POST /webhook/new-quote` |
+| `modulo-3-tasks.json` | Task Deadline Reminder | Schedule 07:30 | `POST /webhook/task-update` |
+| `modulo-4-clients.json` | Client Health Score | Schedule domenica 10:00 | `POST /webhook/client-event` |
+| `modulo-5-revenue.json` | Invoice Alert | Gmail ogni 15 min | `POST /webhook/revenue-event` |
+
+Tutti i blueprint usano l'header `x-webhook-secret` per autenticarsi con il server Node.js.
+
+**Operazioni Make.com stimate per scenario:**
+- Modulo 2: ~6 ops per email processata
+- Modulo 3: ~4 ops per esecuzione giornaliera
+- Modulo 4: ~(3 + n×4) ops dove n = numero clienti attivi
+- Modulo 5: ~9 ops per email processata

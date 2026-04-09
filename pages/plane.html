@@ -972,6 +972,90 @@
   }
 
   /* ─────────────────────────────────────────
+     EDGE SYSTEM — Ports & Wires
+  ───────────────────────────────────────── */
+  .plane-node { overflow: visible; }
+  .node-port {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--h-surface-alt);
+    border: 2px solid rgba(255,250,240,0.18);
+    top: 18px;
+    cursor: crosshair;
+    z-index: 30;
+    transition: border-color 0.12s, background 0.12s, transform 0.12s;
+    pointer-events: all;
+  }
+  .node-port:hover, .node-port.active {
+    border-color: var(--h-purple);
+    background: var(--h-purple-dim);
+    transform: scale(1.35);
+  }
+  .node-port-in  { left: -7px; }
+  .node-port-out { right: -7px; }
+  .node-port-in::before {
+    content: '';
+    position: absolute;
+    inset: -5px;
+  }
+  .node-port-out::before {
+    content: '';
+    position: absolute;
+    inset: -5px;
+  }
+  #plane-edges-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 4000px; height: 3000px;
+    pointer-events: none;
+    z-index: 2;
+    overflow: visible;
+  }
+  .plane-edge {
+    fill: none;
+    stroke: rgba(255,250,240,0.18);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    pointer-events: stroke;
+    cursor: pointer;
+    transition: stroke 0.15s;
+  }
+  .plane-edge:hover, .plane-edge.selected {
+    stroke: var(--h-purple);
+    stroke-width: 2.2;
+  }
+  .plane-edge-temp {
+    fill: none;
+    stroke: var(--h-purple);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-dasharray: 5 4;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .node-port.connected {
+    background: var(--h-purple-dim);
+    border-color: var(--h-purple);
+  }
+  .node-connected-badge {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--h-purple);
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 40;
+  }
+
+  /* ─────────────────────────────────────────
      ACTION SEARCH BAR
   ───────────────────────────────────────── */
   #plane-search-wrap {
@@ -1342,6 +1426,18 @@
 }
 .node-number:focus { border-color: rgba(255,250,240,0.14); }
 
+/* Single-line node input */
+.node-input {
+  width: 100%; background: var(--h-bg);
+  border: 1px solid var(--h-border); border-radius: var(--h-r-sm);
+  padding: 6px 9px; font-size: 0.76rem;
+  font-family: var(--h-font); color: var(--h-text-sec);
+  height: 32px; resize: none; overflow: hidden;
+  outline: none; transition: border-color 0.15s;
+}
+.node-input::placeholder { color: var(--h-text-dim); }
+.node-input:focus { border-color: rgba(255,250,240,0.14); }
+
 /* Color swatches (project map) */
 .node-color-row { display: flex; gap: 5px; }
 .node-color-swatch {
@@ -1493,6 +1589,232 @@
 
 /* Scrollable config — altezza massima ridotta */
 .plane-node-config { max-height: 360px; }
+
+/* ─────────────────────────────────────────
+   PERSISTENCE — Save/Load buttons & Toast
+───────────────────────────────────────── */
+.plane-persist-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--h-surface);
+  border: 1px solid var(--h-border);
+  border-radius: var(--h-r-sm);
+  color: var(--h-text-muted);
+  transition: color 0.15s ease, background 0.15s ease;
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  font-family: var(--h-font);
+}
+.plane-persist-btn:hover {
+  color: var(--h-text);
+  background: var(--h-surface-alt);
+}
+
+#plane-toast {
+  position: fixed;
+  bottom: 72px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  z-index: 999;
+  background: var(--h-surface);
+  border: 1px solid var(--h-border);
+  border-radius: var(--h-r-md);
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  color: var(--h-text);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+  white-space: nowrap;
+}
+#plane-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ─────────────────────────────────────────
+   OWL SIDE PANEL
+───────────────────────────────────────── */
+#owl-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 320px;
+  background: var(--h-sidebar);
+  border-left: 1px solid var(--h-border);
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  pointer-events: none;
+}
+#owl-panel.owl-open {
+  transform: translateX(0);
+  pointer-events: all;
+}
+#owl-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 14px 12px;
+  border-bottom: 1px solid var(--h-border);
+  flex-shrink: 0;
+}
+.owl-panel-header-text { flex: 1; }
+#owl-panel-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--h-text);
+  display: block;
+}
+#owl-panel-subtitle {
+  font-size: 0.72rem;
+  color: var(--h-text-muted);
+  display: block;
+  margin-top: 1px;
+}
+#owl-panel-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--h-r-sm);
+  color: var(--h-text-dim);
+  transition: background 0.12s, color 0.12s;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+#owl-panel-close:hover {
+  background: var(--h-surface);
+  color: var(--h-text-sec);
+}
+#owl-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,250,240,0.08) transparent;
+}
+#owl-messages::-webkit-scrollbar { width: 3px; }
+#owl-messages::-webkit-scrollbar-thumb { background: rgba(255,250,240,0.08); border-radius: 99px; }
+.owl-msg {
+  max-width: 85%;
+  padding: 8px 11px;
+  border-radius: var(--h-r-md);
+  font-size: 0.8rem;
+  line-height: 1.55;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+.owl-msg-user {
+  align-self: flex-end;
+  background: var(--h-purple);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.owl-msg-owl {
+  align-self: flex-start;
+  background: var(--h-surface);
+  border: 1px solid var(--h-border);
+  color: var(--h-text-sec);
+  border-bottom-left-radius: 4px;
+}
+.owl-typing {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  background: var(--h-surface);
+  border: 1px solid var(--h-border);
+  border-radius: var(--h-r-md);
+  border-bottom-left-radius: 4px;
+}
+.owl-typing-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--h-text-muted);
+  animation: owlDotPulse 1.2s ease-in-out infinite;
+}
+.owl-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.owl-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes owlDotPulse {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.85); }
+  40%            { opacity: 1;   transform: scale(1); }
+}
+#owl-input-area {
+  border-top: 1px solid var(--h-border);
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+#owl-textarea {
+  flex: 1;
+  background: var(--h-surface);
+  border: 1px solid var(--h-border);
+  border-radius: var(--h-r-md);
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  font-family: var(--h-font);
+  color: var(--h-text);
+  resize: none;
+  line-height: 1.5;
+  min-height: 36px;
+  max-height: 100px;
+  overflow-y: auto;
+  outline: none;
+  transition: border-color 0.15s;
+  scrollbar-width: thin;
+}
+#owl-textarea::placeholder { color: var(--h-text-dim); }
+#owl-textarea:focus { border-color: rgba(255,250,240,0.18); }
+#owl-send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--h-purple);
+  color: #fff;
+  border-radius: var(--h-r-sm);
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+#owl-send-btn:hover { background: var(--h-purple-dark); }
+#owl-send-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+/* Node Owl button */
+.node-owl-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  color: var(--h-text-dim);
+  transition: background 120ms ease, color 120ms ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.node-owl-btn:hover {
+  background: var(--h-purple-dim);
+  color: var(--h-purple);
+}
   </style>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -1537,6 +1859,7 @@
   ══════════════════════════════════════ -->
   <div id="plane-canvas-viewport">
     <div id="plane-canvas-inner">
+      <svg id="plane-edges-svg" xmlns="http://www.w3.org/2000/svg"></svg>
       <!-- Blocks inserted here by JS -->
     </div>
   </div>
@@ -1610,12 +1933,31 @@
         <line x1="8" y1="12" x2="8" y2="14" stroke="currentColor" stroke-width="1.3"/>
       </svg>
     </button>
+    <!-- Save button -->
+    <button class="plane-persist-btn" id="planeSaveBtn" title="Salva canvas (Ctrl+S)">
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M13 13H3a1 1 0 01-1-1V4l3-3h7a1 1 0 011 1v10a1 1 0 01-1 1z"/>
+        <path d="M5 1v4h6V1"/>
+        <rect x="4" y="9" width="8" height="4" rx="0.5"/>
+      </svg>
+    </button>
+    <!-- Load button -->
+    <button class="plane-persist-btn" id="planeLoadBtn" title="Carica canvas salvato">
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 4a1 1 0 011-1h3l2 2h5a1 1 0 011 1v6a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/>
+        <line x1="8" y1="7" x2="8" y2="11"/>
+        <polyline points="6,9 8,11 10,9"/>
+      </svg>
+    </button>
     <div id="plane-zoom-control">
       <button id="planeZoomOut" class="plane-zoom-btn" title="Zoom out">−</button>
       <span id="planeZoomLabel">100%</span>
       <button id="planeZoomIn" class="plane-zoom-btn" title="Zoom in">+</button>
     </div>
   </div>
+
+  <!-- Toast notification -->
+  <div id="plane-toast"></div>
 
   <!-- ══════════════════════════════════════
        THEME DROPDOWN
@@ -1773,6 +2115,32 @@
       <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="4" height="4" rx="1"/><rect x="11" y="2" width="4" height="4" rx="1"/><rect x="11" y="10" width="4" height="4" rx="1"/><line x1="5" y1="8" x2="11" y2="4"/><line x1="5" y1="8" x2="11" y2="12"/></svg>
       <span>Project Map</span>
     </div>
+
+    <div class="plane-elem-category">Automazione</div>
+
+    <div class="plane-elem-item" data-elem-type="trigger" data-elem-label="Trigger">
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><polyline points="8,5 8,8 10,9"/></svg>
+      <span>Trigger</span>
+    </div>
+    <div class="plane-elem-item" data-elem-type="condition" data-elem-label="Condition">
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h5"/><circle cx="10" cy="5" r="2"/><circle cx="10" cy="11" r="2"/><path d="M7 8l1-3h0"/><path d="M7 8l1 3h0"/></svg>
+      <span>Condition</span>
+    </div>
+
+    <div class="plane-elem-category">Dati &amp; Integrazioni</div>
+
+    <div class="plane-elem-item" data-elem-type="supabase-query" data-elem-label="Supabase Query">
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="8" cy="5" rx="6" ry="2.5"/><path d="M2 5v3c0 1.38 2.69 2.5 6 2.5s6-1.12 6-2.5V5"/><path d="M2 8v3c0 1.38 2.69 2.5 6 2.5s6-1.12 6-2.5V8"/></svg>
+      <span>Supabase Query</span>
+    </div>
+    <div class="plane-elem-item" data-elem-type="http-request" data-elem-label="HTTP Request">
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M2 8h12"/><path d="M8 2c-2 2-2 8 0 12"/><path d="M8 2c2 2 2 8 0 12"/></svg>
+      <span>HTTP Request</span>
+    </div>
+    <div class="plane-elem-item" data-elem-type="notion-query" data-elem-label="Notion">
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 5h6M5 8h4M5 11h3"/></svg>
+      <span>Notion</span>
+    </div>
   </div>
 
     </div>
@@ -1810,6 +2178,37 @@
     <div class="plane-help-row">
       <span>Sposta</span>
       <span class="plane-help-key">H</span>
+    </div>
+    <div class="plane-help-row">
+      <span>Apri Owl</span>
+      <span class="plane-help-key">⌘J</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       OWL SIDE PANEL
+  ══════════════════════════════════════ -->
+  <div id="owl-panel" role="dialog" aria-label="Owl AI">
+    <div id="owl-panel-header">
+      <div class="owl-panel-header-text">
+        <span id="owl-panel-title">Owl</span>
+        <span id="owl-panel-subtitle">Canvas AI</span>
+      </div>
+      <button id="owl-panel-close" title="Chiudi (⌘J)">
+        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <line x1="4" y1="4" x2="12" y2="12"/>
+          <line x1="12" y1="4" x2="4" y2="12"/>
+        </svg>
+      </button>
+    </div>
+    <div id="owl-messages"></div>
+    <div id="owl-input-area">
+      <textarea id="owl-textarea" placeholder="Chiedi a Owl…" rows="1"></textarea>
+      <button id="owl-send-btn" title="Invia (Enter)">
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 12V4M4 8l4-4 4 4"/>
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -1854,12 +2253,13 @@ function setZoom(newScale, cx, cy) {
 canvasViewport.addEventListener('mousedown', (e) => {
   // Only pan if clicking directly on viewport or canvas inner (not on a block/panel)
   const target = e.target;
-  if (target.closest('.plane-block') || target.closest('.plane-node') ||
+  if (target.closest('.node-port') ||
+      target.closest('.plane-block') || target.closest('.plane-node') ||
       target.closest('#plane-input-bar') ||
       target.closest('#plane-controls') || target.closest('#plane-toolstrip') ||
       target.closest('#plane-theme-dropdown') ||
       target.closest('#plane-help-tip') || target.closest('#plane-add-btn') ||
-      target.closest('#plane-elements-panel')) return;
+      target.closest('#plane-elements-panel') || target.closest('#owl-panel')) return;
 
   isPanning = true;
   panStartX = e.clientX - translateX;
@@ -2412,7 +2812,12 @@ const ELEM_ICONS = {
   'table-gen': `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="1.5"/><line x1="2" y1="6" x2="14" y2="6"/><line x1="2" y1="10" x2="14" y2="10"/><line x1="6" y1="6" x2="6" y2="14"/></svg>`,
   'prompt-gen':  `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h12M2 8h8M2 12h5"/><path d="M13 9l2 2-2 2"/></svg>`,
   'prompt-chain':`<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="3" cy="5" r="1.8"/><circle cx="3" cy="11" r="1.8"/><circle cx="13" cy="8" r="1.8"/><line x1="4.8" y1="5" x2="10" y2="7.5"/><line x1="4.8" y1="11" x2="10" y2="8.5"/></svg>`,
-  'project-map': `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="4" height="4" rx="1"/><rect x="11" y="2" width="4" height="4" rx="1"/><rect x="11" y="10" width="4" height="4" rx="1"/><line x1="5" y1="8" x2="11" y2="4"/><line x1="5" y1="8" x2="11" y2="12"/></svg>`,
+  'project-map':   `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="4" height="4" rx="1"/><rect x="11" y="2" width="4" height="4" rx="1"/><rect x="11" y="10" width="4" height="4" rx="1"/><line x1="5" y1="8" x2="11" y2="4"/><line x1="5" y1="8" x2="11" y2="12"/></svg>`,
+  'trigger':       `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><polyline points="8,5 8,8 10,9"/></svg>`,
+  'condition':     `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h5"/><circle cx="10" cy="5" r="2"/><circle cx="10" cy="11" r="2"/><path d="M7 8l1-3h0"/><path d="M7 8l1 3h0"/></svg>`,
+  'supabase-query':`<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="8" cy="5" rx="6" ry="2.5"/><path d="M2 5v3c0 1.38 2.69 2.5 6 2.5s6-1.12 6-2.5V5"/><path d="M2 8v3c0 1.38 2.69 2.5 6 2.5s6-1.12 6-2.5V8"/></svg>`,
+  'http-request':  `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M2 8h12"/><path d="M8 2c-2 2-2 8 0 12"/><path d="M8 2c2 2 2 8 0 12"/></svg>`,
+  'notion-query':  `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 5h6M5 8h4M5 11h3"/></svg>`,
 };
 
 const NODE_ACCENT = {
@@ -2422,7 +2827,12 @@ const NODE_ACCENT = {
   'table-gen':    '#c77dff',
   'prompt-gen':   '#7cc87c',
   'prompt-chain': '#52b2cf',
-  'project-map':  '#f4a261',
+  'project-map':   '#f4a261',
+  'trigger':       '#f97316',
+  'condition':     '#a855f7',
+  'supabase-query':'#3ecf8e',
+  'http-request':  '#4e9eff',
+  'notion-query':  '#ffffff',
 };
 
 const NODE_MODELS = {
@@ -2747,14 +3157,24 @@ function addNodeToCanvas(type, label) {
   const node = document.createElement('div');
   node.className  = 'plane-node';
   node.dataset.type = type;
+  node.dataset.nodeId = 'n-' + Date.now() + '-' + Math.random().toString(36).slice(2,6);
   node.style.left   = (x - 90) + 'px';  // center horizontally (half of min-width 180)
   node.style.top    = (y - 50) + 'px';
   node.style.zIndex = ++blockZCounter;
 
   node.innerHTML = `
     <div class="plane-node-header">
+      <div class="node-port node-port-in"  data-port="in"  title="Input"></div>
+      <div class="node-port node-port-out" data-port="out" title="Output"></div>
       ${iconSvg}
       <span class="plane-node-label">${escapeHtml(label)}</span>
+      <button class="node-owl-btn" title="Chiedi a Owl">
+        <svg viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="8" cy="8" r="6"/>
+          <path d="M6 6.5c0-1.1.9-2 2-2s2 .9 2 2c0 .8-.5 1.5-1.2 1.8L8 9v1"/>
+          <circle cx="8" cy="11.5" r=".4" fill="currentColor"/>
+        </svg>
+      </button>
       <button class="plane-node-close" title="Rimuovi">
         <svg viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/>
@@ -2776,7 +3196,7 @@ function addNodeToCanvas(type, label) {
   let nodeDragOffY = 0;
 
   nodeHeader.addEventListener('mousedown', (e) => {
-    if (e.target.closest('.plane-node-close')) return;
+    if (e.target.closest('.plane-node-close') || e.target.closest('.node-owl-btn')) return;
     nodeDragging = true;
     nodeDragOffX = e.clientX - node.getBoundingClientRect().left;
     nodeDragOffY = e.clientY - node.getBoundingClientRect().top;
@@ -2792,6 +3212,7 @@ function addNodeToCanvas(type, label) {
     const screenY  = e.clientY - nodeDragOffY - vRect.top;
     node.style.left = (screenX - translateX) / scale + 'px';
     node.style.top  = (screenY - translateY) / scale + 'px';
+    redrawEdgesForNode(node.dataset.nodeId);
   });
 
   window.addEventListener('mouseup', () => {
@@ -2800,10 +3221,20 @@ function addNodeToCanvas(type, label) {
 
   // Close / remove
   node.querySelector('.plane-node-close').addEventListener('click', () => {
+    removeEdgesForNode(node.dataset.nodeId);
     node.style.opacity = '0';
     node.style.transform = 'scale(0.95)';
     node.style.transition = 'opacity 0.18s ease, transform 0.18s ease';
     setTimeout(() => node.remove(), 180);
+  });
+
+  // Ask Owl button
+  node.querySelector('.node-owl-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const nodeLabel  = node.querySelector('.plane-node-label')?.textContent || '';
+    const nodeType   = node.dataset.type || '';
+    const nodeOutput = node.querySelector('.node-output-text')?.textContent || '';
+    openOwlPanel(`Nodo [${nodeLabel}] tipo ${nodeType}. ${nodeOutput ? 'Output: ' + nodeOutput.slice(0, 200) : 'Non ancora eseguito.'}`);
   });
 
   // Init node interactions after DOM is ready
@@ -3006,7 +3437,13 @@ function initNodeInteractions(node, type) {
 
     // AI generation nodes
     const promptEl  = node.querySelector('.node-prompt');
-    const promptTxt = promptEl?.value.trim() || '';
+    let promptTxt = promptEl?.value.trim() || '';
+
+    // Inject upstream output if connected
+    const upstream = getUpstreamOutput(node.dataset.nodeId);
+    if (upstream && upstream.length > 0) {
+      promptTxt = promptTxt ? `${upstream}\n\n${promptTxt}` : upstream;
+    }
 
     if (!promptTxt) {
       promptEl?.focus();
@@ -3161,12 +3598,329 @@ function downloadImg(url) {
 }
 
 /* ════════════════════════════════════════════
+   EDGE SYSTEM — Connect nodes with wires
+════════════════════════════════════════════ */
+const edgesSvg = document.getElementById('plane-edges-svg');
+
+// connections: Map<edgeId, {fromId, toId, pathEl}>
+const connections = new Map();
+let edgeCounter = 0;
+
+// Dragging state
+let dragEdge = null; // {fromNodeId, tempPath}
+
+// Get canvas-space coordinates of a port element
+function getPortCanvasPos(portEl) {
+  const pRect = portEl.getBoundingClientRect();
+  const vRect = canvasViewport.getBoundingClientRect();
+  const cx = (pRect.left + pRect.width  / 2 - vRect.left - translateX) / scale;
+  const cy = (pRect.top  + pRect.height / 2 - vRect.top  - translateY) / scale;
+  return { x: cx, y: cy };
+}
+
+// Build a smooth bezier path string between two canvas points
+function makeBezierD(x1, y1, x2, y2) {
+  const cx = (x1 + x2) / 2;
+  return `M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}`;
+}
+
+// Draw (or update) a permanent edge between two nodes
+function drawEdge(edgeId) {
+  const conn = connections.get(edgeId);
+  if (!conn) return;
+  const fromNode = document.querySelector(`[data-node-id="${conn.fromId}"]`);
+  const toNode   = document.querySelector(`[data-node-id="${conn.toId}"]`);
+  if (!fromNode || !toNode) return;
+  const outPort = fromNode.querySelector('.node-port-out');
+  const inPort  = toNode.querySelector('.node-port-in');
+  if (!outPort || !inPort) return;
+  const p1 = getPortCanvasPos(outPort);
+  const p2 = getPortCanvasPos(inPort);
+  conn.pathEl.setAttribute('d', makeBezierD(p1.x, p1.y, p2.x, p2.y));
+}
+
+// Redraw all edges connected to a given nodeId
+function redrawEdgesForNode(nodeId) {
+  connections.forEach((conn, id) => {
+    if (conn.fromId === nodeId || conn.toId === nodeId) drawEdge(id);
+  });
+}
+
+// Remove all edges connected to a node
+function removeEdgesForNode(nodeId) {
+  connections.forEach((conn, id) => {
+    if (conn.fromId === nodeId || conn.toId === nodeId) {
+      conn.pathEl.remove();
+      connections.delete(id);
+    }
+  });
+  // refresh port "connected" state for surviving nodes
+  document.querySelectorAll('.node-port').forEach(p => p.classList.remove('connected'));
+  connections.forEach(conn => {
+    const fn = document.querySelector(`[data-node-id="${conn.fromId}"]`);
+    const tn = document.querySelector(`[data-node-id="${conn.toId}"]`);
+    if (fn) fn.querySelector('.node-port-out')?.classList.add('connected');
+    if (tn) tn.querySelector('.node-port-in')?.classList.add('connected');
+  });
+}
+
+// Create a permanent connection
+function createConnection(fromNodeId, toNodeId) {
+  // Avoid duplicates
+  for (const [, c] of connections) {
+    if (c.fromId === fromNodeId && c.toId === toNodeId) return;
+  }
+  const id = 'edge-' + (++edgeCounter);
+  const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  pathEl.classList.add('plane-edge');
+  pathEl.dataset.edgeId = id;
+  // Click edge to delete it
+  pathEl.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (confirm('Rimuovere questa connessione?')) {
+      pathEl.remove();
+      connections.delete(id);
+      // Update port states
+      removeEdgesForNode('__refresh_only__');
+      // refresh manually
+      document.querySelectorAll('.node-port').forEach(p => p.classList.remove('connected'));
+      connections.forEach(conn => {
+        const fn = document.querySelector(`[data-node-id="${conn.fromId}"]`);
+        const tn = document.querySelector(`[data-node-id="${conn.toId}"]`);
+        if (fn) fn.querySelector('.node-port-out')?.classList.add('connected');
+        if (tn) tn.querySelector('.node-port-in')?.classList.add('connected');
+      });
+    }
+  });
+  edgesSvg.appendChild(pathEl);
+  connections.set(id, { fromId: fromNodeId, toId: toNodeId, pathEl });
+  drawEdge(id);
+
+  // Mark ports as connected
+  const fromNode = document.querySelector(`[data-node-id="${fromNodeId}"]`);
+  const toNode   = document.querySelector(`[data-node-id="${toNodeId}"]`);
+  if (fromNode) fromNode.querySelector('.node-port-out')?.classList.add('connected');
+  if (toNode)   toNode.querySelector('.node-port-in')?.classList.add('connected');
+}
+
+// Get output text from a node (last generated result)
+function getNodeOutput(nodeId) {
+  const node = document.querySelector(`[data-node-id="${nodeId}"]`);
+  if (!node) return null;
+  const outText = node.querySelector('.node-output-text');
+  if (outText) return outText.textContent;
+  const outImg = node.querySelector('.node-output-img');
+  if (outImg) return outImg.src;
+  return null;
+}
+
+// Get upstream output feeding into a node (first connected input)
+function getUpstreamOutput(nodeId) {
+  for (const [, conn] of connections) {
+    if (conn.toId === nodeId) {
+      return getNodeOutput(conn.fromId);
+    }
+  }
+  return null;
+}
+
+// PORT DRAG — mousedown on any port
+document.addEventListener('mousedown', (e) => {
+  const port = e.target.closest('.node-port-out');
+  if (!port) return;
+  const node = port.closest('.plane-node');
+  if (!node) return;
+  e.stopPropagation();
+  e.preventDefault();
+
+  const fromNodeId = node.dataset.nodeId;
+  port.classList.add('active');
+
+  // Create temp path
+  const tempPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  tempPath.classList.add('plane-edge-temp');
+  edgesSvg.appendChild(tempPath);
+
+  const p1 = getPortCanvasPos(port);
+  dragEdge = { fromNodeId, tempPath, startX: p1.x, startY: p1.y };
+}, true);
+
+// PORT DRAG — mousemove: update temp path
+window.addEventListener('mousemove', (e) => {
+  if (!dragEdge) return;
+  const vRect = canvasViewport.getBoundingClientRect();
+  const mx = (e.clientX - vRect.left - translateX) / scale;
+  const my = (e.clientY - vRect.top  - translateY) / scale;
+  dragEdge.tempPath.setAttribute('d', makeBezierD(dragEdge.startX, dragEdge.startY, mx, my));
+});
+
+// PORT DRAG — mouseup: finalize or cancel
+window.addEventListener('mouseup', (e) => {
+  if (!dragEdge) return;
+  dragEdge.tempPath.remove();
+
+  // Check if we dropped on an input port
+  const target = document.elementFromPoint(e.clientX, e.clientY);
+  const inPort = target?.closest('.node-port-in');
+  if (inPort) {
+    const toNode = inPort.closest('.plane-node');
+    if (toNode && toNode.dataset.nodeId !== dragEdge.fromNodeId) {
+      createConnection(dragEdge.fromNodeId, toNode.dataset.nodeId);
+    }
+  }
+
+  // Remove active state from all out ports
+  document.querySelectorAll('.node-port-out.active').forEach(p => p.classList.remove('active'));
+  dragEdge = null;
+});
+
+/* ════════════════════════════════════════════
    INITIAL STATE
 ════════════════════════════════════════════ */
 // Center canvas initially — place demo blocks in view
 translateX = 60;
 translateY = 60;
 applyTransform();
+
+/* ════════════════════════════════════════════
+   OWL INTEGRATION
+════════════════════════════════════════════ */
+const owlPanel    = document.getElementById('owl-panel');
+const owlMessages = document.getElementById('owl-messages');
+const owlTextarea = document.getElementById('owl-textarea');
+const owlSendBtn  = document.getElementById('owl-send-btn');
+const owlClose    = document.getElementById('owl-panel-close');
+
+let owlOpen = false;
+
+function getCanvasSummary() {
+  const nodes = [...document.querySelectorAll('.plane-node')];
+  const summary = nodes.map(n => {
+    const type   = n.dataset.type || 'unknown';
+    const label  = n.querySelector('.plane-node-label')?.textContent || '';
+    const output = n.querySelector('.node-output-text')?.textContent?.slice(0, 200) || null;
+    return { type, label, output };
+  });
+  const connCount = connections.size;
+  return `Canvas Plane: ${nodes.length} nodi, ${connCount} connessioni.\n` +
+    summary.map(n => `- [${n.type}] ${n.label}${n.output ? ': ' + n.output.slice(0, 100) : ''}`).join('\n');
+}
+
+async function getOwlAuthToken() {
+  try {
+    const { data: { session } } = await (window.supabase || window._supabase)?.auth.getSession() ?? { data: {} };
+    if (session?.access_token) return session.access_token;
+  } catch(e) {}
+  try {
+    const raw = Object.keys(localStorage).find(k => k.includes('supabase') && k.includes('auth'));
+    if (raw) {
+      const parsed = JSON.parse(localStorage.getItem(raw));
+      return parsed?.access_token || parsed?.currentSession?.access_token || null;
+    }
+  } catch(e) {}
+  return null;
+}
+
+function owlAddMessage(role, text) {
+  const div = document.createElement('div');
+  div.className = 'owl-msg ' + (role === 'user' ? 'owl-msg-user' : 'owl-msg-owl');
+  div.textContent = text;
+  owlMessages.appendChild(div);
+  owlMessages.scrollTop = owlMessages.scrollHeight;
+  return div;
+}
+
+function owlShowTyping() {
+  const el = document.createElement('div');
+  el.className = 'owl-typing';
+  el.innerHTML = '<div class="owl-typing-dot"></div><div class="owl-typing-dot"></div><div class="owl-typing-dot"></div>';
+  owlMessages.appendChild(el);
+  owlMessages.scrollTop = owlMessages.scrollHeight;
+  return el;
+}
+
+async function owlSend() {
+  const msg = owlTextarea.value.trim();
+  if (!msg) return;
+
+  owlTextarea.value = '';
+  owlTextarea.style.height = 'auto';
+  owlSendBtn.disabled = true;
+
+  owlAddMessage('user', msg);
+
+  const canvasSummary = getCanvasSummary();
+  const systemMsg = `Sei Owl, l'assistente AI di Aike. Stai operando all'interno di Plane, il canvas AI workspace.\n\nContesto canvas attuale:\n${canvasSummary}\n\nAiuta l'utente a costruire workflow, connettere nodi, e capire il canvas.`;
+
+  const typingEl = owlShowTyping();
+
+  try {
+    const authToken = await getOwlAuthToken();
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+      },
+      body: JSON.stringify({
+        message: msg,
+        system: systemMsg,
+        model: 'claude-sonnet-4-5'
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `Errore ${res.status}`);
+    const text = data.content || data.message || data.response || data.text || '';
+    typingEl.remove();
+    owlAddMessage('owl', text || '(nessuna risposta)');
+  } catch(err) {
+    typingEl.remove();
+    owlAddMessage('owl', 'Errore: ' + err.message);
+  } finally {
+    owlSendBtn.disabled = false;
+    owlTextarea.focus();
+  }
+}
+
+function openOwlPanel(prefill) {
+  owlOpen = true;
+  owlPanel.classList.add('owl-open');
+  if (prefill) {
+    owlTextarea.value = prefill;
+    owlTextarea.style.height = 'auto';
+    owlTextarea.style.height = Math.min(owlTextarea.scrollHeight, 100) + 'px';
+  }
+  setTimeout(() => owlTextarea.focus(), 260);
+}
+
+function closeOwlPanel() {
+  owlOpen = false;
+  owlPanel.classList.remove('owl-open');
+}
+
+owlClose.addEventListener('click', closeOwlPanel);
+
+owlSendBtn.addEventListener('click', owlSend);
+
+owlTextarea.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    owlSend();
+  }
+});
+
+owlTextarea.addEventListener('input', () => {
+  owlTextarea.style.height = 'auto';
+  owlTextarea.style.height = Math.min(owlTextarea.scrollHeight, 100) + 'px';
+});
+
+// Cmd/Ctrl+J to toggle Owl panel
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'j') {
+    e.preventDefault();
+    owlOpen ? closeOwlPanel() : openOwlPanel();
+  }
+});
 </script>
 <!-- Action Search Bar -->
 <script>

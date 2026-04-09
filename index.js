@@ -4,10 +4,17 @@
 require('dotenv').config();
 
 const express = require('express');
+const cron = require('node-cron');
 const bot = require('./src/bot');
 const { registerCommands } = require('./src/handlers/commands');
 const { registerCallbacks } = require('./src/handlers/callbacks');
 const makecomRouter = require('./src/webhook/makecom');
+const { getExpiredQuotes, extractQuoteData } = require('./src/notion/quotes');
+const { getTasksDueToday, getTasksDueTomorrow, extractTaskData } = require('./src/notion/tasks');
+const { sendExpiredQuoteAlert, sendDailyBrief, sendTaskAlert } = require('./src/telegram/alerts');
+const { collectDailyData } = require('./src/ai/collector');
+const { generateDigest } = require('./src/ai/digest');
+const { sendDigest } = require('./src/ai/sender');
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
 
@@ -16,8 +23,11 @@ const REQUIRED_ENV = [
   'TELEGRAM_BOT_TOKEN',
   'NOTION_API_KEY',
   'NOTION_LEADS_DB_ID',
+  'NOTION_QUOTES_DB_ID',
+  'NOTION_TASKS_DB_ID',
   'OPERATOR_CHAT_ID',
   'WEBHOOK_SECRET',
+  'ANTHROPIC_API_KEY',
 ];
 
 const missing = REQUIRED_ENV.filter((key) => !process.env[key]);
@@ -76,68 +86,82 @@ app.listen(PORT, () => {
   console.log(`[index] Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
+// ─── Cron schedulers ─────────────────────────────────────────────────────────
+const OPERATOR_CHAT_ID = process.env.OPERATOR_CHAT_ID;
 
-// ─── Module 4: At-risk clients check every Sunday at 10:00 ─────────────────
-cron.schedule('0 10 * * 0', async () => {
-  console.log('[cron] Running at-risk client check (Sunday 10:00)');
+/**
+ * Daily brief at 08:00 — send all tasks due today.
+ */
+cron.schedule('0 8 * * *', async () => {
+  console.log('[cron] Running daily brief (08:00)');
   try {
-    const pages = await getAtRiskClients();
-    const clients = pages.map(extractClientData);
-    if (clients.length === 0) {
-      console.log('[cron] No at-risk clients found');
+    const pages = await getTasksDueToday();
+    const tasks = pages.map(extractTaskData);
+    await sendDailyBrief(OPERATOR_CHAT_ID, tasks);
+    console.log(`[cron] Daily brief sent — ${tasks.length} task(s) due today`);
+  } catch (err) {
+    console.error('[cron] Daily brief error:', err.message);
+  }
+}, { timezone: 'Europe/Rome' });
+
+/**
+ * Evening reminders at 20:00 — send task alerts for tomorrow's deadlines.
+ */
+cron.schedule('0 20 * * *', async () => {
+  console.log('[cron] Running tomorrow deadline reminders (20:00)');
+  try {
+    const pages = await getTasksDueTomorrow();
+    const tasks = pages.map(extractTaskData);
+
+    if (tasks.length === 0) {
+      console.log('[cron] No tasks due tomorrow — skipping alerts');
+    } else {
+      for (const task of tasks) {
+        await sendTaskAlert(OPERATOR_CHAT_ID, task, task.id);
+      }
+      console.log(`[cron] Tomorrow reminders sent — ${tasks.length} task(s)`);
+    }
+  } catch (err) {
+    console.error('[cron] Tomorrow reminders error:', err.message);
+  }
+}, { timezone: 'Europe/Rome' });
+
+/**
+ * Expired quote check at 09:00 — alert for quotes with Due Date < today and Status = Sent.
+ */
+cron.schedule('0 9 * * *', async () => {
+  console.log('[cron] Running expired quote check (09:00)');
+  try {
+    const pages = await getExpiredQuotes();
+    const quotes = pages.map(extractQuoteData);
+
+    if (quotes.length === 0) {
+      console.log('[cron] No expired quotes found');
       return;
     }
-    for (const client of clients) {
-      await sendAtRiskAlert(OPERATOR_CHAT_ID, client, client.id);
+
+    for (const quote of quotes) {
+      await sendExpiredQuoteAlert(OPERATOR_CHAT_ID, quote, quote.id);
     }
-    console.log(`[cron] At-risk client alerts sent — ${clients.length} client(s)`);
+    console.log(`[cron] Expired quote alerts sent — ${quotes.length} quote(s)`);
   } catch (err) {
-    console.error('[cron] At-risk client check error:', err.message);
+    console.error('[cron] Expired quote check error:', err.message);
   }
 }, { timezone: 'Europe/Rome' });
 
-// ─── Module 5: Overdue invoice check every day at 09:30 ─────────────────────
-cron.schedule('30 9 * * *', async () => {
-  console.log('[cron] Running overdue invoice check (09:30)');
+// Modulo 6 — AI Daily Digest (ogni sera alle 20:30)
+cron.schedule('30 20 * * *', async () => {
+  console.log('[cron] Starting AI digest generation...');
   try {
-    const pages = await getOverdueInvoices();
-    const entries = pages.map(extractRevenueData);
-    if (entries.length === 0) {
-      console.log('[cron] No overdue invoices found');
-      return;
-    }
-    for (const entry of entries) {
-      await sendOverdueAlert(OPERATOR_CHAT_ID, entry, entry.id);
-    }
-    console.log(`[cron] Overdue invoice alerts sent — ${entries.length} invoice(s)`);
+    const data = await collectDailyData();
+    const digestText = await generateDigest(data);
+    await sendDigest(OPERATOR_CHAT_ID, digestText, data);
+    console.log('[cron] AI digest sent successfully');
   } catch (err) {
-    console.error('[cron] Overdue invoice check error:', err.message);
+    console.error('[cron] AI digest failed:', err.message);
   }
 }, { timezone: 'Europe/Rome' });
 
-// ─── Module 5: Monthly revenue report on 1st of month at 08:00 ──────────────
-cron.schedule('0 8 1 * *', async () => {
-  console.log('[cron] Running monthly revenue report (1st of month 08:00)');
-  try {
-    const total = await getCurrentMonthRevenue();
-    const [pendingPages, paidPages, overduePages, cancelledPages] = await Promise.all([
-      getRevenueByStatus('Pending'),
-      getRevenueByStatus('Paid'),
-      getRevenueByStatus('Overdue'),
-      getRevenueByStatus('Cancelled'),
-    ]);
-    const breakdown = {
-      pending: pendingPages.length,
-      paid: paidPages.length,
-      overdue: overduePages.length,
-      cancelled: cancelledPages.length,
-    };
-    await sendMonthlyRevenueReport(OPERATOR_CHAT_ID, total, breakdown);
-    console.log(`[cron] Monthly revenue report sent — total: €${total}`);
-  } catch (err) {
-    console.error('[cron] Monthly revenue report error:', err.message);
-  }
-}, { timezone: 'Europe/Rome' });
 // ─── Graceful shutdown ───────────────────────────────────────────────────────
 process.once('SIGINT', () => {
   console.log('[index] SIGINT received — shutting down gracefully');

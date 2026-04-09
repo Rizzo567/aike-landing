@@ -4,10 +4,14 @@
 require('dotenv').config();
 
 const express = require('express');
+const cron = require('node-cron');
 const bot = require('./src/bot');
 const { registerCommands } = require('./src/handlers/commands');
 const { registerCallbacks } = require('./src/handlers/callbacks');
 const makecomRouter = require('./src/webhook/makecom');
+const { getExpiredQuotes, extractQuoteData } = require('./src/notion/quotes');
+const { getTasksDueToday, getTasksDueTomorrow, extractTaskData } = require('./src/notion/tasks');
+const { sendExpiredQuoteAlert, sendDailyBrief, sendTaskAlert } = require('./src/telegram/alerts');
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
 
@@ -16,6 +20,8 @@ const REQUIRED_ENV = [
   'TELEGRAM_BOT_TOKEN',
   'NOTION_API_KEY',
   'NOTION_LEADS_DB_ID',
+  'NOTION_QUOTES_DB_ID',
+  'NOTION_TASKS_DB_ID',
   'OPERATOR_CHAT_ID',
   'WEBHOOK_SECRET',
 ];
@@ -74,6 +80,70 @@ app.listen(PORT, () => {
   console.log(`[index] Make.com webhook path: POST /webhook/new-lead`);
   console.log(`[index] Health check: GET /health`);
   console.log(`[index] Environment: ${process.env.NODE_ENV || 'development'}`);
+});
+
+// ─── Cron schedulers ─────────────────────────────────────────────────────────
+const OPERATOR_CHAT_ID = process.env.OPERATOR_CHAT_ID;
+
+/**
+ * Daily brief at 08:00 — send all tasks due today.
+ */
+cron.schedule('0 8 * * *', async () => {
+  console.log('[cron] Running daily brief (08:00)');
+  try {
+    const pages = await getTasksDueToday();
+    const tasks = pages.map(extractTaskData);
+    await sendDailyBrief(OPERATOR_CHAT_ID, tasks);
+    console.log(`[cron] Daily brief sent — ${tasks.length} task(s) due today`);
+  } catch (err) {
+    console.error('[cron] Daily brief error:', err.message);
+  }
+});
+
+/**
+ * Evening reminders at 20:00 — send task alerts for tomorrow's deadlines.
+ */
+cron.schedule('0 20 * * *', async () => {
+  console.log('[cron] Running tomorrow deadline reminders (20:00)');
+  try {
+    const pages = await getTasksDueTomorrow();
+    const tasks = pages.map(extractTaskData);
+
+    if (tasks.length === 0) {
+      console.log('[cron] No tasks due tomorrow — skipping alerts');
+      return;
+    }
+
+    for (const task of tasks) {
+      await sendTaskAlert(OPERATOR_CHAT_ID, task, task.id);
+    }
+    console.log(`[cron] Tomorrow reminders sent — ${tasks.length} task(s)`);
+  } catch (err) {
+    console.error('[cron] Tomorrow reminders error:', err.message);
+  }
+});
+
+/**
+ * Expired quote check at 09:00 — alert for quotes with Due Date < today and Status = Sent.
+ */
+cron.schedule('0 9 * * *', async () => {
+  console.log('[cron] Running expired quote check (09:00)');
+  try {
+    const pages = await getExpiredQuotes();
+    const quotes = pages.map(extractQuoteData);
+
+    if (quotes.length === 0) {
+      console.log('[cron] No expired quotes found');
+      return;
+    }
+
+    for (const quote of quotes) {
+      await sendExpiredQuoteAlert(OPERATOR_CHAT_ID, quote, quote.id);
+    }
+    console.log(`[cron] Expired quote alerts sent — ${quotes.length} quote(s)`);
+  } catch (err) {
+    console.error('[cron] Expired quote check error:', err.message);
+  }
 });
 
 // ─── Graceful shutdown ───────────────────────────────────────────────────────

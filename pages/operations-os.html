@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OperationsOS — Il tuo business. Tutto su Telegram. | AIKE</title>
+  <meta name="description" content="Gestisci lead, preventivi, task e clienti interamente da Telegram. Senza CRM complicati, senza nuove app. Setup in 2 ore." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Global styles -->
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/components.css?v=6" />
+  <link rel="stylesheet" href="../assets/css/sections.css?v=5" />
+  <!-- Page-specific styles -->
+  <link rel="stylesheet" href="../assets/css/operations-os.css?v=1" />
+</head>
+<body>
+<div class="page-wrapper ops-page">
+  <div id="navbar-placeholder"></div>
+
+  <main class="main-content">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         1. HERO SECTION
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="ops-hero">
+      <div class="container">
+        <div class="ops-hero__inner">
+
+          <!-- Left: copy -->
+          <div class="ops-hero__content">
+            <div class="ops-hero__eyebrow" data-reveal>
+              <span class="ops-hero__eyebrow-line"></span>
+              OperationsOS · per PMI italiane
+            </div>
+
+            <h1 class="ops-hero__title" data-reveal style="transition-delay:0.08s;">
+              Smetti di<br>
+              inseguire lead.<br>
+              <span class="ops-highlight">Inizia a chiuderli.</span>
+            </h1>
+
+            <p class="ops-hero__subtitle" data-reveal style="transition-delay:0.16s;">
+              Il sistema operativo per la tua PMI — gestisci lead, preventivi, task e clienti
+              direttamente da Telegram. Zero CRM, zero complessità, zero app nuove.
+            </p>
+
+            <div class="ops-hero__actions" data-reveal style="transition-delay:0.24s;">
+              <a href="#contact" class="ops-btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M8 2v6h8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+                Prenota una demo gratuita
+              </a>
+              <a href="#moduli" class="ops-btn-ghost">
+                Scopri come funziona
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Right: Telegram mockup -->
+          <div class="ops-tg-mockup" data-reveal style="transition-delay:0.2s;">
+            <div class="ops-tg-notif">3</div>
+            <div class="ops-tg-phone">
+              <!-- Status bar -->
+              <div class="ops-tg-statusbar">
+                <span>9:41</span>
+                <div class="ops-tg-statusbar-icons">
+                  <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor" opacity=".7"><rect x="0" y="3" width="3" height="7" rx="1"/><rect x="4" y="2" width="3" height="8" rx="1"/><rect x="8" y="0" width="3" height="10" rx="1"/><rect x="12" y="0" width="2" height="10" rx="1" opacity=".3"/></svg>
+                  <svg width="12" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" opacity=".7"><path d="M1 6s4.5-4 11-4 11 4 11 4"/><path d="M5 10s3-2.5 7-2.5 7 2.5 7 2.5"/><path d="M9 14s1.5-1 3-1 3 1 3 1"/><path d="M12 18h.01"/></svg>
+                  <svg width="12" height="10" viewBox="0 0 24 24" fill="currentColor" opacity=".7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </div>
+              </div>
+
+              <!-- Chat header -->
+              <div class="ops-tg-header">
+                <div class="ops-tg-avatar">🤖</div>
+                <div>
+                  <div class="ops-tg-chat-name">OperationsOS</div>
+                  <div class="ops-tg-chat-status">● online</div>
+                </div>
+                <svg style="margin-left:auto;color:var(--color-text-muted);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              </div>
+
+              <!-- Messages -->
+              <div class="ops-tg-body">
+
+                <!-- Bot message: new lead -->
+                <div class="ops-tg-msg ops-tg-msg--in">
+                  <div class="ops-tg-msg__avatar">🤖</div>
+                  <div class="ops-tg-msg__bubble">
+                    <div class="ops-tg-alert">
+                      <div class="ops-tg-alert__label">🔔 Nuovo Lead</div>
+                      <div class="ops-tg-alert__value">Marco Ferretti</div>
+                      <div class="ops-tg-alert__meta">Ristorante Da Marco · Milano · via sito web</div>
+                    </div>
+                    <div style="font-size:0.8rem;color:rgba(224,232,240,0.8);">Ha richiesto un preventivo per automazione ordini. <strong style="color:#e0e8f0;">Vuoi rispondere?</strong></div>
+                    <span class="ops-tg-msg__time">09:41 ✓✓</span>
+                  </div>
+                </div>
+
+                <!-- User reply -->
+                <div class="ops-tg-msg ops-tg-msg--out">
+                  <div class="ops-tg-msg__bubble">
+                    Sì, manda il template preventivo A3
+                    <span class="ops-tg-msg__time">09:42 ✓✓</span>
+                  </div>
+                </div>
+
+                <!-- Bot: preventivo inviato -->
+                <div class="ops-tg-msg ops-tg-msg--in">
+                  <div class="ops-tg-msg__avatar">🤖</div>
+                  <div class="ops-tg-msg__bubble">
+                    ✅ Preventivo inviato a Marco.<br>
+                    <span style="color:rgba(192,132,252,0.9);font-size:0.75rem;">Follow-up automatico tra 3 giorni.</span>
+                    <span class="ops-tg-msg__time">09:42 ✓✓</span>
+                  </div>
+                </div>
+
+                <!-- Typing indicator -->
+                <div class="ops-tg-typing">
+                  <div class="ops-tg-msg__avatar" style="width:26px;height:26px;">🤖</div>
+                  <div class="ops-tg-typing__bubble">
+                    <span class="ops-tg-typing__dot"></span>
+                    <span class="ops-tg-typing__dot"></span>
+                    <span class="ops-tg-typing__dot"></span>
+                  </div>
+                </div>
+
+              </div><!-- /ops-tg-body -->
+            </div><!-- /ops-tg-phone -->
+          </div><!-- /ops-tg-mockup -->
+
+        </div><!-- /ops-hero__inner -->
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         2. PROBLEMA SECTION
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="ops-section ops-section--alt">
+      <div class="container">
+        <div class="ops-section-header" data-reveal>
+          <div class="ops-badge">
+            <span class="ops-badge-dot"></span>
+            Il problema
+          </div>
+          <h2>Le PMI perdono il <span class="ops-highlight">40% dei lead</span> per disorganizzazione</h2>
+          <p>Non è colpa tua. È colpa degli strumenti che usi — o non usi — perché sono troppo complicati per la vita reale di una piccola impresa.</p>
+        </div>
+
+        <div class="ops-pain-grid">
+          <div class="ops-pain-card" data-reveal>
+            <div class="ops-pain-icon">📭</div>
+            <div class="ops-pain-title">Lead che arrivano e svaniscono</div>
+            <p class="ops-pain-desc">Email non lette, messaggi WhatsApp dimenticati, form sul sito che nessuno controlla. Il lead c'era — ma è andato dalla concorrenza.</p>
+          </div>
+          <div class="ops-pain-card" data-reveal style="transition-delay:0.1s;">
+            <div class="ops-pain-icon">📋</div>
+            <div class="ops-pain-title">Preventivi senza follow-up</div>
+            <p class="ops-pain-desc">Hai mandato il preventivo — e poi? Nessuno sa dove sono i preventivi aperti. Nessun follow-up. Contratti che si raffreddano da soli.</p>
+          </div>
+          <div class="ops-pain-card" data-reveal style="transition-delay:0.2s;">
+            <div class="ops-pain-icon">🌫️</div>
+            <div class="ops-pain-title">Zero visibilità sulle operazioni</div>
+            <p class="ops-pain-desc">Per sapere cosa sta succedendo devi aprire 5 strumenti diversi. Excel, WhatsApp, Drive, email — tutto sparso, niente di coordinato.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         3. SOLUZIONE — I 6 MODULI
+         ═══════════════════════════════════════════════════════════ -->
+    <section id="moduli" class="ops-section">
+      <div class="container">
+        <div class="ops-section-header" data-reveal>
+          <div class="ops-badge">
+            <span class="ops-badge-dot"></span>
+            La soluzione
+          </div>
+          <h2>Un sistema. <span class="ops-highlight">Sei moduli.</span> Zero caos.</h2>
+          <p>Tutto quello che serve per gestire la tua PMI arriva su Telegram. In tempo reale. Senza imparare nessuno strumento nuovo.</p>
+        </div>
+
+        <div class="ops-modules-grid">
+          <!-- 1 -->
+          <div class="ops-module-card" data-reveal>
+            <span class="ops-module-num">01</span>
+            <span class="ops-module-emoji">📡</span>
+            <div class="ops-module-name">Lead Capture</div>
+            <p class="ops-module-desc">Ogni nuovo lead arriva su Telegram in 30 secondi. Email, form, WhatsApp — tutto in un unico flusso, mai più niente perso.</p>
+          </div>
+          <!-- 2 -->
+          <div class="ops-module-card" data-reveal style="transition-delay:0.07s;">
+            <span class="ops-module-num">02</span>
+            <span class="ops-module-emoji">💼</span>
+            <div class="ops-module-name">Quote Pipeline</div>
+            <p class="ops-module-desc">Preventivi tracciati, follow-up automatici. Sai esattamente quale preventivo è aperto, da quanto, e quando ricontattare.</p>
+          </div>
+          <!-- 3 -->
+          <div class="ops-module-card" data-reveal style="transition-delay:0.14s;">
+            <span class="ops-module-num">03</span>
+            <span class="ops-module-emoji">✅</span>
+            <div class="ops-module-name">Task System</div>
+            <p class="ops-module-desc">Daily brief ogni mattina alle 8. Zero task dimenticati, zero promemoria mancati. La tua to-do list ti trova tu, non il contrario.</p>
+          </div>
+          <!-- 4 -->
+          <div class="ops-module-card" data-reveal style="transition-delay:0.21s;">
+            <span class="ops-module-num">04</span>
+            <span class="ops-module-emoji">👥</span>
+            <div class="ops-module-name">Client Management</div>
+            <p class="ops-module-desc">Health score per ogni cliente, storico completo delle interazioni. Sai sempre chi ha bisogno di attenzione — prima che sia tardi.</p>
+          </div>
+          <!-- 5 -->
+          <div class="ops-module-card" data-reveal style="transition-delay:0.28s;">
+            <span class="ops-module-num">05</span>
+            <span class="ops-module-emoji">💰</span>
+            <div class="ops-module-name">Revenue Tracking</div>
+            <p class="ops-module-desc">Fatture e pagamenti monitorati in real-time. Ricevi un alert quando una fattura scade — e un riepilogo ogni settimana.</p>
+          </div>
+          <!-- 6 -->
+          <div class="ops-module-card" data-reveal style="transition-delay:0.35s;">
+            <span class="ops-module-num">06</span>
+            <span class="ops-module-emoji">🧠</span>
+            <div class="ops-module-name">AI Daily Digest</div>
+            <p class="ops-module-desc">Ogni sera il tuo COO virtuale ti manda un report: cosa è successo, cosa non va, cosa fare domani. Decisioni migliori, meno stress.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         4. NUMERI / SOCIAL PROOF
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="ops-section ops-section--alt">
+      <div class="container">
+        <div class="ops-section-header" data-reveal>
+          <div class="ops-badge">
+            <span class="ops-badge-dot"></span>
+            I numeri
+          </div>
+          <h2>Progettato per chi non ha tempo da <span class="ops-highlight">perdere</span></h2>
+        </div>
+
+        <div class="ops-stats-row">
+          <div class="ops-stat" data-reveal>
+            <span class="ops-stat__num">&lt; 30s</span>
+            <span class="ops-stat__label">Tempo per ricevere<br>un alert lead</span>
+          </div>
+          <div class="ops-stat" data-reveal style="transition-delay:0.1s;">
+            <span class="ops-stat__num">6</span>
+            <span class="ops-stat__label">Moduli integrati<br>in un unico sistema</span>
+          </div>
+          <div class="ops-stat" data-reveal style="transition-delay:0.2s;">
+            <span class="ops-stat__num">0</span>
+            <span class="ops-stat__label">App nuove da imparare<br>Usi solo Telegram e Notion</span>
+          </div>
+        </div>
+
+        <!-- Testimonial placeholder -->
+        <div class="ops-testimonial" data-reveal>
+          <span class="ops-testimonial__quote-mark">"</span>
+          <p class="ops-testimonial__text">
+            Prima perdevo ore ogni settimana a controllare email e WhatsApp per capire
+            dove eravamo coi preventivi. Ora Telegram mi dice tutto in tempo reale.
+            Ho chiuso il 30% di clienti in più nel primo mese.
+          </p>
+          <div class="ops-testimonial__footer">
+            <div class="ops-testimonial__avatar">L</div>
+            <div>
+              <div class="ops-testimonial__name">Luca M.</div>
+              <div class="ops-testimonial__role">Titolare, agenzia di comunicazione · Milano</div>
+            </div>
+            <span class="ops-testimonial__badge">Cliente OperationsOS</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         5. COME FUNZIONA (TIMELINE)
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="ops-section">
+      <div class="container">
+        <div class="ops-section-header" data-reveal>
+          <div class="ops-badge">
+            <span class="ops-badge-dot"></span>
+            Il processo
+          </div>
+          <h2>Setup in <span class="ops-highlight">2 ore</span>. Operativo per sempre.</h2>
+          <p>Non devi fare nulla di tecnico. Ci pensiamo noi. Tu devi solo essere presente all'onboarding call.</p>
+        </div>
+
+        <div class="ops-timeline">
+          <div class="ops-timeline-step" data-reveal>
+            <div class="ops-timeline-step__marker">1</div>
+            <div class="ops-timeline-step__content">
+              <div class="ops-timeline-step__title">Onboarding call</div>
+              <p class="ops-timeline-step__desc">30 minuti per capire le tue operazioni, i tuoi flussi e i tuoi obiettivi. Nessuna domanda tecnica — parliamo del tuo business.</p>
+            </div>
+          </div>
+          <div class="ops-timeline-step" data-reveal style="transition-delay:0.1s;">
+            <div class="ops-timeline-step__marker">2</div>
+            <div class="ops-timeline-step__content">
+              <div class="ops-timeline-step__title">Setup</div>
+              <p class="ops-timeline-step__desc">Configuriamo tutto in 90 minuti, da remoto, con te presente. Bot Telegram, workspace Notion, automazioni — tutto operativo prima che finisca la call.</p>
+            </div>
+          </div>
+          <div class="ops-timeline-step" data-reveal style="transition-delay:0.2s;">
+            <div class="ops-timeline-step__marker">3</div>
+            <div class="ops-timeline-step__content">
+              <div class="ops-timeline-step__title">Go live</div>
+              <p class="ops-timeline-step__desc">Il bot inizia a lavorare per te immediatamente. Già dalla mattina successiva ricevi il tuo primo Daily Digest e i primi alert lead.</p>
+            </div>
+          </div>
+          <div class="ops-timeline-step" data-reveal style="transition-delay:0.3s;">
+            <div class="ops-timeline-step__marker">4</div>
+            <div class="ops-timeline-step__content">
+              <div class="ops-timeline-step__title">Supporto continuo</div>
+              <p class="ops-timeline-step__desc">Non sei solo. Sei sempre assistito con aggiornamenti mensili, ottimizzazioni e supporto diretto su Telegram. Il sistema cresce con te.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         6. PRICING
+         ═══════════════════════════════════════════════════════════ -->
+    <section id="pricing" class="ops-section ops-section--alt">
+      <div class="container">
+        <div class="ops-section-header" data-reveal>
+          <div class="ops-badge">
+            <span class="ops-badge-dot"></span>
+            Pricing
+          </div>
+          <h2>Un investimento <span class="ops-highlight">una volta sola</span></h2>
+          <p>Nessun canone sorpresa. Nessuna funzione nascosta dietro un paywall. Un prezzo trasparente per un sistema che funziona davvero.</p>
+        </div>
+
+        <div class="ops-pricing-card" data-reveal>
+          <div class="ops-pricing-header">
+            <div class="ops-pricing-label">OperationsOS · Pacchetto completo</div>
+            <div class="ops-pricing-name">Tutto incluso, da subito.</div>
+            <div class="ops-pricing-price">
+              <span class="ops-pricing-price__main">€1.497</span>
+              <span class="ops-pricing-price__divider">+</span>
+              <div class="ops-pricing-price__monthly">
+                <span class="ops-pricing-price__monthly-num">€197</span>
+                <span class="ops-pricing-price__monthly-label">/mese continuativo</span>
+              </div>
+            </div>
+          </div>
+          <div class="ops-pricing-body">
+            <ul class="ops-pricing-features">
+              <li>
+                <span class="ops-check">✓</span>
+                Setup completo dei 6 moduli (Lead, Quote, Task, Clients, Revenue, AI Digest)
+              </li>
+              <li>
+                <span class="ops-check">✓</span>
+                Configurazione Notion workspace su misura
+              </li>
+              <li>
+                <span class="ops-check">✓</span>
+                Bot Telegram dedicato, attivo 24/7
+              </li>
+              <li>
+                <span class="ops-check">✓</span>
+                3 scenari Make.com configurati e testati
+              </li>
+              <li>
+                <span class="ops-check">✓</span>
+                Guida operatore per il tuo team
+              </li>
+              <li>
+                <span class="ops-check">✓</span>
+                Supporto mensile prioritario su Telegram
+              </li>
+              <li>
+                <span class="ops-check">✓</span>
+                Aggiornamenti e ottimizzazioni inclusi
+              </li>
+            </ul>
+
+            <a href="#contact" class="ops-pricing-cta">
+              Prenota una call gratuita →
+            </a>
+
+            <p class="ops-pricing-guarantee">
+              <strong>Garanzia 30 giorni:</strong> se non vedi risultati concreti nel primo mese, rimborso completo. Senza domande.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         7. FAQ
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="ops-section">
+      <div class="container">
+        <div class="ops-section-header" data-reveal>
+          <div class="ops-badge">
+            <span class="ops-badge-dot"></span>
+            Domande frequenti
+          </div>
+          <h2>Hai <span class="ops-highlight">dubbi</span>? Risposta rapida.</h2>
+        </div>
+
+        <div class="ops-faq-list" id="ops-faq">
+
+          <div class="ops-faq-item">
+            <button class="ops-faq-question" aria-expanded="false">
+              Devo essere tecnico per usarlo?
+              <svg class="ops-faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="ops-faq-answer" role="region">
+              <p>No. Gestiamo tutto noi durante il setup. Tu usi solo Telegram — come fai già ogni giorno. Non serve toccare Make.com, Notion o nessun altro strumento se non vuoi.</p>
+            </div>
+          </div>
+
+          <div class="ops-faq-item">
+            <button class="ops-faq-question" aria-expanded="false">
+              Funziona con qualsiasi Gmail?
+              <svg class="ops-faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="ops-faq-answer" role="region">
+              <p>Sì, compatibile con Gmail personale e Google Workspace (ex G Suite). L'integrazione richiede solo pochi minuti durante la call di setup.</p>
+            </div>
+          </div>
+
+          <div class="ops-faq-item">
+            <button class="ops-faq-question" aria-expanded="false">
+              Posso aggiungere più operatori al bot?
+              <svg class="ops-faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="ops-faq-answer" role="region">
+              <p>Sì. Il bot può notificare più persone o team diversi. Possiamo configurare routing intelligente — per esempio, i lead di un tipo vanno a un commerciale, quelli di un altro tipo a un altro.</p>
+            </div>
+          </div>
+
+          <div class="ops-faq-item">
+            <button class="ops-faq-question" aria-expanded="false">
+              Cosa succede se decido di cancellare?
+              <svg class="ops-faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="ops-faq-answer" role="region">
+              <p>Tutti i tuoi dati restano tuoi su Notion. Zero lock-in. Se smetti di pagare il canone, le automazioni si fermano ma il tuo workspace Notion con tutta la storia rimane accessibile per sempre.</p>
+            </div>
+          </div>
+
+          <div class="ops-faq-item">
+            <button class="ops-faq-question" aria-expanded="false">
+              Quanto tempo richiede il setup?
+              <svg class="ops-faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="ops-faq-answer" role="region">
+              <p>2 ore totali, da remoto, con te presente. Una call iniziale di 30 minuti e una sessione di configurazione di 90 minuti. Nient'altro da fare da parte tua.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         8. CTA FINALE
+         ═══════════════════════════════════════════════════════════ -->
+    <section id="contact" class="ops-final-cta">
+      <div class="container" style="position:relative;">
+        <div class="ops-badge" style="margin:0 auto 1.5rem;" data-reveal>
+          <span class="ops-badge-dot"></span>
+          Pronto a partire?
+        </div>
+        <h2 class="ops-final-cta__title" data-reveal style="transition-delay:0.08s;">
+          Pronto a mettere il tuo<br>
+          business in <span class="ops-highlight">autopilota</span>?
+        </h2>
+        <p class="ops-final-cta__subtitle" data-reveal style="transition-delay:0.16s;">
+          30 minuti. Senza impegno. Con risultati.
+        </p>
+        <div data-reveal style="transition-delay:0.24s;">
+          <a href="https://calendly.com/aike-automation/demo" target="_blank" rel="noopener" class="ops-btn-primary" style="display:inline-flex;">
+            Prenota la tua demo gratuita
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+</div><!-- /page-wrapper -->
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/analytics.js"></script>
+<script src="../assets/js/bundle.js"></script>
+
+<script>
+  /* ── Scroll reveal ──────────────────────────────────────── */
+  (function () {
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('revealed');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('[data-reveal]').forEach(function (el) {
+      io.observe(el);
+    });
+  })();
+
+  /* ── FAQ accordion ──────────────────────────────────────── */
+  (function () {
+    document.querySelectorAll('.ops-faq-question').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var item = this.closest('.ops-faq-item');
+        var isOpen = item.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.ops-faq-item.open').forEach(function (el) {
+          el.classList.remove('open');
+          el.querySelector('.ops-faq-question').setAttribute('aria-expanded', 'false');
+        });
+        // Open clicked (if was closed)
+        if (!isOpen) {
+          item.classList.add('open');
+          this.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  })();
+</script>
+</body>
+</html>

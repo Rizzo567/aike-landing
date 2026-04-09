@@ -1,0 +1,22 @@
+{
+  "name": "operations-os-bot",
+  "version": "1.0.0",
+  "description": "OperationsOS Telegram bot — connects Telegram, Notion, and Gmail via Make.com",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.15",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "telegraf": "^4.16.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

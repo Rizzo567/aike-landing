@@ -1,0 +1,11 @@
+'use strict';
+
+const { Telegraf } = require('telegraf');
+
+if (!process.env.TELEGRAM_BOT_TOKEN) {
+  throw new Error('TELEGRAM_BOT_TOKEN is not set in environment variables');
+}
+
+const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
+
+module.exports = bot;

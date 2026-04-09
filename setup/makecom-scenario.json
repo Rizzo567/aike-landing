@@ -1,0 +1,233 @@
+{
+  "name": "OperationsOS — Gmail Lead Capture",
+  "flow": [
+    {
+      "id": 1,
+      "module": "gmail:TriggerNewEmail",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "GMAIL_CONNECTION_ID"
+      },
+      "mapper": {
+        "label": "Watch Emails — Inbox Lead Monitor",
+        "folder": "INBOX",
+        "maxResults": 5,
+        "criteria": "ALL",
+        "markSeen": false,
+        "fetchAttachments": false,
+        "includeSpamTrash": false
+      },
+      "metadata": {
+        "designer": { "x": 0, "y": 0 },
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Gmail (connect your account)",
+              "data": { "scopes": ["https://mail.google.com/"] }
+            }
+          }
+        },
+        "expect": [
+          { "name": "id", "type": "text", "label": "Email ID" },
+          { "name": "snippet", "type": "text", "label": "Snippet" },
+          { "name": "payload.subject", "type": "text", "label": "Subject" },
+          { "name": "payload.from", "type": "email", "label": "From" },
+          { "name": "payload.senderName", "type": "text", "label": "Sender Name" },
+          { "name": "payload.text", "type": "text", "label": "Body (plain text)" },
+          { "name": "payload.date", "type": "date", "label": "Date" }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "parameters": {},
+      "filter": {
+        "name": "Is this a lead? (keyword filter)",
+        "conditions": [
+          [
+            {
+              "a": "{{1.payload.subject}}",
+              "b": "informazioni|preventivo|contatto|servizi|interessato|info|prezzi",
+              "o": "text:match"
+            }
+          ],
+          [
+            {
+              "a": "{{1.payload.text}}",
+              "b": "informazioni|preventivo|contatto|servizi|interessato|info|prezzi",
+              "o": "text:match"
+            }
+          ]
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 300, "y": 0 },
+        "notes": "Filter uses OR logic between subject and body. The regex match is case-insensitive in Make.com by default."
+      }
+    },
+    {
+      "id": 3,
+      "module": "builtin:SetVariables",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "variables": [
+          {
+            "name": "lead_name",
+            "value": "{{if(1.payload.senderName; 1.payload.senderName; split(1.payload.from; '@')[0])}}"
+          },
+          {
+            "name": "lead_email",
+            "value": "{{1.payload.from}}"
+          },
+          {
+            "name": "lead_subject",
+            "value": "{{1.payload.subject}}"
+          },
+          {
+            "name": "lead_body_preview",
+            "value": "{{substring(1.payload.text; 0; 200)}}"
+          },
+          {
+            "name": "lead_source",
+            "value": "Email"
+          },
+          {
+            "name": "lead_score",
+            "value": "{{if(contains(toLower(1.payload.subject); 'urgente') or contains(toLower(1.payload.subject); 'subito'); 8; if(length(1.payload.text) > 300; 6; 5))}}"
+          }
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 600, "y": 0 },
+        "notes": "Scoring logic: subject contains 'urgente' or 'subito' → score 8 (hot lead). Body length > 300 chars → score 6 (engaged). Default → score 5."
+      }
+    },
+    {
+      "id": 4,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": true,
+        "useNewZLibDecompress": true
+      },
+      "mapper": {
+        "url": "WEBHOOK_URL/webhook/new-lead",
+        "serializeUrl": false,
+        "method": "POST",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "name": "x-webhook-secret",
+            "value": "WEBHOOK_SECRET"
+          }
+        ],
+        "queryString": [],
+        "bodyType": "raw",
+        "parseResponse": true,
+        "authUser": "",
+        "authPass": "",
+        "timeout": 30,
+        "shareCookies": false,
+        "ca": "",
+        "rejectUnauthorized": true,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "gzip": true,
+        "useMtls": false,
+        "contentType": "application/json",
+        "data": "{\n  \"name\": \"{{3.lead_name}}\",\n  \"email\": \"{{3.lead_email}}\",\n  \"subject\": \"{{3.lead_subject}}\",\n  \"body_preview\": \"{{3.lead_body_preview}}\",\n  \"source\": \"{{3.lead_source}}\",\n  \"score\": {{3.lead_score}}\n}"
+      },
+      "metadata": {
+        "designer": { "x": 900, "y": 0 },
+        "notes": "IMPORTANT: Replace WEBHOOK_URL with your actual bot URL (e.g. https://abc123.ngrok.io or your Railway URL). Replace WEBHOOK_SECRET with the value in your .env file.",
+        "expect": [
+          { "name": "status", "type": "number", "label": "HTTP Status Code" },
+          { "name": "data", "type": "collection", "label": "Response Body" }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "module": "gmail:ActionMarkAsRead",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "GMAIL_CONNECTION_ID"
+      },
+      "mapper": {
+        "emailId": "{{1.id}}"
+      },
+      "metadata": {
+        "designer": { "x": 1200, "y": 0 },
+        "notes": "Mark the email as read after processing to avoid re-processing on the next poll cycle.",
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Gmail (same connection as trigger)"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "slots": null,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "eu1.make.com"
+  },
+  "_SETUP_NOTES": {
+    "description": "OperationsOS Gmail Lead Capture — Make.com Blueprint",
+    "version": "1.0.0",
+    "created": "2024-04-04",
+    "placeholders_to_replace": {
+      "GMAIL_CONNECTION_ID": "Created automatically when you connect Gmail in Make.com UI",
+      "WEBHOOK_URL": "Your bot's public URL — e.g. https://abc123.ngrok.io OR your Railway deployment URL",
+      "WEBHOOK_SECRET": "Must match the WEBHOOK_SECRET value in your operations-os/.env file"
+    },
+    "import_instructions": [
+      "1. Go to make.com and log in",
+      "2. Click 'Scenarios' in left sidebar",
+      "3. Click 'Create a new scenario'",
+      "4. Click the three-dot menu (top right) > 'Import Blueprint'",
+      "5. Upload this JSON file",
+      "6. The scenario will load — you must then:",
+      "   a. Click the Gmail module (module 1) and connect your Gmail account",
+      "   b. Click the HTTP module (module 4) and update the URL and secret header",
+      "   c. Click the Gmail Mark as Read module (module 5) and confirm the same Gmail connection",
+      "7. Click 'Save' then set scheduling to 'Every 15 minutes'",
+      "8. Toggle ON to activate"
+    ],
+    "filter_note": "The filter between module 1 and 2 uses OR logic — email matches if EITHER subject OR body contains any of the lead keywords. Make.com regex match is case-insensitive.",
+    "scoring_logic": {
+      "8": "Subject contains 'urgente' or 'subito' (hot/urgent lead)",
+      "6": "Email body is longer than 300 characters (detailed/engaged lead)",
+      "5": "Default score for any other lead email"
+    },
+    "free_plan_usage": {
+      "operations_per_run": 5,
+      "runs_per_day_at_15min": 96,
+      "max_daily_operations": 480,
+      "monthly_estimate_at_10_leads_per_day": "~1500 ops (may hit 1000 limit — disable when not needed or upgrade to Core plan at $9/month)"
+    }
+  }
+}

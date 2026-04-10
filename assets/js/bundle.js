@@ -13,9 +13,9 @@ const getHeaderHTML = (b) => `
     <nav class="header__nav hide-on-mobile">
       <a href="${b}pages/solutions.html" class="header__link">Solutions</a>
       <a href="${b}pages/pricing.html" class="header__link">Pricing</a>
-      <a href="${b}pages/owl.html" class="header__link">Owl</a>
-      <a href="${b}pages/plane.html" class="header__link">Plane</a>
-      <a href="${b}pages/operations-os.html" class="header__link">OperationsOS</a>
+      <a href="${b}pages/owl.html" class="header__link" data-admin-only style="display:none">Owl</a>
+      <a href="${b}pages/plane.html" class="header__link" data-admin-only style="display:none">Plane</a>
+      <a href="${b}pages/operations-os.html" class="header__link" data-admin-only style="display:none">OperationsOS</a>
     </nav>
     <div class="header__actions">
       <!-- Desktop Log In -->
@@ -79,9 +79,9 @@ const getHeaderHTML = (b) => `
     <div class="mobile-nav-panel-inner">
       <a href="${b}pages/solutions.html" class="mobile-nav-link">Solutions</a>
       <a href="${b}pages/pricing.html" class="mobile-nav-link">Pricing</a>
-      <a href="${b}pages/owl.html" class="mobile-nav-link">Owl</a>
-      <a href="${b}pages/plane.html" class="mobile-nav-link">Plane</a>
-      <a href="${b}pages/operations-os.html" class="mobile-nav-link">OperationsOS</a>
+      <a href="${b}pages/owl.html" class="mobile-nav-link" data-admin-only style="display:none">Owl</a>
+      <a href="${b}pages/plane.html" class="mobile-nav-link" data-admin-only style="display:none">Plane</a>
+      <a href="${b}pages/operations-os.html" class="mobile-nav-link" data-admin-only style="display:none">OperationsOS</a>
       <div class="mobile-nav-divider"></div>
       <a id="auth-login-btn-mobile" href="${b}pages/login.html" class="mobile-nav-link auth-btn-login" style="color:var(--color-primary)">Log in</a>
     </div>

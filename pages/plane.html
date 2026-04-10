@@ -1816,6 +1816,9 @@
   color: var(--h-purple);
 }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/auth.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -1824,8 +1827,16 @@
   </script>
 </head>
 <body>
-
-
+<script>
+(async function() {
+  try {
+    var u = await window.aikeAuth.getSessionUser();
+    if (!u) { window.location.replace('../index.html'); return; }
+    var p = await window.aikeAuth.getProfile(u.id);
+    if (!p || !p.is_admin) { window.location.replace('../index.html'); }
+  } catch(e) { window.location.replace('../index.html'); }
+})();
+</script>
 <div id="plane-app">
 
   <!-- ══════════════════════════════════════

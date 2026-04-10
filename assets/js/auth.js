@@ -145,10 +145,16 @@
       var isAdmin = profile && profile.is_admin;
       if (adminLink) adminLink.className = isAdmin ? 'dropdown-item visible' : 'dropdown-item';
       if (divider)   divider.style.display = isAdmin ? 'block' : 'none';
+      document.querySelectorAll('[data-admin-only]').forEach(function(el) {
+        el.style.display = isAdmin ? '' : 'none';
+      });
     } else {
       loginBtn.style.display = '';
       if (loginBtnMobile) loginBtnMobile.style.display = '';
       wrapper.style.display  = 'none';
+      document.querySelectorAll('[data-admin-only]').forEach(function(el) {
+        el.style.display = 'none';
+      });
       closeDropdown();
     }
   }

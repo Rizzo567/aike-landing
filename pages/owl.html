@@ -2179,8 +2179,21 @@
     .jarvis-send-btn { background:var(--h-purple); color:#fff; border:none; border-radius:8px; padding:0 14px; cursor:pointer; font-size:13px; font-weight:600; transition:opacity .2s; font-family:var(--h-font); flex-shrink:0; }
     .jarvis-send-btn:hover { opacity:.82; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/auth.js"></script>
 </head>
 <body>
+<script>
+(async function() {
+  try {
+    var u = await window.aikeAuth.getSessionUser();
+    if (!u) { window.location.replace('../index.html'); return; }
+    var p = await window.aikeAuth.getProfile(u.id);
+    if (!p || !p.is_admin) { window.location.replace('../index.html'); }
+  } catch(e) { window.location.replace('../index.html'); }
+})();
+</script>
 <div class="owl-shell">
 
   <!-- ── Main ── -->

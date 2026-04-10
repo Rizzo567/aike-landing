@@ -235,89 +235,77 @@
       <!-- ── BACKGROUND TRANSITION ──────────────────────────────── -->
       <div class="pixel-transition" aria-hidden="true"></div>
 
-      <!-- ── 2. Pricing / Bundles ──────────────────────────────── -->
+      <!-- ── 2. Pricing / Packages ─────────────────────────────── -->
       <section class="bundles-section bg-transition-target" aria-labelledby="pricing-heading">
-        <!-- Atmosphere effects -->
         <div class="bundles-bg-orb" aria-hidden="true"></div>
         <div class="bundles-bg-grid" aria-hidden="true"></div>
 
         <div class="container" style="position:relative;z-index:2;">
-          <div class="section-header" data-reveal style="text-align: center; max-width: 600px; margin: 0 auto;">
-            <h2 id="pricing-heading" style="font-size: 2.5rem; margin-bottom: 1rem;">Choose your automation path</h2>
-            <p style="color: var(--color-text-muted);">Three tailored bundles for different stages of growth.</p>
+          <div class="section-header" data-reveal style="text-align:center; max-width:600px; margin:0 auto;">
+            <span class="badge">Website Creation</span>
+            <h2 id="pricing-heading" style="font-size:2.5rem; margin:1rem 0 0.75rem;">Websites that work<br>for your <span class="text-purple">business</span></h2>
+            <p style="color:var(--color-text-muted);">We design and build premium websites — fast delivery, conversion-focused, and built to grow with you.</p>
           </div>
 
-          <!-- Billing Toggle -->
-          <div class="pricing-toggle-wrap" data-reveal>
-            <div class="pricing-toggle" id="pricingToggle" role="group" aria-label="Billing period">
-              <span class="pricing-toggle__pill" id="pricingPill" aria-hidden="true"></span>
-              <button class="toggle-btn active" id="btnMonthly" onclick="window.aikePricing.setMonthly()" aria-pressed="true">Monthly</button>
-              <button class="toggle-btn" id="btnYearly" onclick="window.aikePricing.setYearly()" aria-pressed="false">
-                Yearly <span class="toggle-save-badge">Save 30%</span>
-              </button>
-            </div>
-          </div>
+          <div class="packages-grid" style="margin-top:var(--space-2xl);">
 
-          <div class="bundles-grid">
             <!-- Basic -->
-            <div class="bundle-card" data-reveal style="transition-delay: 0s; padding: 1.5rem 1.75rem;">
-              <h3 class="bundle-card__title">Basic</h3>
-              <p class="bundle-card__target">For focused teams beginning to automate their manual tasks.</p>
-              <div class="bundle-card__price-wrap">
-                <div class="bundle-card__price">
-                  <span class="bundle-card__price-amount" id="priceBasic">€14</span>
-                  <span class="bundle-card__price-period" id="periodBasic">/month</span>
-                </div>
-                <p class="bundle-card__billed-note" id="billedBasic">€119/yr · billed annually</p>
+            <div class="pkg-card" data-reveal>
+              <div class="pkg-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
               </div>
-              <ul class="bundle-card__features">
-                <li><span>✓</span> AI workflow automatizzato</li>
-                <li><span>✓</span> Assistente AI personale</li>
-                <li><span>✓</span> Email automation</li>
+              <div class="pkg-name">Basic Website</div>
+              <p class="pkg-desc">A clean, professional web presence for businesses ready to be found online.</p>
+              <ul class="pkg-features">
+                <li class="pkg-feature--strong">Up to 4 pages</li>
+                <li>Home, Services, About, Contact</li>
+                <li>Clean, mobile-first design</li>
+                <li>Fast delivery — ready in days</li>
+                <li>SEO foundations included</li>
+                <li>Contact form + basic analytics</li>
               </ul>
-              <button id="checkoutBasic" onclick="window.aikeCheckout.basic(this)" class="btn btn-outline bundle-card__btn" style="width:100%; cursor:pointer;">Get started</button>
+              <a href="pages/booking.html" class="pkg-cta pkg-cta--outline">Book a call</a>
             </div>
 
-            <!-- Pro (Recommended) -->
-            <div class="bundle-card bundle-card--highlight" data-reveal style="transition-delay: 0.15s; padding: 1.5rem 1.75rem;">
-              <h3 class="bundle-card__title">Pro</h3>
-              <p class="bundle-card__target">For scaling businesses needing advanced capabilities and volume.</p>
-              <div class="bundle-card__price-wrap">
-                <div class="bundle-card__price">
-                  <span class="bundle-card__price-amount" id="pricePro">€49</span>
-                  <span class="bundle-card__price-period" id="periodPro">/month</span>
-                </div>
-                <p class="bundle-card__billed-note" id="billedPro">€399/yr · billed annually</p>
+            <!-- Professional (featured) -->
+            <div class="pkg-card pkg-card--featured" data-reveal style="transition-delay:0.1s;">
+              <div class="pkg-featured-tag">Most popular</div>
+              <div class="pkg-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               </div>
-              <ul class="bundle-card__features">
-                <li><span>✓</span> Tutto il piano Basic incluso</li>
-                <li><span>✓</span> WhatsApp automated replies with AI</li>
-                <li><span>✓</span> Priority 24/7 support</li>
-                <li><span>✓</span> Advanced analytics</li>
+              <div class="pkg-name">Professional Website</div>
+              <p class="pkg-desc">A high-converting website with advanced design, animations, and a clear path to customer action.</p>
+              <ul class="pkg-features">
+                <li class="pkg-feature--strong">Up to 8 pages + sections</li>
+                <li>Premium UI/UX design system</li>
+                <li>Smooth animations and micro-interactions</li>
+                <li>Conversion-optimized layout and CTAs</li>
+                <li>Performance and Core Web Vitals optimized</li>
+                <li>Full SEO setup + analytics integration</li>
+                <li>CMS for content updates (optional)</li>
               </ul>
-              <button id="checkoutPro" onclick="window.aikeCheckout.pro(this)" class="btn btn-primary bundle-card__btn" style="width:100%; cursor:pointer;">Get started →</button>
+              <a href="pages/booking.html" class="pkg-cta pkg-cta--primary">Start your project</a>
             </div>
 
             <!-- Custom -->
-            <div class="bundle-card" data-reveal style="transition-delay: 0.3s; padding: 1.5rem 1.75rem;">
-              <h3 class="bundle-card__title">Custom</h3>
-              <p class="bundle-card__target">For mature operations requiring maximum control and orchestration.</p>
-              <div class="bundle-card__price-wrap">
-                <div class="bundle-card__price">
-                  <span class="bundle-card__price-amount">Custom</span>
-                  <span class="bundle-card__price-period">pricing</span>
-                </div>
-                <p class="bundle-card__billed-note" style="visibility:hidden;">Contact us</p>
+            <div class="pkg-card" data-reveal style="transition-delay:0.2s;">
+              <div class="pkg-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               </div>
-              <ul class="bundle-card__features">
-                <li><span>✓</span> Unlimited tailored workflows</li>
-                <li><span>✓</span> Dedicated success manager</li>
-                <li><span>✓</span> Enterprise-grade security</li>
-                <li><span>✓</span> Custom task volume</li>
-                <li><span>✓</span> Custom AI model training</li>
+              <div class="pkg-name">Custom Solution</div>
+              <p class="pkg-desc">A fully tailored platform — built around your business, connected to your tools, designed to scale.</p>
+              <ul class="pkg-features">
+                <li class="pkg-feature--strong">Unlimited pages and sections</li>
+                <li>Custom high-end design system</li>
+                <li>Aike automation integrations</li>
+                <li>Advanced features (booking, portals, dashboards)</li>
+                <li>API and third-party integrations</li>
+                <li>Scalable architecture from day one</li>
+                <li>Ongoing support and iterations</li>
               </ul>
-              <a href="pages/pricing.html" class="btn btn-outline bundle-card__btn">View pricing</a>
+              <a href="pages/booking.html" class="pkg-cta pkg-cta--outline">Get a custom quote</a>
             </div>
+
           </div>
         </div>
       </section>

@@ -2,7 +2,8 @@
    AIKE — Sections CSS
    assets/css/sections.css
    Contains styles for: aike-header, aike-vibeSection,
-   aike-enterpriseSection, aike-stories, aike-footer
+   aike-enterpriseSection, aike-stories, aike-footer,
+   pkg-card (shared pricing packages)
    ============================================================ */
 
 /* ── Shared tokens (scoped, won't conflict with styles.css) ── */
@@ -1050,4 +1051,131 @@ body.aike-lock { overflow: hidden; }
     transform: none;
     filter: none;
   }
+}
+
+/* ── Package Cards (shared: homepage + pricing page) ─────── */
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+@media (max-width: 900px) {
+  .packages-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+}
+.pkg-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem 1.75rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: border-color 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+.pkg-card:hover {
+  border-color: rgba(168,85,247,0.35);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(168,85,247,0.06);
+}
+.pkg-card--featured {
+  border-color: rgba(168,85,247,0.4);
+  background: rgba(168,85,247,0.04);
+}
+.pkg-featured-tag {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 16px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+.pkg-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-dim);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+.pkg-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--color-white);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+.pkg-desc {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+.pkg-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 2rem;
+  flex: 1;
+}
+.pkg-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+.pkg-features li::before {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") no-repeat center;
+  margin-top: 1px;
+}
+.pkg-features li.pkg-feature--strong { color: var(--color-white); }
+.pkg-cta {
+  display: block;
+  text-align: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  margin-top: auto;
+}
+.pkg-cta--primary {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(168,85,247,0.3);
+}
+.pkg-cta--primary:hover {
+  background: #b673f8;
+  box-shadow: 0 6px 24px rgba(168,85,247,0.5);
+  transform: translateY(-2px);
+}
+.pkg-cta--outline {
+  border: 1px solid var(--color-border);
+  color: var(--color-white);
+}
+.pkg-cta--outline:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-dim);
+  transform: translateY(-2px);
 }

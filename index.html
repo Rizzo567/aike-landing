@@ -21,6 +21,47 @@
   <link rel="stylesheet" href="assets/css/home.css?v=5" />
   <link rel="stylesheet" href="assets/css/sections.css?v=5" />
   <style>
+    /* ── Text Effects ── */
+    [data-text-effect] .te-word {
+      display: inline-block;
+      white-space: pre;
+    }
+
+    /* Effect: CustomDelay — staggered slide+fade per word */
+    [data-text-effect="customDelay"] .te-word {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    [data-text-effect="customDelay"].te-active .te-word {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Effect: CustomVariants — scale+rotate+fade per word */
+    [data-text-effect="customVariants"] .te-word {
+      opacity: 0;
+      transform: scale(0.8) rotate(-3deg);
+      filter: blur(4px);
+      transition: opacity 0.45s ease, transform 0.45s ease, filter 0.45s ease;
+    }
+    [data-text-effect="customVariants"].te-active .te-word {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+      filter: blur(0);
+    }
+
+    /* Effect: Preset (blur) — words unblur */
+    [data-text-effect="preset"] .te-word {
+      opacity: 0;
+      filter: blur(12px);
+      transition: opacity 0.5s ease, filter 0.5s ease;
+    }
+    [data-text-effect="preset"].te-active .te-word {
+      opacity: 1;
+      filter: blur(0);
+    }
+
     @keyframes pulse-expand {
       0%   { transform: scale(0.3); opacity: 0.8; }
       100% { transform: scale(1.5); opacity: 0; }
@@ -161,7 +202,7 @@
       <section class="hero" aria-labelledby="hero-heading">
         <div class="container hero__layout">
           <div class="hero__content" data-reveal>
-            <h1 class="hero__title" id="hero-heading" data-i18n="hero.title">
+            <h1 class="hero__title" id="hero-heading" data-i18n="hero.title" data-text-effect="customDelay">
               Intelligent automation for<br>
               <span class="hero__title-highlight">modern businesses.</span>
             </h1>
@@ -319,7 +360,7 @@
 
           <!-- LEFT: CTA -->
           <div data-reveal>
-            <h2 id="sites-heading" style="font-family:'Outfit',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--color-white);line-height:1.1;letter-spacing:-0.03em;margin-bottom:1.25rem;">
+            <h2 id="sites-heading" style="font-family:'Outfit',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--color-white);line-height:1.1;letter-spacing:-0.03em;margin-bottom:1.25rem;" data-text-effect="customVariants">
               Your website,<br>built with AI.<br>
               <span class="hero__title-highlight">Days, not months.</span>
             </h2>
@@ -405,7 +446,7 @@
           <div class="owlt-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;">
             <!-- LEFT: testo esistente (invariato) -->
             <div data-reveal>
-              <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;color:var(--color-white);line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.25rem;">Your AI operator.<br><span class="always-on-wrap" id="alwaysOnWrap">Always on.<svg class="always-on-underline" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path id="alwaysOnPath" d="M 0,10 Q 75,0 150,10 Q 225,20 300,10"/></svg></span></h2>
+              <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;color:var(--color-white);line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.25rem;" data-text-effect="customDelay">Your AI operator.<br><span class="always-on-wrap" id="alwaysOnWrap">Always on.<svg class="always-on-underline" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path id="alwaysOnPath" d="M 0,10 Q 75,0 150,10 Q 225,20 300,10"/></svg></span></h2>
               <p style="color:var(--color-text-muted);font-size:1rem;line-height:1.7;margin-bottom:2rem;">Owl is not a chatbot. It's a multi-model AI operator that lives inside your workspace — switching between Claude, GPT-4, and Gemini depending on what the task demands. Sharp, direct, and unrestricted.</p>
               <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:2rem;">
                 <div style="display:flex;align-items:flex-start;gap:12px;">
@@ -521,7 +562,7 @@
 
         <div class="container">
           <div class="section-header section-header--center" data-reveal>
-            <h2 id="motion-heading" class="section-title">CREA CON <span class="hero__title-highlight">AIKE MOTION</span></h2>
+            <h2 id="motion-heading" class="section-title" data-text-effect="preset">CREA CON <span class="hero__title-highlight">AIKE MOTION</span></h2>
             <p class="section-subtitle">Come vorresti iniziare?</p>
           </div>
 

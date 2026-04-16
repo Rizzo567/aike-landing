@@ -49,14 +49,16 @@
       padding: 20px;
       display: flex;
       justify-content: center;
+      align-items: center;
     }
 
-    .pricing-hero__visual img {
+    .pricing-hero__visual > img {
       width: 100%;
       max-width: 1000px;
       height: auto;
       position: relative;
       z-index: 2;
+      object-fit: contain;
     }
 
     @media (max-width: 768px) {

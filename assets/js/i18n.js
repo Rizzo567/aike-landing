@@ -3,7 +3,6 @@
     en: {
       // Nav
       'nav.solutions': 'Solutions',
-      'nav.pricing': 'Pricing',
       'nav.stories': 'Success Stories',
       'nav.owl': 'Try Owl',
       'nav.book': 'Book a call',
@@ -32,7 +31,6 @@
     it: {
       // Nav
       'nav.solutions': 'Soluzioni',
-      'nav.pricing': 'Prezzi',
       'nav.stories': 'Storie di Successo',
       'nav.owl': 'Prova Owl',
       'nav.book': 'Prenota una call',

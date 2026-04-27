@@ -12,7 +12,6 @@ const getHeaderHTML = (b) => `
     </a>
     <nav class="header__nav hide-on-mobile">
       <a href="${b}pages/solutions.html" class="header__link">Solutions</a>
-      <a href="${b}pages/pricing.html" class="header__link">Pricing</a>
       <a href="${b}pages/owl.html" class="header__link" data-admin-only style="display:none">Owl</a>
       <a href="${b}pages/plane.html" class="header__link" data-admin-only style="display:none">Plane</a>
       <a href="${b}pages/operations-os.html" class="header__link" data-admin-only style="display:none">OperationsOS</a>
@@ -51,12 +50,6 @@ const getHeaderHTML = (b) => `
             Impostazioni
           </button>
 
-          <!-- Upgrade -->
-          <a href="${b}pages/pricing.html" role="menuitem" class="dropdown-item">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="17 11 21 7 17 3"/><line x1="21" y1="7" x2="9" y2="7"/><path d="M3 17a4 4 0 0 0 4 4h8"/></svg>
-            Upgrade piano
-          </a>
-
           <div class="dropdown-separator"></div>
 
           <!-- Logout -->
@@ -78,7 +71,6 @@ const getHeaderHTML = (b) => `
   <div class="mobile-nav-panel" id="mobile-nav-panel">
     <div class="mobile-nav-panel-inner">
       <a href="${b}pages/solutions.html" class="mobile-nav-link">Solutions</a>
-      <a href="${b}pages/pricing.html" class="mobile-nav-link">Pricing</a>
       <a href="${b}pages/owl.html" class="mobile-nav-link" data-admin-only style="display:none">Owl</a>
       <a href="${b}pages/plane.html" class="mobile-nav-link" data-admin-only style="display:none">Plane</a>
       <a href="${b}pages/operations-os.html" class="mobile-nav-link" data-admin-only style="display:none">OperationsOS</a>
@@ -110,7 +102,6 @@ const getFooterHTML = (b) => `
 
         <nav class="footer__nav" aria-label="Footer navigation">
           <a href="${b}pages/solutions.html" class="footer__link">Solutions</a>
-          <a href="${b}pages/pricing.html" class="footer__link">Pricing</a>
         </nav>
         
         <a href="https://discord.com" target="_blank" rel="noopener" class="footer__link" style="display: flex; align-items: center; gap: 8px; color: var(--color-primary); font-weight: 600;">

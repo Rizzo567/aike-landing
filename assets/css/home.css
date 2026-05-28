@@ -5,10 +5,13 @@
 
 /* ── Hero ──────────────────────────────────────────────────── */
 .hero {
-  padding: var(--space-4xl) 0 var(--space-3xl);
+  padding: var(--space-4xl) 0 calc(var(--space-3xl) + 60px);
   display: flex;
   align-items: center;
   min-height: 90vh;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .hero__layout {
@@ -264,11 +267,11 @@
 }
 
 /* Organic 2D Float Animations */
-.float-icon--1 { top: 5%; left: -5%; animation: float-anim-1 12s ease-in-out infinite alternate; }
-.float-icon--2 { top: 10%; right: 0%; animation: float-anim-2 15s ease-in-out infinite alternate-reverse; }
-.float-icon--3 { top: 40%; left: -15%; animation: float-anim-3 14s ease-in-out infinite alternate; }
-.float-icon--4 { top: 50%; right: -10%; animation: float-anim-4 18s ease-in-out infinite alternate-reverse; }
-.float-icon--5 { bottom: 5%; left: 5%; animation: float-anim-5 16s ease-in-out infinite alternate; }
+.float-icon--1 { top: 5%; left: -5%; animation: float-anim-1 5s ease-in-out infinite alternate; }
+.float-icon--2 { top: 10%; right: 0%; animation: float-anim-2 6s ease-in-out infinite alternate-reverse; }
+.float-icon--3 { top: 40%; left: -15%; animation: float-anim-3 5.5s ease-in-out infinite alternate; }
+.float-icon--4 { top: 50%; right: -10%; animation: float-anim-4 7s ease-in-out infinite alternate-reverse; }
+.float-icon--5 { bottom: 5%; left: 5%; animation: float-anim-5 6.5s ease-in-out infinite alternate; }
 
 
 /* Software Logos - Exclusively Images with NO boxes around them */
@@ -327,29 +330,34 @@
 }
 
 @keyframes float-anim-1 {
-  0%   { transform: translate(0, 0); }
-  50%  { transform: translate(10px, -15px); }
-  100% { transform: translate(-5px, -5px); }
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  33%  { transform: translate(40px, -55px) rotate(6deg); }
+  66%  { transform: translate(-20px, -30px) rotate(-4deg); }
+  100% { transform: translate(-35px, 25px) rotate(3deg); }
 }
 @keyframes float-anim-2 {
-  0%   { transform: translate(0, 0); }
-  50%  { transform: translate(-12px, -10px); }
-  100% { transform: translate(8px, 5px); }
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  33%  { transform: translate(-45px, -40px) rotate(-7deg); }
+  66%  { transform: translate(30px, 20px) rotate(5deg); }
+  100% { transform: translate(50px, -25px) rotate(-3deg); }
 }
 @keyframes float-anim-3 {
-  0%   { transform: translate(0, 0); }
-  50%  { transform: translate(15px, 12px); }
-  100% { transform: translate(-8px, 15px); }
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  33%  { transform: translate(55px, 45px) rotate(8deg); }
+  66%  { transform: translate(-30px, 60px) rotate(-5deg); }
+  100% { transform: translate(20px, -40px) rotate(4deg); }
 }
 @keyframes float-anim-4 {
-  0%   { transform: translate(0, 0); }
-  50%  { transform: translate(-15px, 15px); }
-  100% { transform: translate(10px, -8px); }
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  33%  { transform: translate(-55px, 50px) rotate(-6deg); }
+  66%  { transform: translate(40px, -30px) rotate(7deg); }
+  100% { transform: translate(-25px, -50px) rotate(-4deg); }
 }
 @keyframes float-anim-5 {
-  0%   { transform: translate(0, 0); }
-  50%  { transform: translate(8px, -12px); }
-  100% { transform: translate(-12px, 18px); }
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  33%  { transform: translate(35px, -50px) rotate(5deg); }
+  66%  { transform: translate(-50px, 30px) rotate(-8deg); }
+  100% { transform: translate(45px, 55px) rotate(3deg); }
 }
 
 /* Irregular Minecraft-style Background Pixel Transition */
@@ -798,7 +806,6 @@
 }
 
 /* ── Owl deco background system ── */
-.hero,
 .bundles-section,
 #aikeMotionSection,
 #aikeStories {

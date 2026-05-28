@@ -408,6 +408,317 @@ body.aike-lock { overflow: hidden; }
 }
 
 /* ============================================================
+   1b. VIDEO SECTION
+   ============================================================ */
+.aike-videoSection {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+}
+
+.aike-videoSection::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(to bottom, transparent 0%, #111111 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.aike-videoSection__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.aike-videoSection__copy {
+  position: absolute;
+  top: calc(50% - 180px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 3;
+  pointer-events: none;
+  width: 90%;
+}
+
+.aike-vs-phrase {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.aike-vs-line {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(1.8rem, 3.8vw, 3.2rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  display: block;
+  opacity: 0;
+  max-width: 100%;
+}
+
+.aike-vs-line + .aike-vs-line {
+  margin-top: 0.4rem;
+}
+
+.aike-vs-char {
+  display: inline-block;
+  white-space: pre;
+}
+
+.aike-videoSection__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(17, 0, 34, 0.35) 0%,
+    rgba(10, 0, 20, 0.20) 50%,
+    rgba(17, 0, 34, 0.55) 100%
+  );
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   1c. BLACK SPACER + SCROLL-DRIVEN VIDEO
+   ============================================================ */
+.aike-blackSpacer {
+  position: relative;
+  z-index: 2;
+  background: #111111;
+  height: 550px;
+  width: 100%;
+}
+
+.aike-blackSpacer::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(to bottom, transparent 0%, #111111 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.aike-scrollVideo {
+  position: relative;
+  z-index: 2;
+  height: 100vh;
+  overflow: hidden;
+  background: #111111;
+}
+
+.aike-scrollVideo__sticky {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.aike-scrollVideo__sticky::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background:
+    radial-gradient(ellipse 32% 100% at 0% 50%,   #111111 0%, transparent 100%),
+    radial-gradient(ellipse 32% 100% at 100% 50%, #111111 0%, transparent 100%),
+    radial-gradient(ellipse 100% 32% at 50% 0%,   #111111 0%, transparent 100%),
+    radial-gradient(ellipse 100% 32% at 50% 100%, #111111 0%, transparent 100%);
+}
+
+
+
+/* ── Scroll video cards ── */
+.sv-card {
+  position: absolute;
+  z-index: 15;
+  width: 248px;
+  opacity: 0;
+  transform: scale(0.55) translateY(28px) rotate(-5deg);
+  filter: blur(10px);
+  pointer-events: none;
+  transition: opacity 0.55s cubic-bezier(0.34, 1.9, 0.64, 1),
+              transform 0.6s cubic-bezier(0.34, 1.9, 0.64, 1),
+              filter 0.45s ease;
+}
+.sv-card.is-visible {
+  opacity: 1;
+  transform: scale(1) translateY(0) rotate(0deg);
+  filter: blur(0);
+  pointer-events: auto;
+  animation: sv-float 4s ease-in-out infinite 0.6s;
+}
+@keyframes sv-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-7px); }
+}
+.sv-card__pin {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  padding-left: 2px;
+}
+.sv-card__pin-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #a855f7;
+  box-shadow: 0 0 8px rgba(168,85,247,0.8);
+  animation: sv-pulse 2s ease-in-out infinite;
+}
+@keyframes sv-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(168,85,247,0.7); }
+  50%       { box-shadow: 0 0 14px rgba(168,85,247,1); }
+}
+.sv-card__inner {
+  background: rgba(12, 12, 12, 0.78);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.04) inset;
+}
+.sv-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.sv-card__icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(168,85,247,0.12);
+  border: 1px solid rgba(168,85,247,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sv-card__title {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.sv-card__type {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.38);
+  margin-top: 2px;
+}
+.sv-card__divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 0 0 10px;
+}
+.sv-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.sv-card__address {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.45);
+}
+.sv-card__status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.68rem;
+  color: #4ade80;
+  font-weight: 500;
+}
+.sv-card__status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+}
+.sv-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sv-card__stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.sv-card__rating {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fff;
+  margin-left: 3px;
+}
+.sv-card__reviews {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.35);
+}
+.sv-card__cta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #a855f7;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.sv-card__cta:hover { color: #c084fc; }
+
+.aike-scrollVideo__video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 81%;
+  height: 81%;
+  object-fit: cover;
+  display: block;
+  -webkit-mask-image: radial-gradient(ellipse 78% 78% at 50% 50%, black 30%, transparent 95%);
+  mask-image: radial-gradient(ellipse 78% 78% at 50% 50%, black 30%, transparent 95%);
+}
+
+.aike-scrollVideo__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+/* ============================================================
    2. VIBE MOTION SECTION
    ============================================================ */
 .aike-vibeSection {

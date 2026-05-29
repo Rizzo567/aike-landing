@@ -550,14 +550,16 @@ body.aike-lock { overflow: hidden; }
 .sv-card {
   position: absolute;
   z-index: 15;
-  width: 248px;
+  width: 300px;
   opacity: 0;
   transform: scale(0.55) translateY(28px) rotate(-5deg);
   filter: blur(10px);
   pointer-events: none;
   transition: opacity 0.55s cubic-bezier(0.34, 1.9, 0.64, 1),
               transform 0.6s cubic-bezier(0.34, 1.9, 0.64, 1),
-              filter 0.45s ease;
+              filter 0.45s ease,
+              top 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+              left 0.38s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .sv-card.is-visible {
   opacity: 1;
@@ -590,13 +592,13 @@ body.aike-lock { overflow: hidden; }
   50%       { box-shadow: 0 0 14px rgba(168,85,247,1); }
 }
 .sv-card__inner {
-  background: rgba(12, 12, 12, 0.78);
+  background: rgba(12, 12, 12, 0.50);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255,255,255,0.09);
   border-radius: 16px;
-  padding: 14px 16px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.04) inset;
+  padding: 16px 18px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.38), 0 1px 0 rgba(255,255,255,0.04) inset;
 }
 .sv-card__header {
   display: flex;

@@ -544,6 +544,25 @@ body.aike-lock { overflow: hidden; }
     radial-gradient(ellipse 100% 32% at 50% 100%, #111111 0%, transparent 100%);
 }
 
+/* Dissolvenza inferiore: ammorbidisce lo stacco video → nero.
+   z-index 6 (sopra video+overlay+::before), ma sotto .cloud-scene (z-index 5
+   su stacking sibling → le nuvole restano sopra la dissolvenza). */
+.aike-scrollVideo__sticky::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 55%;
+  pointer-events: none;
+  z-index: 6;
+  background: linear-gradient(to bottom,
+    rgba(17, 17, 17, 0) 0%,
+    rgba(17, 17, 17, 0.55) 45%,
+    rgba(17, 17, 17, 0.92) 72%,
+    #111111 88%);
+}
+
 
 
 /* ── Scroll video cards ── */
@@ -702,9 +721,9 @@ body.aike-lock { overflow: hidden; }
 
 .aike-scrollVideo__video {
   position: absolute;
-  top: 50%;
+  top: 0;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   width: 81%;
   height: 81%;
   object-fit: cover;
@@ -1492,3 +1511,97 @@ body.aike-lock { overflow: hidden; }
   background: var(--color-primary-dim);
   transform: translateY(-2px);
 }
+
+/* ── Cloud scene wrapper: garantisce che nuvole siano sopra sezione 4 ── */
+.cloud-scene {
+  position: relative;
+  z-index: 5; /* > z-index:2 di .aike-letters */
+}
+
+/* ── Cloud Transition ── */
+.aike-cloudTransition {
+  position: relative;
+  z-index: 10;
+  height: 200px;      /* bordo dentro la massa nuvolosa: i puff più bassi sporgono
+                         e coprono le cime delle lettere (effetto "dietro le nuvole") */
+  margin-top: -210px;  /* copre il fondo della sezione 3 */
+  overflow: visible;   /* i puff sporgono sotto la band, sopra le lettere */
+  background: #111111; /* tinta unita: sez.3 e sez.4 ora stesso sfondo, nessun seam */
+  pointer-events: none;
+}
+
+.act-c {
+  position: absolute;
+  height: auto;
+  z-index: 1;
+}
+
+@keyframes cf-a {
+  0%,100% { transform: translate(0,0); }
+  25%     { transform: translate(8px,-6px); }
+  50%     { transform: translate(-5px,9px); }
+  75%     { transform: translate(-8px,-3px); }
+}
+@keyframes cf-b {
+  0%,100% { transform: translate(0,0); }
+  25%     { transform: translate(-7px,5px); }
+  50%     { transform: translate(9px,-8px); }
+  75%     { transform: translate(4px,7px); }
+}
+@keyframes cf-c {
+  0%,100% { transform: translate(0,0); }
+  33%     { transform: translate(6px,9px); }
+  66%     { transform: translate(-9px,-5px); }
+}
+@keyframes cf-d {
+  0%,100% { transform: translate(0,0); }
+  20%     { transform: translate(-6px,-9px); }
+  40%     { transform: translate(9px,5px); }
+  60%     { transform: translate(-4px,8px); }
+  80%     { transform: translate(7px,-7px); }
+}
+
+/* Nuvole alte — movimento pieno */
+.act-c:nth-child(4n+1) { animation: cf-a  7s ease-in-out infinite; }
+.act-c:nth-child(4n+2) { animation: cf-b  9s ease-in-out infinite; animation-delay: -3s; }
+.act-c:nth-child(4n+3) { animation: cf-c  8s ease-in-out infinite; animation-delay: -5s; }
+.act-c:nth-child(4n+4) { animation: cf-d 11s ease-in-out infinite; animation-delay: -7s; }
+
+/* Animazioni ridotte (max 3px) per nuvole basse */
+@keyframes cf-a-sm {
+  0%,100% { transform: translate(0,0); }
+  25%     { transform: translate(2px,-2px); }
+  50%     { transform: translate(-2px,3px); }
+  75%     { transform: translate(-3px,-1px); }
+}
+@keyframes cf-b-sm {
+  0%,100% { transform: translate(0,0); }
+  25%     { transform: translate(-2px,2px); }
+  50%     { transform: translate(3px,-2px); }
+  75%     { transform: translate(1px,3px); }
+}
+@keyframes cf-c-sm {
+  0%,100% { transform: translate(0,0); }
+  33%     { transform: translate(2px,3px); }
+  66%     { transform: translate(-3px,-2px); }
+}
+@keyframes cf-d-sm {
+  0%,100% { transform: translate(0,0); }
+  20%     { transform: translate(-2px,-3px); }
+  40%     { transform: translate(3px,2px); }
+  60%     { transform: translate(-1px,3px); }
+  80%     { transform: translate(2px,-2px); }
+}
+
+/* Nuvole dalla 10a in giù — movimento ridotto (sovrascrive le regole sopra) */
+.act-c:nth-child(n+10):nth-child(4n+1) { animation: cf-a-sm  7s ease-in-out infinite; }
+.act-c:nth-child(n+10):nth-child(4n+2) { animation: cf-b-sm  9s ease-in-out infinite; animation-delay: -3s; }
+.act-c:nth-child(n+10):nth-child(4n+3) { animation: cf-c-sm  8s ease-in-out infinite; animation-delay: -5s; }
+.act-c:nth-child(n+10):nth-child(4n+4) { animation: cf-d-sm 11s ease-in-out infinite; animation-delay: -7s; }
+
+
+@media (max-width: 768px) {
+  .aike-cloudTransition { height: 160px; }
+  .act-c { transform: scale(0.6); transform-origin: left top; }
+}
+

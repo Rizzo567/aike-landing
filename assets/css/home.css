@@ -1540,3 +1540,65 @@
     align-items: flex-start;
   }
 }
+
+/* ── Section 4: Parallax Letters (roiheads style) ───────── */
+.aike-letters {
+  position: relative;
+  z-index: 2;
+  height: 160vh;
+  background: #111111; /* uguale allo sfondo della sezione 3 (.aike-scrollVideo) */
+}
+
+/* Sticky viewport — letters live here, scroll drives transforms */
+.aike-letters__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Each letter: absolutely placed, moved only via transform */
+.al-letter {
+  position: absolute;
+  left: var(--left, 0);
+  top: var(--top, 0);
+  width: var(--w, 22vw);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.al-letter img {
+  width: 100%;
+  aspect-ratio: 1 / 1;   /* PNG quadrati 500x500: box ad altezza corretta anche prima del load
+                            (così il calcolo HIDE conosce subito l'altezza reale) */
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+
+/* Colored placeholder — replace with <img> when real asset is ready */
+.al-ph {
+  width: 100%;
+  aspect-ratio: 0.88;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(168, 85, 247, 0.07);
+  border: 2px dashed rgba(168, 85, 247, 0.28);
+  border-radius: 10px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  color: rgba(168, 85, 247, 0.5);
+  font-size: clamp(28px, 7vw, 95px);
+  letter-spacing: -0.02em;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .al-letter { width: calc(var(--w, 22vw) * 0.75); }
+}
+
+@media (max-width: 480px) {
+  .aike-letters { height: 180vh; }
+  .al-letter { width: calc(var(--w, 22vw) * 0.6); }
+}

@@ -1,5 +1,10 @@
 # Aike — Claude Code Context
 
+## Model Policy
+- Coding, debugging, architettura, ragionamento → **Opus 4.8** (`claude-opus-4-8`) SEMPRE
+- Riscrittura testi, azioni ripetitive, formatting → Sonnet 4.6
+- Regola permanente dal 2026-05-29, nessuna eccezione
+
 ## What This Is
 
 Aike è una SaaS di automazione business premium. Stack statico (HTML/CSS/JS puro, zero framework, zero build tool) su Cloudflare Pages con Supabase per auth + DB e Stripe Checkout per pagamenti.

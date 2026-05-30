@@ -18,8 +18,8 @@
   <!-- Styles -->
   <link rel="stylesheet" href="assets/css/styles.css?v=5" />
   <link rel="stylesheet" href="assets/css/components.css?v=6" />
-  <link rel="stylesheet" href="assets/css/home.css?v=5" />
-  <link rel="stylesheet" href="assets/css/sections.css?v=5" />
+  <link rel="stylesheet" href="assets/css/home.css?v=11" />
+  <link rel="stylesheet" href="assets/css/sections.css?v=12" />
   <style>
     /* ── Text Effects ── */
     [data-text-effect] .te-word {
@@ -226,6 +226,9 @@
         </div>
       </section>
 
+      <!-- ── Wrapper sezione 3 + cloud transition (z-index > lettere) ── -->
+      <div class="cloud-scene">
+
       <!-- ── Scroll-Driven Video Section ───────────────────── -->
       <section class="aike-scrollVideo" aria-hidden="true">
         <div class="aike-scrollVideo__sticky">
@@ -277,6 +280,50 @@
               </div>
             </div>
           </div>
+
+        </div>
+      </section>
+
+      <!-- ── Cloud Transition (scrollVideo → letters) ──────── -->
+      <div class="aike-cloudTransition" aria-hidden="true">
+        <!-- estrema sinistra extra -->
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:-60px;top:-52px;">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:-60px;top:60px;">
+        <!-- fila alta -->
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:454px;left:0%;top:-32px;">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:15%;top:-58px;">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:454px;left:30%;top:-22px;">
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:353px;left:45%;top:-46px;">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:454px;left:58%;top:-28px;">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:403px;left:73%;top:-55px;">
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:353px;left:87%;top:-34px;">
+        <!-- fila bassa -->
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:7%;top:58px;">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:22%;top:78px;">
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:454px;left:34%;top:48px;">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:49%;top:72px;">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:63%;top:55px;">
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:454px;left:76%;top:82px;">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;right:0;top:62px;">
+        <!-- fila centrale -->
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:11%;top:10px;">
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:403px;left:39%;top:4px;">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:353px;left:55%;top:16px;">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:403px;left:80%;top:8px;">
+      </div>
+
+      </div><!-- end .cloud-scene -->
+
+      <!-- ── Section 4: Parallax Letters ──────────────────── -->
+      <section class="aike-letters" id="letters-section" aria-label="AIKE — We Move Your Brand">
+        <div class="aike-letters__sticky">
+
+          <!-- aike -->
+          <!-- a --> <div class="al-letter" style="--left:15vw;--top:6vh;--w:26vw"><img src="assets/images/letters/letter-a.png" alt="a"></div>
+          <!-- i --> <div class="al-letter" style="--left:30vw;--top:2vh;--w:26vw"><img src="assets/images/letters/letter-i.png" alt="i"></div>
+          <!-- k --> <div class="al-letter" style="--left:44vw;--top:8vh;--w:26vw"><img src="assets/images/letters/letter-k.png" alt="k"></div>
+          <!-- e --> <div class="al-letter" style="--left:59vw;--top:3vh;--w:26vw"><img src="assets/images/letters/letter-e.png" alt="e"></div>
+
 
         </div>
       </section>
@@ -380,16 +427,20 @@
     /* ── RAF / timer cleanup ── */
     var rafs   = [];
     var timers = [];
+    var seqGen = 0;
     function killAll() {
+      seqGen++;
       rafs.forEach(function (r) { cancelAnimationFrame(r); }); rafs = [];
       timers.forEach(clearTimeout); timers = [];
     }
 
     /* ── Bounce enter (AE damped oscillation) ── */
     function runBounce(lineEl, startDelayMs) {
+      var myGen = seqGen;
       var amp = 10, freq = 3.8, decay = 18, charDelay = 0.018;
       var t0 = performance.now() + startDelayMs;
       function tick(now) {
+        if (seqGen !== myGen) return;
         var h = requestAnimationFrame(tick); rafs.push(h);
         if (now < t0) return;
         var elapsed = (now - t0) / 1000;
@@ -505,7 +556,7 @@
     /* ── Scroll check ── */
     function check() {
       var top = section.getBoundingClientRect().top;
-      if (top <= 0) {
+      if (top <= 0 && top > -(section.offsetHeight + 100)) {
         if (!playing) { playing = true; video.play(); }
         if (seqState === 'idle') startSequence();
       } else {
@@ -530,7 +581,7 @@
     if (!section || !video) return;
 
     var CHUNK_S    = 2.6;
-    var COOLDOWN_S = 1.0;
+    var COOLDOWN_S = 0.2;
     var CARD_W     = 300;
 
     function getCardPositions() {
@@ -752,7 +803,7 @@
       var top = section.getBoundingClientRect().top;
       if (state === 'idle') {
         if (top > 10) canEnter = true;          // section scrolled out of view → allow re-entry
-        if (top <= 0 && canEnter) enterSection();
+        if (top <= 0 && top > -(section.offsetHeight + 100) && canEnter) enterSection();
       } else if (state !== 'done') {
         if (top > 10) reset(false);
       }
@@ -936,6 +987,101 @@
       }
     };
   })();
+  </script>
+
+  <!-- Letters entrance — slide down from behind clouds, a/e rotate into place -->
+  <script>
+  (function () {
+    var section = document.getElementById('letters-section');
+    if (!section) return;
+    var clouds = document.querySelectorAll('.act-c'); /* i singoli puff */
+
+    /* Rotazione finale per lettera (gradi, segno alterna lato):
+       a -30 (sx), i +10 (dx), k -10 (sx), e +30 (dx) */
+    var ROT = { a: -30, i: 10, k: -10, e: 30 };
+
+    /* Tuning */
+    var GAP     = 15;   /* riposo: cime lettere appena sotto la band → coperte dai puff bassi */
+    var SLIDE   = 600;  /* px di scroll per completare lo slide */
+    var BEFORE  = 770;  /* slide parte presto: nuvole ancora nella metà bassa dello schermo */
+    var STAGGER = 45;   /* sfasamento scroll tra lettere (px) */
+
+    var items = [];
+    section.querySelectorAll('.al-letter').forEach(function (el, idx) {
+      var img = el.querySelector('img');
+      var key = img ? img.getAttribute('alt') : '';
+      items.push({ el: el, rot: ROT[key] || 0, stagger: idx * STAGGER, top: 0, h: 0 });
+      /* ricalcola appena l'immagine ha dimensioni reali (altezza per HIDE) */
+      if (img && !img.complete) img.addEventListener('load', function () { recalc(); update(); });
+    });
+
+    var puffsBottom = 0;  /* bordo basso reale delle nuvole (non della band) */
+    var restOffset  = 0;  /* porta la lettera più in alto a GAP px sotto i puff */
+    var HIDE        = 0;  /* risalita iniziale: tutte le lettere coperte dalle nuvole */
+    var ticking     = false;
+
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+    function recalc() {
+      var pb = 0;
+      for (var c = 0; c < clouds.length; c++) {
+        pb = Math.max(pb, clouds[c].getBoundingClientRect().bottom + window.pageYOffset);
+      }
+      puffsBottom = pb || (section.getBoundingClientRect().top + window.pageYOffset);
+
+      var minTop = Infinity, need = 0;
+      for (var i = 0; i < items.length; i++) {
+        items[i].top = items[i].el.offsetTop;
+        items[i].h   = items[i].el.offsetHeight;
+        if (items[i].top < minTop) minTop = items[i].top;
+      }
+      if (!isFinite(minTop)) minTop = 0;
+      restOffset = GAP - minTop;
+      for (var j = 0; j < items.length; j++) {
+        need = Math.max(need, items[j].top + restOffset + items[j].h);
+      }
+      HIDE = need + 180; /* margine ampio: lettere completamente nascoste dietro le nuvole all'inizio */
+    }
+
+    function update() {
+      var start = puffsBottom - BEFORE;
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        var p = (window.pageYOffset - start - it.stagger) / SLIDE;
+        p = p < 0 ? 0 : (p > 1 ? 1 : p);
+        var e = easeOutCubic(p);
+        /* da (restOffset - HIDE) [su, dietro nuvole] → restOffset [GAP sotto i puff] */
+        var y = restOffset - (1 - e) * HIDE;
+        var r = it.rot * e;
+        it.el.style.transform =
+          'translateY(' + y.toFixed(1) + 'px) rotate(' + r.toFixed(2) + 'deg)';
+      }
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+
+    window.addEventListener('resize', function () { recalc(); update(); }, { passive: true });
+
+    /* misura dopo che immagini lettere/nuvole hanno layout */
+    window.addEventListener('load', function () { recalc(); update(); });
+
+    recalc();
+    update();
+  })();
+  </script>
+
+  <!-- Dev: scroll to cloud transition on load -->
+  <script>
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.addEventListener('load', function () {
+    var el = document.querySelector('.aike-cloudTransition');
+    if (!el) return;
+    var y = el.getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2) + (el.offsetHeight / 2);
+    window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
+  });
   </script>
 
   <!-- Scripts -->

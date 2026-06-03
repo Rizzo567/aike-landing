@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /pages/admin.html
+Disallow: /pages/login.html
+Disallow: /pages/signup.html
+Disallow: /pages/success.html
+
+Sitemap: https://aikeautomation.com/sitemap.xml

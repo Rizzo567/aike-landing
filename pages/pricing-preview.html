@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I nostri servizi | aike</title>
+  <meta name="description" content="Soluzioni su misura per ogni business — siti web, marketing, automazioni e motion graphics. Richiedi un preventivo personalizzato." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/components.css?v=6" />
+  <link rel="stylesheet" href="../assets/css/sections.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/home.css?v=5" />
+
+  <style>
+    /* ── Services hero ── */
+    .pricing-hero {
+      text-align: center;
+      padding: var(--space-4xl) 0 var(--space-3xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-hero::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .pricing-hero .badge { margin-bottom: var(--space-md); }
+
+    .pricing-hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-md);
+    }
+
+    .pricing-hero p {
+      font-size: 1.1rem;
+      max-width: 560px;
+      margin: 0 auto var(--space-xl);
+      color: var(--color-text-muted);
+    }
+
+    /* ── Services grid ── */
+    .services-section {
+      padding: var(--space-3xl) 0 var(--space-4xl);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: var(--space-2xl);
+    }
+
+    @media (max-width: 768px) {
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Service card ── */
+    .service-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .service-card:hover {
+      border-color: rgba(168,85,247,0.25);
+      transform: translateY(-2px);
+    }
+
+    .service-card--featured {
+      border-color: rgba(168,85,247,0.35);
+      background: linear-gradient(160deg, rgba(168,85,247,0.06) 0%, var(--color-surface) 60%);
+      position: relative;
+    }
+
+    .service-card--featured::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(168,85,247,0.4), transparent 60%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .service-card__badges {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .service-card__badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: rgba(168,85,247,0.12);
+      color: #a855f7;
+      border: 1px solid rgba(168,85,247,0.2);
+    }
+
+    .service-card__badge--secondary {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text-muted);
+      border-color: rgba(255,255,255,0.1);
+    }
+
+    .service-card__title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .service-card__features {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      flex: 1;
+    }
+
+    .service-card__features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    .service-card__features li::before {
+      content: '';
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    .service-card__cta {
+      margin-top: auto;
+    }
+
+    .service-card__cta .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* ── Process section ── */
+    .process-section {
+      padding: var(--space-3xl) 0;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: var(--space-2xl);
+      position: relative;
+    }
+
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 16%;
+      width: 68%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(168,85,247,0.3), transparent);
+    }
+
+    @media (max-width: 768px) {
+      .process-steps { grid-template-columns: 1fr; }
+      .process-steps::before { display: none; }
+    }
+
+    .process-step {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .process-step-num {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      border: 1px solid rgba(168,85,247,0.3);
+      color: var(--color-primary);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .process-step h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-white);
+      margin: 0;
+    }
+
+    .process-step p {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      max-width: 220px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── FAQ section ── */
+    .pricing-faq {
+      padding: var(--space-3xl) 0 var(--space-4xl);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      max-width: 880px;
+      margin: var(--space-2xl) auto 0;
+    }
+
+    @media (max-width: 700px) { .faq-grid { grid-template-columns: 1fr; } }
+
+    .faq-item {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+    }
+
+    .faq-q {
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: 0.6rem;
+      font-size: 0.92rem;
+    }
+
+    .faq-a {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      line-height: 1.65;
+    }
+
+    /* ── CTA bottom ── */
+    .pricing-cta-section {
+      padding: var(--space-3xl) 0;
+      text-align: center;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .pricing-cta-section h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-md);
+    }
+
+    .pricing-cta-section p {
+      font-size: 1.05rem;
+      color: var(--color-text-muted);
+      max-width: 480px;
+      margin: 0 auto var(--space-xl);
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div id="navbar-placeholder"></div>
+
+    <main class="main-content">
+
+      <!-- Hero -->
+      <section class="pricing-hero">
+        <div class="container">
+          <span class="badge" data-reveal>I nostri servizi</span>
+          <h1 data-reveal style="transition-delay:0.08s;">
+            Soluzioni su misura<br>per il tuo <span class="text-purple">business</span>
+          </h1>
+          <p data-reveal style="transition-delay:0.16s;">
+            Soluzioni su misura per ogni business — richiedi un preventivo personalizzato.
+          </p>
+          <a href="booking.html" class="btn btn-primary" data-reveal style="transition-delay:0.24s; display:inline-flex;">
+            Richiedi un preventivo
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+      </section>
+
+      <!-- Services Grid -->
+      <section class="services-section">
+        <div class="container">
+          <div class="services-grid">
+
+            <!-- Card 1 — Website Creation (featured) -->
+            <div class="service-card service-card--featured" data-reveal>
+              <div class="service-card__badges">
+                <span class="service-card__badge">Website Creation</span>
+              </div>
+              <h2 class="service-card__title">Siti web che convertono</h2>
+              <ul class="service-card__features">
+                <li>Design custom pensato per il tuo brand</li>
+                <li>Mobile-first e ottimizzato per ogni dispositivo</li>
+                <li>SEO tecnico integrato dalla prima pagina</li>
+                <li>CMS per aggiornare i contenuti in autonomia</li>
+                <li>Analytics e monitoraggio delle performance</li>
+                <li>Supporto dedicato post-lancio</li>
+              </ul>
+              <div class="service-card__cta">
+                <a href="booking.html?service=website_creation" class="btn btn-primary">
+                  Richiedi preventivo
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Card 2 — Marketing -->
+            <div class="service-card" data-reveal style="transition-delay:0.08s;">
+              <div class="service-card__badges">
+                <span class="service-card__badge">Marketing</span>
+              </div>
+              <h2 class="service-card__title">Il tuo reparto marketing, potenziato dall'AI</h2>
+              <ul class="service-card__features">
+                <li>Strategia di contenuti su misura per il tuo settore</li>
+                <li>Campagne Google Ads e Meta Ads ottimizzate</li>
+                <li>Copywriting potenziato dall'intelligenza artificiale</li>
+                <li>Social media management e piano editoriale</li>
+                <li>Email marketing e automation dei flussi</li>
+                <li>Reporting mensile chiaro e misurabile</li>
+              </ul>
+              <div class="service-card__cta">
+                <a href="booking.html?service=marketing" class="btn btn-outline">
+                  Richiedi preventivo
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Card 3 — Automazioni -->
+            <div class="service-card" data-reveal style="transition-delay:0.16s;">
+              <div class="service-card__badges">
+                <span class="service-card__badge">Automazioni</span>
+              </div>
+              <h2 class="service-card__title">Automatizza le operazioni che ti rallentano</h2>
+              <ul class="service-card__features">
+                <li>Workflow su misura per i tuoi processi aziendali</li>
+                <li>Integrazione con CRM, Notion, Gmail e altri tool</li>
+                <li>Notifiche e aggiornamenti via Telegram</li>
+                <li>Gestione automatica dei lead in ingresso</li>
+                <li>Reportistica automatizzata e dashboard live</li>
+                <li>Manutenzione e ottimizzazione continua incluse</li>
+              </ul>
+              <div class="service-card__cta">
+                <a href="booking.html?service=automazioni" class="btn btn-outline">
+                  Richiedi preventivo
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Card 4 — AIKE Motion -->
+            <div class="service-card" data-reveal style="transition-delay:0.24s;">
+              <div class="service-card__badges">
+                <span class="service-card__badge">AIKE Motion</span>
+                <span class="service-card__badge service-card__badge--secondary">Secondario</span>
+              </div>
+              <h2 class="service-card__title">Animazioni che fanno fermare lo scroll</h2>
+              <ul class="service-card__features">
+                <li>Animazioni video per ads su social media</li>
+                <li>Motion graphics branded e d'impatto visivo</li>
+                <li>Video promozionali e spot brevi</li>
+                <li>Formato adattato per ogni piattaforma (Reels, Stories, Feed)</li>
+                <li>Consegne rapide con revisioni incluse</li>
+              </ul>
+              <div class="service-card__cta">
+                <a href="booking.html?service=aike_motion" class="btn btn-outline">
+                  Richiedi preventivo
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Process -->
+      <section class="process-section">
+        <div class="container">
+          <div class="section-header" data-reveal>
+            <span class="badge">Come lavoriamo</span>
+            <h2>Dal brief alla soluzione — in 3 passi</h2>
+          </div>
+          <div class="process-steps">
+            <div class="process-step" data-reveal>
+              <div class="process-step-num">01</div>
+              <h3>Discovery</h3>
+              <p>Ascoltiamo il tuo business, i tuoi obiettivi e il tuo pubblico. Nessun template — costruiamo attorno alle tue esigenze.</p>
+            </div>
+            <div class="process-step" data-reveal style="transition-delay:0.1s;">
+              <div class="process-step-num">02</div>
+              <h3>Progettazione & sviluppo</h3>
+              <p>Progettiamo, tu rivedi. Cicli di iterazione rapidi con piena trasparenza a ogni fase.</p>
+            </div>
+            <div class="process-step" data-reveal style="transition-delay:0.2s;">
+              <div class="process-step-num">03</div>
+              <h3>Lancio & crescita</h3>
+              <p>La tua soluzione va live. Ci assicuriamo che sia performante, tracciata e pronta a generare risultati da subito.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="pricing-faq">
+        <div class="container">
+          <div class="section-header" data-reveal>
+            <h2>Domande frequenti</h2>
+          </div>
+          <div class="faq-grid" data-reveal>
+            <div class="faq-item">
+              <div class="faq-q">Come funzionano i prezzi?</div>
+              <p class="faq-a">Ogni progetto è unico — offriamo preventivi personalizzati in base alle tue esigenze, agli obiettivi e al perimetro del lavoro. Nessun costo fisso, nessuna sorpresa.</p>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Quanto tempo ci vuole per realizzare un sito?</div>
+              <p class="faq-a">Un sito base è solitamente pronto in 5–7 giorni. Per progetti più articolati definiamo insieme una timeline chiara dopo la call di discovery.</p>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Che tipo di automazioni realizzate?</div>
+              <p class="faq-a">Costruiamo workflow personalizzati: dalla gestione automatica dei lead, all'integrazione con CRM e tool di produttività, fino a notifiche e reportistica automatizzata. Usiamo Make.com e le API dei principali servizi cloud.</p>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Come lavorate sul marketing?</div>
+              <p class="faq-a">Partiamo da una strategia su misura per il tuo settore, poi gestiamo campagne, contenuti e distribuzione. L'AI ci permette di produrre più velocemente, ma ogni output è revisionato e adattato al tuo brand.</p>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Posso combinare più servizi?</div>
+              <p class="faq-a">Assolutamente. Molti clienti combinano website + automazioni, o marketing + motion graphics. Possiamo costruire un pacchetto integrato che copre le tue esigenze complete.</p>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Cosa succede dopo la consegna?</div>
+              <p class="faq-a">Offriamo supporto post-consegna e pacchetti di manutenzione continuativa. Per i siti, possiamo configurare un CMS così puoi aggiornare i contenuti in autonomia.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom CTA -->
+      <section class="pricing-cta-section">
+        <div class="container">
+          <h2 data-reveal>Non sai quale servizio fa per te?</h2>
+          <p data-reveal style="transition-delay:0.08s;">Parlaci del tuo progetto — troviamo insieme la soluzione giusta.</p>
+          <a href="booking.html" class="btn btn-primary" data-reveal style="transition-delay:0.16s; display:inline-flex;">
+            Richiedi un preventivo gratuito
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+      </section>
+
+    </main>
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/analytics.js"></script>
+  <script src="../assets/js/bundle.js"></script>
+
+  <script>
+  (function () {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('[data-reveal]').forEach(function (el) { io.observe(el); });
+  })();
+  </script>
+</body>
+</html>

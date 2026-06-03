@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Richiedi un preventivo | aike</title>
+  <meta name="description" content="Parlaci del tuo progetto — ti risponderemo entro 24 ore con un preventivo personalizzato." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/components.css?v=6" />
+  <link rel="stylesheet" href="../assets/css/sections.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/home.css?v=5" />
+
+  <style>
+    /* ── Booking page — form styles ── */
+
+    .booking-hero {
+      text-align: center;
+      padding: var(--space-4xl) 0 var(--space-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .booking-hero::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.09) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .booking-hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-md);
+      position: relative;
+    }
+
+    .booking-hero p {
+      font-size: 1.05rem;
+      color: var(--color-text-muted);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.65;
+      position: relative;
+    }
+
+    /* ── Form section ── */
+    .booking-form-section {
+      padding: var(--space-xl) 0 var(--space-4xl);
+    }
+
+    .booking-form-card {
+      max-width: 640px;
+      margin: 0 auto;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      padding: 2.5rem;
+    }
+
+    @media (max-width: 680px) {
+      .booking-form-card {
+        padding: 1.75rem 1.25rem;
+        border-radius: 12px;
+      }
+    }
+
+    /* ── Form field group ── */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #9ca3af;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .form-label .optional-tag {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: rgba(156, 163, 175, 0.6);
+      margin-left: 0.35rem;
+    }
+
+    /* ── Shared input styles ── */
+    .form-input,
+    .form-select,
+    .form-textarea {
+      background: #222222;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-family: var(--font-sans);
+      width: 100%;
+      transition: border-color 250ms ease, box-shadow 250ms ease;
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: rgba(156, 163, 175, 0.5);
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: #a855f7;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+      outline: none;
+    }
+
+    .form-input.input-error,
+    .form-select.input-error,
+    .form-textarea.input-error {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    /* ── Select arrow ── */
+    .form-select-wrapper {
+      position: relative;
+    }
+
+    .form-select-wrapper::after {
+      content: '';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid #9ca3af;
+      pointer-events: none;
+    }
+
+    .form-select {
+      cursor: pointer;
+      padding-right: 2.5rem;
+    }
+
+    .form-select option {
+      background: #222222;
+      color: #ffffff;
+    }
+
+    .form-select option[value=""] {
+      color: rgba(156, 163, 175, 0.5);
+    }
+
+    /* ── Textarea ── */
+    .form-textarea {
+      resize: vertical;
+      min-height: 110px;
+      line-height: 1.6;
+    }
+
+    /* ── Error message ── */
+    .field-error {
+      font-size: 0.78rem;
+      color: #ef4444;
+      margin-top: 0.35rem;
+      display: none;
+    }
+
+    .field-error.visible {
+      display: block;
+    }
+
+    /* ── Submit button ── */
+    .form-submit-btn {
+      width: 100%;
+      margin-top: 1.75rem;
+      justify-content: center;
+      font-size: 1rem;
+      padding: 0.85rem 1.5rem;
+    }
+
+    /* ── Two-column row on desktop ── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 560px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Confirmation card ── */
+    .booking-confirm {
+      max-width: 640px;
+      margin: 0 auto;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      text-align: center;
+      display: none;
+    }
+
+    .booking-confirm.visible {
+      display: block;
+    }
+
+    .confirm-icon {
+      width: 64px;
+      height: 64px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .confirm-icon svg {
+      color: #22c55e;
+    }
+
+    .confirm-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--color-white);
+      margin-bottom: 0.75rem;
+    }
+
+    .confirm-text {
+      font-size: 1rem;
+      color: var(--color-text-muted);
+      line-height: 1.65;
+      max-width: 400px;
+      margin: 0 auto 1.25rem;
+    }
+
+    .confirm-preview-note {
+      font-size: 0.78rem;
+      color: rgba(156, 163, 175, 0.5);
+      font-style: italic;
+      border-top: 1px solid var(--color-border);
+      padding-top: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ── Purple text accent ── */
+    .text-purple {
+      color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div id="navbar-placeholder"></div>
+
+    <main class="main-content">
+
+      <!-- Hero -->
+      <section class="booking-hero">
+        <div class="container">
+          <span class="badge" data-reveal>Contattaci</span>
+          <h1 data-reveal style="transition-delay: 0.08s;">
+            Parlaci del tuo <span class="text-purple">progetto</span>
+          </h1>
+          <p data-reveal style="transition-delay: 0.16s;">
+            Compila il form — ti risponderemo entro 24 ore con un preventivo personalizzato.
+          </p>
+        </div>
+      </section>
+
+      <!-- Form section -->
+      <section class="booking-form-section">
+        <div class="container">
+
+          <!-- Form card -->
+          <div class="booking-form-card" data-reveal id="booking-form-card">
+            <form id="booking-form" novalidate autocomplete="off">
+
+              <!-- Nome + Azienda -->
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="field-nome">Nome</label>
+                  <input
+                    class="form-input"
+                    type="text"
+                    id="field-nome"
+                    name="nome"
+                    placeholder="Mario Rossi"
+                    required
+                    autocomplete="name"
+                  />
+                  <span class="field-error" id="error-nome">Inserisci il tuo nome.</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="field-azienda">
+                    Azienda
+                    <span class="optional-tag">(opzionale)</span>
+                  </label>
+                  <input
+                    class="form-input"
+                    type="text"
+                    id="field-azienda"
+                    name="azienda"
+                    placeholder="Rossi SRL"
+                    autocomplete="organization"
+                  />
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="form-group">
+                <label class="form-label" for="field-email">Email</label>
+                <input
+                  class="form-input"
+                  type="email"
+                  id="field-email"
+                  name="email"
+                  placeholder="mario@rossi.it"
+                  required
+                  autocomplete="email"
+                />
+                <span class="field-error" id="error-email">Inserisci un indirizzo email valido.</span>
+              </div>
+
+              <!-- Servizio -->
+              <div class="form-group">
+                <label class="form-label" for="service-select">Servizio di interesse</label>
+                <div class="form-select-wrapper">
+                  <select
+                    class="form-select"
+                    id="service-select"
+                    name="service"
+                    required
+                  >
+                    <option value="" disabled selected>Seleziona un servizio...</option>
+                    <option value="website_creation">Website Creation</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="automazioni">Automazioni</option>
+                    <option value="aike_motion">AIKE Motion</option>
+                  </select>
+                </div>
+                <span class="field-error" id="error-service">Seleziona un servizio.</span>
+              </div>
+
+              <!-- Messaggio -->
+              <div class="form-group">
+                <label class="form-label" for="field-messaggio">
+                  Messaggio
+                  <span class="optional-tag">(opzionale)</span>
+                </label>
+                <textarea
+                  class="form-textarea"
+                  id="field-messaggio"
+                  name="messaggio"
+                  placeholder="Descrivi brevemente il tuo progetto..."
+                  rows="4"
+                ></textarea>
+              </div>
+
+              <!-- Submit -->
+              <button type="submit" class="btn btn-primary form-submit-btn">
+                Invia richiesta
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+
+            </form>
+          </div>
+
+          <!-- Confirmation card (hidden until submit) -->
+          <div class="booking-confirm" id="booking-confirm" aria-live="polite">
+            <div class="confirm-icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div class="confirm-title">Richiesta inviata!</div>
+            <p class="confirm-text" id="confirm-text">
+              Grazie! Ti contatteremo entro 24 ore.
+            </p>
+            <p class="confirm-preview-note">
+              *(Questo è un preview — il form non è ancora connesso al backend)*
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/analytics.js"></script>
+  <script src="../assets/js/bundle.js"></script>
+
+  <script>
+  (function () {
+    /* ── Scroll reveal ── */
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('[data-reveal]').forEach(function (el) { io.observe(el); });
+
+    /* ── Pre-fill service from ?service= query param ── */
+    var params = new URLSearchParams(window.location.search);
+    var service = params.get('service');
+    if (service) {
+      var select = document.getElementById('service-select');
+      if (select) select.value = service;
+    }
+
+    /* ── Form validation helpers ── */
+    function setError(fieldId, errorId, show) {
+      var field = document.getElementById(fieldId);
+      var err   = document.getElementById(errorId);
+      if (!field || !err) return;
+      if (show) {
+        field.classList.add('input-error');
+        err.classList.add('visible');
+      } else {
+        field.classList.remove('input-error');
+        err.classList.remove('visible');
+      }
+    }
+
+    function isEmailValid(val) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
+    }
+
+    /* ── Live validation — clear error on input ── */
+    ['field-nome', 'field-email', 'service-select'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', function () {
+        if (id === 'field-nome')    setError('field-nome',    'error-nome',    false);
+        if (id === 'field-email')   setError('field-email',   'error-email',   false);
+        if (id === 'service-select') setError('service-select', 'error-service', false);
+      });
+      el.addEventListener('change', function () {
+        if (id === 'service-select') setError('service-select', 'error-service', false);
+      });
+    });
+
+    /* ── Submit handler (mock preview) ── */
+    var form    = document.getElementById('booking-form');
+    var card    = document.getElementById('booking-form-card');
+    var confirm = document.getElementById('booking-confirm');
+
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var nome    = document.getElementById('field-nome');
+        var email   = document.getElementById('field-email');
+        var svc     = document.getElementById('service-select');
+
+        var valid = true;
+
+        if (!nome || !nome.value.trim()) {
+          setError('field-nome', 'error-nome', true);
+          valid = false;
+        } else {
+          setError('field-nome', 'error-nome', false);
+        }
+
+        if (!email || !isEmailValid(email.value)) {
+          setError('field-email', 'error-email', true);
+          valid = false;
+        } else {
+          setError('field-email', 'error-email', false);
+        }
+
+        if (!svc || !svc.value) {
+          setError('service-select', 'error-service', true);
+          valid = false;
+        } else {
+          setError('service-select', 'error-service', false);
+        }
+
+        if (!valid) return;
+
+        /* Build confirmation message */
+        var nomeVal  = nome.value.trim();
+        var emailVal = email.value.trim();
+        var confirmText = document.getElementById('confirm-text');
+        if (confirmText) {
+          confirmText.textContent =
+            'Grazie ' + nomeVal + '! Ti contatteremo all\'indirizzo ' + emailVal + ' entro 24 ore.';
+        }
+
+        /* Hide form, show confirm */
+        card.style.display    = 'none';
+        confirm.classList.add('visible');
+
+        /* Scroll to confirm */
+        confirm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  })();
+  </script>
+</body>
+</html>

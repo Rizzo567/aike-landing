@@ -1541,20 +1541,30 @@
   }
 }
 
-/* ── Section 4: Parallax Letters (roiheads style) ───────── */
+/* ── Section 4: Parallax Letters · "WE MOVE YOUR BRAND" ──── */
 .aike-letters {
   position: relative;
   z-index: 2;
-  height: 160vh;
-  background: #111111; /* uguale allo sfondo della sezione 3 (.aike-scrollVideo) */
+  height: calc(250vh + 100px); /* sticky 150vh + ~100vh di pin per le animazioni + reveal in coda */
+  padding-bottom: 100px; /* spazio extra sotto la sezione */
+  background: #000000; /* nero pieno (stile reference) */
 }
 
-/* Sticky viewport — letters live here, scroll drives transforms */
+/* Sticky viewport — più alto del viewport: dopo la fase pinned scorre su e rivela YOUR/BRAND dal basso */
 .aike-letters__sticky {
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: 150vh;
   overflow: hidden;
+}
+
+/* Wrapper che contiene stelle + lettere + heading: scala (zoom-out) guidato dallo scroll */
+.al-zoom {
+  position: absolute;
+  inset: 0;
+  z-index: 2; /* sopra il canvas stelle (z1), che resta full-size e non scala */
+  transform-origin: 50% 50vh; /* centro schermo durante la fase pinned */
+  will-change: transform;
 }
 
 /* Each letter: absolutely placed, moved only via transform */
@@ -1562,18 +1572,82 @@
   position: absolute;
   left: var(--left, 0);
   top: var(--top, 0);
-  width: var(--w, 22vw);
+  width: calc(var(--w, 22vw) * 1.8275); /* stessa size di YOUR/BRAND */
   transform-origin: center center;
   will-change: transform;
+  z-index: 4; /* dietro la heading centrale (z-index 20): le lettere passano SOTTO il testo */
 }
 
 .al-letter img {
   width: 100%;
-  aspect-ratio: 1 / 1;   /* PNG quadrati 500x500: box ad altezza corretta anche prima del load
-                            (così il calcolo HIDE conosce subito l'altezza reale) */
+  aspect-ratio: 669 / 373; /* PNG lettera 669x373: box ad altezza corretta anche prima del load
+                              (così il calcolo HIDE conosce subito l'altezza reale) */
   height: auto;
   display: block;
   pointer-events: none;
+}
+
+/* Group 2 (lettere laterali) parte fuori schermo (clippato dai bordi) prima del JS */
+.al-letter[data-group="phrase"][data-side="left"]  { transform: translateX(-60vw); }
+.al-letter[data-group="phrase"][data-side="right"] { transform: translateX(60vw); }
+
+/* YOUR/BRAND: 300px più in alto + 15% più piccole del gruppo top (2.15 → 1.8275) */
+.al-letter[data-group="phrase"] {
+  margin-top: -300px;
+  width: calc(var(--w, 22vw) * 1.8275); /* -15% vs gruppo top */
+}
+
+/* Druk by Commercial Type (font a pagamento, non incluso).
+   Droppa i .woff2 in assets/fonts/ con questi nomi e parte da solo.
+   Finché mancano i file, il browser scende al fallback (Archivo Black). */
+@font-face {
+  font-family: 'Druk Wide';
+  src: url('../fonts/DrukWide-Bold.woff2') format('woff2'),
+       url('../fonts/DrukWide-Bold.woff')  format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Druk Cond';
+  src: url('../fonts/DrukCond-Bold.woff2') format('woff2'),
+       url('../fonts/DrukCond-Bold.woff')  format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Scritta centrale statica — pinnata con la sticky viewport, sopra le lettere roccia */
+.al-heading {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 100vh; /* centrata nella prima schermata (fase pinned), non nei 150vh totali */
+  z-index: 20; /* primo piano: sopra le lettere roccia (z-index 4) */
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.18em; /* stacco tra "WE'RE DAMN" e "GOOD AT IT" */
+  text-align: center;
+  pointer-events: none;
+  font-family: 'Druk Wide', 'Druk Cond', 'Archivo Black', 'Outfit', sans-serif;
+  font-weight: 700; /* Druk Bold; Archivo Black (fallback) ignora il weight */
+  text-transform: uppercase;
+  color: #ffffff;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+.al-heading span {
+  display: block;
+  font-size: clamp(1.84rem, 6.1vw, 6.1rem);
+  transform: scaleY(1.6); /* lettere molto allungate in altezza, stesso font */
+  transform-origin: center center;
+}
+.al-heading span:last-child {
+  margin-top: 8px; /* "GOOD AT IT" un filo più staccata/in basso */
 }
 
 /* Colored placeholder — replace with <img> when real asset is ready */
@@ -1595,10 +1669,10 @@
 }
 
 @media (max-width: 768px) {
-  .al-letter { width: calc(var(--w, 22vw) * 0.75); }
+  .al-letter { width: calc(var(--w, 22vw) * 2.05); }
 }
 
 @media (max-width: 480px) {
-  .aike-letters { height: 180vh; }
-  .al-letter { width: calc(var(--w, 22vw) * 0.6); }
+  .aike-letters { height: 220vh; }
+  .al-letter { width: calc(var(--w, 22vw) * 2.25); }
 }

@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aike automation</title>
+  <title>aike</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="apple-touch-icon" href="assets/images/logo.png" />
   <meta name="description"
     content="AIKE empowers modern businesses with AI-driven automation across marketing, sales, and customer experience." />
 
@@ -12,13 +14,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap"
     rel="stylesheet" />
 
   <!-- Styles -->
   <link rel="stylesheet" href="assets/css/styles.css?v=5" />
   <link rel="stylesheet" href="assets/css/components.css?v=6" />
-  <link rel="stylesheet" href="assets/css/home.css?v=11" />
+  <link rel="stylesheet" href="assets/css/home.css?v=15" />
   <link rel="stylesheet" href="assets/css/sections.css?v=12" />
   <style>
     /* ── Text Effects ── */
@@ -216,10 +218,18 @@
 
             <!-- RIGHT: Globe -->
             <div style="position:relative;display:flex;justify-content:center;align-items:center;">
+
+              <!-- Nuvole sparse attorno alla Terra (decorative). z-index 1 = dietro il globo, 3 = davanti. -->
+              <img src="assets/images/cloud-single.png"   alt="" aria-hidden="true" style="position:absolute;width:150px;left:-6%;top:6%;z-index:1;filter:brightness(0.55);opacity:0.9;pointer-events:none;animation:cf-a 9s ease-in-out infinite;">
+              <img src="assets/images/cloud-single-2.png" alt="" aria-hidden="true" style="position:absolute;width:115px;left:28%;top:-8%;z-index:1;filter:brightness(0.45);opacity:0.8;pointer-events:none;animation:cf-c 11s ease-in-out infinite;animation-delay:-4s;">
+              <img src="assets/images/cloud-single-3.png" alt="" aria-hidden="true" style="position:absolute;width:125px;right:-7%;top:20%;z-index:1;filter:brightness(0.5);opacity:0.85;pointer-events:none;animation:cf-b 10s ease-in-out infinite;animation-delay:-2s;">
+              <img src="assets/images/cloud-single.png"   alt="" aria-hidden="true" style="position:absolute;width:130px;left:0%;bottom:4%;z-index:3;filter:brightness(0.6);opacity:0.92;pointer-events:none;animation:cf-d 12s ease-in-out infinite;animation-delay:-6s;">
+              <img src="assets/images/cloud-single-2.png" alt="" aria-hidden="true" style="position:absolute;width:105px;right:2%;bottom:12%;z-index:3;filter:brightness(0.52);opacity:0.88;pointer-events:none;animation:cf-a 11s ease-in-out infinite;animation-delay:-5s;">
+
               <div id="earth-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none;">
                 <div style="width:32px;height:32px;border:2px solid rgba(168,85,247,0.3);border-top-color:#a855f7;border-radius:50%;animation:spin-loader 0.8s linear infinite;"></div>
               </div>
-              <canvas id="earth-canvas" style="width:100%;max-width:460px;display:block;border-radius:16px;"></canvas>
+              <canvas id="earth-canvas" style="width:100%;max-width:460px;display:block;border-radius:16px;position:relative;z-index:2;"></canvas>
             </div>
 
           </div>
@@ -286,49 +296,168 @@
 
       <!-- ── Cloud Transition (scrollVideo → letters) ──────── -->
       <div class="aike-cloudTransition" aria-hidden="true">
+        <!-- NB: filter:brightness() scala con l'altezza del puff (top): più in alto = più scuro.
+             I più alti ≈ brightness 0.12 → leggermente più scuri del fondo #111; i più bassi ≈ 1.0 (grigio originale).
+             Valori graduali tra puff vicini → nessun distacco netto. -->
         <!-- estrema sinistra extra -->
-        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:-60px;top:-52px;">
-        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:-60px;top:60px;">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:-60px;top:-52px;filter:brightness(0.16);">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:-60px;top:60px;filter:brightness(0.86);">
         <!-- fila alta -->
-        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:454px;left:0%;top:-32px;">
-        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:15%;top:-58px;">
-        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:454px;left:30%;top:-22px;">
-        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:353px;left:45%;top:-46px;">
-        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:454px;left:58%;top:-28px;">
-        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:403px;left:73%;top:-55px;">
-        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:353px;left:87%;top:-34px;">
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:454px;left:0%;top:-32px;filter:brightness(0.28);">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:15%;top:-58px;filter:brightness(0.12);">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:454px;left:30%;top:-22px;filter:brightness(0.35);">
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:353px;left:45%;top:-46px;filter:brightness(0.20);">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:454px;left:58%;top:-28px;filter:brightness(0.31);">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:403px;left:73%;top:-55px;filter:brightness(0.14);">
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:353px;left:87%;top:-34px;filter:brightness(0.27);">
         <!-- fila bassa -->
-        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:7%;top:58px;">
-        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:22%;top:78px;">
-        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:454px;left:34%;top:48px;">
-        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:49%;top:72px;">
-        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:63%;top:55px;">
-        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:454px;left:76%;top:82px;">
-        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;right:0;top:62px;">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:7%;top:58px;filter:brightness(0.85);">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:22%;top:78px;filter:brightness(0.97);">
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:454px;left:34%;top:48px;filter:brightness(0.79);">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;left:49%;top:72px;filter:brightness(0.94);">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:63%;top:55px;filter:brightness(0.83);">
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:454px;left:76%;top:82px;filter:brightness(1.00);">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:403px;right:0;top:62px;filter:brightness(0.87);">
         <!-- fila centrale -->
-        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:11%;top:10px;">
-        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:403px;left:39%;top:4px;">
-        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:353px;left:55%;top:16px;">
-        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:403px;left:80%;top:8px;">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:353px;left:11%;top:10px;filter:brightness(0.55);">
+        <img class="act-c" src="assets/images/cloud-single-3.png" alt="" style="width:403px;left:39%;top:4px;filter:brightness(0.51);">
+        <img class="act-c" src="assets/images/cloud-single.png"   alt="" style="width:353px;left:55%;top:16px;filter:brightness(0.59);">
+        <img class="act-c" src="assets/images/cloud-single-2.png" alt="" style="width:403px;left:80%;top:8px;filter:brightness(0.54);">
       </div>
 
       </div><!-- end .cloud-scene -->
 
-      <!-- ── Section 4: Parallax Letters ──────────────────── -->
-      <section class="aike-letters" id="letters-section" aria-label="AIKE — We Move Your Brand">
+      <!-- ── Section 4: "WE'RE DAMN GOOD AT IT" — rock letters scattered at the edges (emerge from behind the clouds) around a static centre heading ── -->
+      <section class="aike-letters" id="letters-section" aria-label="We're damn good at it">
         <div class="aike-letters__sticky">
 
-          <!-- aike -->
-          <!-- a --> <div class="al-letter" style="--left:15vw;--top:6vh;--w:26vw"><img src="assets/images/letters/letter-a.png" alt="a"></div>
-          <!-- i --> <div class="al-letter" style="--left:30vw;--top:2vh;--w:26vw"><img src="assets/images/letters/letter-i.png" alt="i"></div>
-          <!-- k --> <div class="al-letter" style="--left:44vw;--top:8vh;--w:26vw"><img src="assets/images/letters/letter-k.png" alt="k"></div>
-          <!-- e --> <div class="al-letter" style="--left:59vw;--top:3vh;--w:26vw"><img src="assets/images/letters/letter-e.png" alt="e"></div>
+          <!-- Shooting stars: sfondo full-size, FUORI da .al-zoom così NON viene scalato dallo zoom-out -->
+          <canvas id="letters-stars-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
 
+          <div class="al-zoom">
 
+          <!-- TOP-LEFT corner · "WE" — arco che avvolge l'angolo, E più in alto della W (group "we") -->
+          <!-- W --> <div class="al-letter" data-group="we" style="--left:-9vw;--top:4vh;--w:18vw;--from:-40"><img src="assets/images/letters/letter-W.png" alt=""></div>
+          <!-- E --> <div class="al-letter" data-group="we" style="--left:7vw;--top:0vh;--w:16vw;--from:-30"><img src="assets/images/letters/letter-E.png" alt=""></div>
+
+          <!-- TOP-RIGHT corner · "MOVE" — arco morbido; ultima lettera a left80 (~⅔ visibile, resta leggibile) (group "we") -->
+          <!-- M --> <div class="al-letter" data-group="we" style="--left:48vw;--top:0vh;--w:16vw;--from:30;z-index:6;margin-left:50px;margin-top:-15px"><img src="assets/images/letters/letter-M.png" alt=""></div>
+          <!-- O --> <div class="al-letter" data-group="we" style="--left:61vw;--top:1vh;--w:15vw;--from:36;margin-left:50px"><img src="assets/images/letters/letter-O.png" alt=""></div>
+          <!-- V --> <div class="al-letter" data-group="we" style="--left:69vw;--top:3vh;--w:16vw;--from:42;margin-left:68px;z-index:5"><img src="assets/images/letters/letter-V.png" alt=""></div>
+          <!-- E --> <div class="al-letter" data-group="we" style="--left:81vw;--top:5vh;--w:15vw;--from:48;margin-left:55px"><img src="assets/images/letters/letter-E.png" alt=""></div>
+
+          <!-- BOTTOM-LEFT corner · "YOUR" — arco concavo che si gonfia verso l'angolo basso-sx (group "phrase") -->
+          <!-- Y --> <div class="al-letter" data-group="phrase" data-side="left"  style="--left:-9vw;--top:107vh;--w:16vw;--from:-60vw;z-index:6"><img src="assets/images/letters/letter-Y.png" alt=""></div>
+          <!-- O --> <div class="al-letter" data-group="phrase" data-side="left"  style="--left:1vw;--top:112vh;--w:15vw;--from:-60vw"><img src="assets/images/letters/letter-O.png" alt=""></div>
+          <!-- U --> <div class="al-letter" data-group="phrase" data-side="left"  style="--left:11vw;--top:117vh;--w:16vw;--from:-60vw"><img src="assets/images/letters/letter-U.png" alt=""></div>
+          <!-- R --> <div class="al-letter" data-group="phrase" data-side="left"  style="--left:21vw;--top:120vh;--w:15vw;--from:-60vw"><img src="assets/images/letters/letter-R.png" alt=""></div>
+
+          <!-- BOTTOM-RIGHT corner · "BRAND" — arco morbido; ultima lettera a left82 (~⅔ visibile, resta leggibile) (group "phrase") -->
+          <!-- B --> <div class="al-letter" data-group="phrase" data-side="right" style="--left:43vw;--top:120vh;--w:15vw;--from:60vw;z-index:6"><img src="assets/images/letters/letter-B.png" alt=""></div>
+          <!-- R --> <div class="al-letter" data-group="phrase" data-side="right" style="--left:54vw;--top:118vh;--w:15vw;--from:60vw"><img src="assets/images/letters/letter-R.png" alt=""></div>
+          <!-- A --> <div class="al-letter" data-group="phrase" data-side="right" style="--left:65vw;--top:114vh;--w:15vw;--from:60vw"><img src="assets/images/letters/letter-A.png" alt=""></div>
+          <!-- N --> <div class="al-letter" data-group="phrase" data-side="right" style="--left:76vw;--top:109vh;--w:15vw;--from:60vw"><img src="assets/images/letters/letter-N.png" alt=""></div>
+          <!-- D --> <div class="al-letter" data-group="phrase" data-side="right" style="--left:86vw;--top:106vh;--w:15vw;--from:60vw"><img src="assets/images/letters/letter-D.png" alt=""></div>
+
+          <!-- Centre heading — static, pinned with the sticky viewport -->
+          <h2 class="al-heading"><span>WE&rsquo;RE DAMN</span><span>GOOD AT IT</span></h2>
+
+          </div>
         </div>
       </section>
 
     </main>
+
+    <!-- Shooting Stars per Sezione 4 (replica effetto hero solutions) -->
+    <script>
+    (function () {
+      var canvas = document.getElementById('letters-stars-canvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var stars = [];
+      var NUM_STARS = 200;
+
+      function viewH() {
+        var p = canvas.parentElement;
+        return p ? p.offsetHeight : window.innerHeight;
+      }
+      function resizeCanvas() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = viewH();
+      }
+      function rand(min, max) { return Math.random() * (max - min) + min; }
+
+      function createStar(forceTop) {
+        var angle = rand(35, 45) * Math.PI / 180;
+        var speed = rand(0.4, 1.2);
+        var length = rand(20, 60);
+        var opacity = rand(0.3, 0.8);
+        var width = rand(0.5, 1.5);
+        var vx = -Math.cos(angle) * speed;
+        var vy = Math.sin(angle) * speed;
+        var x, y;
+        if (forceTop) {
+          if (Math.random() < 0.6) {
+            x = rand(0, canvas.width);
+            y = rand(-length, 0);
+          } else {
+            x = rand(canvas.width * 0.5, canvas.width + length);
+            y = rand(-canvas.height * 0.1, canvas.height * 0.5);
+          }
+        } else {
+          if (Math.random() < 0.5) {
+            x = rand(0, canvas.width + canvas.height * Math.tan(angle));
+            y = -length;
+          } else {
+            x = canvas.width + rand(0, length);
+            y = rand(-length, canvas.height * 0.3);
+          }
+        }
+        return { x: x, y: y, vx: vx, vy: vy, length: length, opacity: opacity, width: width, angle: angle };
+      }
+      function initStars() {
+        stars = [];
+        for (var i = 0; i < NUM_STARS; i++) stars.push(createStar(true));
+      }
+      function isOffscreen(s) { return s.x < -s.length * 2 || s.y > canvas.height + s.length; }
+      function drawStar(s) {
+        var nx = s.vx / Math.sqrt(s.vx * s.vx + s.vy * s.vy);
+        var ny = s.vy / Math.sqrt(s.vx * s.vx + s.vy * s.vy);
+        var headX = s.x, headY = s.y;
+        var tX = s.x - nx * s.length, tY = s.y - ny * s.length;
+        var grad = ctx.createLinearGradient(tX, tY, headX, headY);
+        grad.addColorStop(0, 'rgba(255,255,255,0)');
+        grad.addColorStop(1, 'rgba(220, 230, 255, ' + s.opacity + ')');
+        ctx.beginPath();
+        ctx.moveTo(tX, tY);
+        ctx.lineTo(headX, headY);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = s.width;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      }
+      function animate() {
+        ctx.fillStyle = 'rgba(0,0,0,0.03)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < stars.length; i++) {
+          var s = stars[i];
+          s.x += s.vx;
+          s.y += s.vy;
+          if (isOffscreen(s)) stars[i] = createStar(false);
+          else drawStar(s);
+        }
+        requestAnimationFrame(animate);
+      }
+      resizeCanvas();
+      initStars();
+      animate();
+      var resizeTimer;
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () { resizeCanvas(); initStars(); }, 150);
+      });
+    })();
+    </script>
 
     <!-- Footer (injected by components.js) -->
     <div id="footer-placeholder"></div>
@@ -989,73 +1118,130 @@
   })();
   </script>
 
-  <!-- Letters entrance — slide down from behind clouds, a/e rotate into place -->
+  <!-- Letters entrance — "WE MOVE" slides down from behind clouds, "YOUR BRAND" slides in from the sides; both rotate into place -->
   <script>
   (function () {
     var section = document.getElementById('letters-section');
     if (!section) return;
     var clouds = document.querySelectorAll('.act-c'); /* i singoli puff */
 
-    /* Rotazione finale per lettera (gradi, segno alterna lato):
-       a -30 (sx), i +10 (dx), k -10 (sx), e +30 (dx) */
-    var ROT = { a: -30, i: 10, k: -10, e: 30 };
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+    function clamp01(p) { return p < 0 ? 0 : (p > 1 ? 1 : p); }
 
-    /* Tuning */
-    var GAP     = 15;   /* riposo: cime lettere appena sotto la band → coperte dai puff bassi */
+    /* ───────────────────────────────────────────────────────────
+       GROUP 1 · "WE MOVE" — verticale: scende da dietro le nuvole
+       Rotazione finale per lettera, segno alterna lato (come AIKE).
+       Indici 0..5 → W E M O V E. ───────────────────────────────── */
+    var ROT_WE = [-30, 14, 4, 12, -2, 30]; /* indici W E M O V E — M e V ruotate a destra */
+
+    /* GROUP 2 · "YOUR BRAND" — orizzontale: scivola dai bordi.
+       Rotazione finale per lettera (segno alterna), si annulla a riposo. */
+    var ROT_PHRASE = [-24, 16, -14, 22, -20, 14, -24, 18, -16];
+
+    /* Extra-rotazione in entrata: tutte le lettere partono ~20° più ruotate e si raddrizzano arrivando a destinazione */
+    var SPIN = 20;
+
+    /* Tuning gruppo verticale */
+    var GAP         = 130;  /* riposo: cime lettere sotto l'header fisso (--topbar-h 84px + margine) */
+    var HEADER_CLEAR = 35;  /* px: 50 - 15, compensa il margin-top:-15px della M così solo la M sale e le altre restano ferme */
     var SLIDE   = 600;  /* px di scroll per completare lo slide */
     var BEFORE  = 770;  /* slide parte presto: nuvole ancora nella metà bassa dello schermo */
     var STAGGER = 45;   /* sfasamento scroll tra lettere (px) */
 
-    var items = [];
-    section.querySelectorAll('.al-letter').forEach(function (el, idx) {
+    /* Tuning gruppo orizzontale */
+    var H_SLIDE   = 720;  /* px di scroll per completare lo slide-in laterale */
+    var H_BEFORE  = 560;  /* anticipo: parte mentre la sezione sale nel viewport */
+    var H_STAGGER = 30;   /* sfasamento scroll tra lettere */
+
+    /* Zoom-out: super graduale, parte quando le lettere iniziano a muoversi (prima di sectionTop) */
+    var zoomEl     = section.querySelector('.al-zoom');
+    var ZOOM_START = -0.6; /* schermate rispetto a sectionTop: negativo = parte mentre le lettere entrano */
+    var ZOOM_RANGE = 3.0;  /* schermate su cui completa (lungo = molto graduale) */
+    var ZOOM_MIN   = 0.85; /* scala finale (1 = niente, 0.85 = -15%) */
+
+    /* Raccogli gli item dei due gruppi */
+    var weItems = [], phItems = [];
+    section.querySelectorAll('.al-letter').forEach(function (el) {
       var img = el.querySelector('img');
-      var key = img ? img.getAttribute('alt') : '';
-      items.push({ el: el, rot: ROT[key] || 0, stagger: idx * STAGGER, top: 0, h: 0 });
-      /* ricalcola appena l'immagine ha dimensioni reali (altezza per HIDE) */
       if (img && !img.complete) img.addEventListener('load', function () { recalc(); update(); });
+      if (el.getAttribute('data-group') === 'phrase') {
+        var fromVw = parseFloat(el.style.getPropertyValue('--from')) || 0; /* es. -60 / 60 */
+        phItems.push({ el: el, fromVw: fromVw, rot: ROT_PHRASE[phItems.length] || 0, stagger: phItems.length * H_STAGGER });
+      } else {
+        var weFrom = parseFloat(el.style.getPropertyValue('--from')) || 0; /* lato di entrata: ± vw */
+        weItems.push({ el: el, fromVw: weFrom, rot: ROT_WE[weItems.length] || 0, stagger: weItems.length * STAGGER, top: 0, h: 0 });
+      }
     });
 
     var puffsBottom = 0;  /* bordo basso reale delle nuvole (non della band) */
     var restOffset  = 0;  /* porta la lettera più in alto a GAP px sotto i puff */
     var HIDE        = 0;  /* risalita iniziale: tutte le lettere coperte dalle nuvole */
+    var sectionTop  = 0;  /* top assoluto della sezione (per il gruppo orizzontale) */
     var ticking     = false;
-
-    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
 
     function recalc() {
       var pb = 0;
       for (var c = 0; c < clouds.length; c++) {
         pb = Math.max(pb, clouds[c].getBoundingClientRect().bottom + window.pageYOffset);
       }
-      puffsBottom = pb || (section.getBoundingClientRect().top + window.pageYOffset);
+      sectionTop  = section.getBoundingClientRect().top + window.pageYOffset;
+      puffsBottom = pb || sectionTop;
 
-      var minTop = Infinity, need = 0;
-      for (var i = 0; i < items.length; i++) {
-        items[i].top = items[i].el.offsetTop;
-        items[i].h   = items[i].el.offsetHeight;
-        if (items[i].top < minTop) minTop = items[i].top;
+      var minTop = Infinity, need = 0, i;
+      for (i = 0; i < weItems.length; i++) {
+        weItems[i].top = weItems[i].el.offsetTop;
+        weItems[i].h   = weItems[i].el.offsetHeight;
+        if (weItems[i].top < minTop) minTop = weItems[i].top;
       }
       if (!isFinite(minTop)) minTop = 0;
-      restOffset = GAP - minTop;
-      for (var j = 0; j < items.length; j++) {
-        need = Math.max(need, items[j].top + restOffset + items[j].h);
+      /* abbassa l'intera riga top finché la cima più alta è sotto l'header fisso, mantenendo lo scatter relativo */
+      restOffset = Math.max(0, HEADER_CLEAR - minTop);
+      for (i = 0; i < weItems.length; i++) {
+        need = Math.max(need, weItems[i].top + restOffset + weItems[i].h);
       }
       HIDE = need + 180; /* margine ampio: lettere completamente nascoste dietro le nuvole all'inizio */
     }
 
     function update() {
+      var i, it, p, e;
+
+      /* ── Group 1: WE MOVE — emerge da dietro le nuvole entrando dai lati + ruota ── */
       var start = puffsBottom - BEFORE;
-      for (var i = 0; i < items.length; i++) {
-        var it = items[i];
-        var p = (window.pageYOffset - start - it.stagger) / SLIDE;
-        p = p < 0 ? 0 : (p > 1 ? 1 : p);
-        var e = easeOutCubic(p);
-        /* da (restOffset - HIDE) [su, dietro nuvole] → restOffset [GAP sotto i puff] */
-        var y = restOffset - (1 - e) * HIDE;
-        var r = it.rot * e;
+      for (i = 0; i < weItems.length; i++) {
+        it = weItems[i];
+        p = clamp01((window.pageYOffset - start - it.stagger) / SLIDE);
+        e = easeOutCubic(p);
+        /* x: da fromVw (di lato, dietro le nuvole) → 0 (centrato)
+           y: da (restOffset - HIDE) [su, dietro le nuvole] → restOffset [GAP sotto i puff] */
+        var wx = it.fromVw * (1 - e);
+        var y  = restOffset - (1 - e) * HIDE;
+        var r  = it.rot + (1 - e) * SPIN; /* parte a it.rot+20°, si raddrizza a it.rot */
         it.el.style.transform =
-          'translateY(' + y.toFixed(1) + 'px) rotate(' + r.toFixed(2) + 'deg)';
+          'translate(' + wx.toFixed(2) + 'vw,' + y.toFixed(1) + 'px) rotate(' + r.toFixed(2) + 'deg)';
       }
+
+      /* ── Group 2: YOUR BRAND — scivola orizzontalmente dai bordi + ruota ── */
+      var hStart = sectionTop - H_BEFORE;
+      for (i = 0; i < phItems.length; i++) {
+        it = phItems[i];
+        p = clamp01((window.pageYOffset - hStart - it.stagger) / H_SLIDE);
+        e = easeOutCubic(p);
+        /* da fromVw (fuori schermo, clippato dal bordo) → 0 (centrato, dentro pagina) */
+        var x = it.fromVw * (1 - e);                 /* in vw */
+        var rr = it.rot + (1 - e) * SPIN;            /* parte a it.rot+20°, si raddrizza a riposo */
+        it.el.style.transform =
+          'translateX(' + x.toFixed(2) + 'vw) rotate(' + rr.toFixed(2) + 'deg)';
+      }
+
+      /* ── Zoom-out leggero da metà sezione ── */
+      if (zoomEl) {
+        var vh = window.innerHeight;
+        var zp = clamp01((window.pageYOffset - sectionTop - ZOOM_START * vh) / (ZOOM_RANGE * vh));
+        var sm = zp * zp * (3 - 2 * zp); /* smoothstep: onset e fine dolci, nessuno stacco netto */
+        var scale = 1 - (1 - ZOOM_MIN) * sm;
+        zoomEl.style.transform = 'scale(' + scale.toFixed(4) + ')';
+      }
+
       ticking = false;
     }
 
@@ -1073,14 +1259,11 @@
   })();
   </script>
 
-  <!-- Dev: scroll to cloud transition on load -->
+  <!-- Land at top (hero) on load -->
   <script>
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   window.addEventListener('load', function () {
-    var el = document.querySelector('.aike-cloudTransition');
-    if (!el) return;
-    var y = el.getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2) + (el.offsetHeight / 2);
-    window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   });
   </script>
 

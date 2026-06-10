@@ -2,30 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://aikeautomation.com/</loc>
+    <lastmod>2026-06-10</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://aikeautomation.com/pages/solutions.html</loc>
+    <lastmod>2026-06-10</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aikeautomation.com/pages/operations-os.html</loc>
+    <lastmod>2026-06-10</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aikeautomation.com/pages/plane.html</loc>
+    <lastmod>2026-06-10</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aikeautomation.com/pages/owl.html</loc>
+    <lastmod>2026-06-10</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://aikeautomation.com/pages/stories.html</loc>
+    <lastmod>2026-06-10</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://aikeautomation.com/pages/privacy.html</loc>
+    <lastmod>2026-06-10</lastmod>
     <priority>0.3</priority>
   </url>
 </urlset>

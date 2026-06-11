@@ -1,0 +1,145 @@
+/* ════════════════════════════════════════════════════════════════
+   header-redesign.css — Aike header redesign (desktop + mobile)
+   Override di .header definito in styles.css (NON modificabile).
+   Carica SEMPRE dopo styles.css e components.css.
+
+   Specifiche:
+   1. Nessun box/pill sul contenitore .header__inner (mai, neanche scrolled).
+      Gli elementi flottano liberi sulla pagina.
+   2. Pill stondato (vetro scuro) SOLO attorno a Solutions + Download.
+   3. Solutions + Download spostati a destra, vicini a Login.
+      Layout: brand sx → spacer → [pill Solutions+Download] [pill Login] dx.
+   4. Login dentro pill viola brand (stessa forma/raggio).
+   5. Allo scroll (.scrolled) la scritta "aike" sale e svanisce; resta il logo.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Nessun box sul contenitore, mai ─────────────────────────── */
+.header,
+.header.scrolled {
+  background: transparent;
+}
+
+.header.scrolled {
+  /* l'header resta in posizione fissa: niente "stacco" verso il basso */
+  top: 0;
+  padding: 0 var(--space-lg);
+}
+
+.header__inner,
+.header.scrolled .header__inner {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  max-width: var(--max-width) !important;
+  height: auto !important;
+  padding: 0 !important;
+}
+
+/* ── 2 + 3. Layout: brand sx → spacer → pill nav + login dx ─────── */
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-md, 1rem);
+}
+
+/* il brand resta a sinistra, lo spazio flessibile spinge il resto a destra */
+.header__brand-group {
+  margin-right: auto;
+}
+
+/* gruppo navigazione = pill vetro scuro attorno a Solutions + Download */
+.header__nav--pill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md, 1rem);
+  padding: 0.5rem 1.25rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* i link dentro la pill non hanno più l'underline animato che sborderebbe */
+.header__nav--pill .header__link {
+  padding: 0;
+}
+.header__nav--pill .header__link::after {
+  display: none;
+}
+
+/* ── 4. Login pill viola brand ──────────────────────────────────── */
+/* Stessa forma/raggio della pill nav, colore brand Aike (#a855f7). */
+.header__login-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--color-white);
+  text-decoration: none;
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.header__login-pill:hover {
+  background: rgba(168, 85, 247, 0.28);
+  border-color: rgba(168, 85, 247, 0.55);
+}
+
+/* allineo il gap delle azioni così la pill viola sta vicino alla pill nav */
+.header__actions {
+  gap: var(--space-sm);
+}
+
+/* ── 5. Scritta "aike" che scompare verso l'alto allo scroll ───── */
+.header__brand-wrap {
+  display: inline-flex;
+  overflow: hidden;          /* nasconde il testo mentre sale */
+  align-items: center;
+}
+
+.header__brand {
+  display: inline-block;
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.header.scrolled .header__brand {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+/* ── Mobile ─────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* niente box anche su mobile; il trigger resta a destra grazie a margin-right:auto sul brand */
+  .header__inner {
+    gap: var(--space-sm);
+  }
+
+  /* login dentro il pannello mobile = pill viola coerente col desktop */
+  .mobile-nav-link--login {
+    margin-top: var(--space-sm);
+    color: var(--color-white);
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    border-radius: var(--radius-full);
+    text-align: center;
+    padding: 14px 0;
+  }
+  .mobile-nav-link--login:hover {
+    color: var(--color-white);
+    background: rgba(168, 85, 247, 0.28);
+    border-color: rgba(168, 85, 247, 0.55);
+  }
+}

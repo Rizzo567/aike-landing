@@ -8,18 +8,18 @@ const getHeaderHTML = (b) => `
   <div class="header__inner">
     <a href="${b}index.html" class="header__brand-group">
       <img src="${b}assets/images/logo.png" alt="Aike Logo" class="header__logo">
-      <span class="header__brand">aike</span>
+      <span class="header__brand-wrap"><span class="header__brand">aike</span></span>
     </a>
-    <nav class="header__nav hide-on-mobile">
+    <nav class="header__nav header__nav--pill hide-on-mobile" aria-label="Primary">
       <a href="${b}pages/solutions.html" class="header__link">Solutions</a>
-      <a href="${b}pages/owl.html" class="header__link" data-admin-only style="display:none">Owl</a>
-      <a href="${b}pages/plane.html" class="header__link" data-admin-only style="display:none">Plane</a>
+      <!-- Download: pagina dedicata non ancora esistente — placeholder href fino a pages/download.html -->
+      <a href="#" class="header__link">Download</a>
       <a href="${b}pages/operations-os.html" class="header__link" data-admin-only style="display:none">OperationsOS</a>
     </nav>
     <div class="header__actions">
-      <!-- Desktop Log In -->
-      <a id="auth-login-btn" href="${b}pages/login.html" class="btn btn-outline auth-btn-login hide-on-mobile" style="border-color:transparent; padding: 0.5rem 1rem;">Log in</a>
-      
+      <!-- Desktop Log In (pill viola) -->
+      <a id="auth-login-btn" href="${b}pages/login.html" class="header__login-pill auth-btn-login hide-on-mobile">Log in</a>
+
       <!-- Profile Wrapper (Desktop & Mobile) -->
       <div id="auth-profile-wrapper" style="display:none; align-items:center; position:relative;">
         <button id="auth-profile-btn" aria-label="Account menu" aria-haspopup="true" aria-expanded="false">
@@ -71,11 +71,11 @@ const getHeaderHTML = (b) => `
   <div class="mobile-nav-panel" id="mobile-nav-panel">
     <div class="mobile-nav-panel-inner">
       <a href="${b}pages/solutions.html" class="mobile-nav-link">Solutions</a>
-      <a href="${b}pages/owl.html" class="mobile-nav-link" data-admin-only style="display:none">Owl</a>
-      <a href="${b}pages/plane.html" class="mobile-nav-link" data-admin-only style="display:none">Plane</a>
+      <!-- Download: pagina dedicata non ancora esistente — placeholder href fino a pages/download.html -->
+      <a href="#" class="mobile-nav-link">Download</a>
       <a href="${b}pages/operations-os.html" class="mobile-nav-link" data-admin-only style="display:none">OperationsOS</a>
       <div class="mobile-nav-divider"></div>
-      <a id="auth-login-btn-mobile" href="${b}pages/login.html" class="mobile-nav-link auth-btn-login" style="color:var(--color-primary)">Log in</a>
+      <a id="auth-login-btn-mobile" href="${b}pages/login.html" class="mobile-nav-link mobile-nav-link--login auth-btn-login">Log in</a>
     </div>
   </div>
 </header>
@@ -118,12 +118,8 @@ const getFooterHTML = (b) => `
       
       <!-- Right Side Media Wrapper -->
       <div class="footer__media">
-        <div class="footer__video-placeholder" aria-label="16:9 Video Placeholder">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-          </svg>
-          Video Placeholder (16:9)
-        </div>
+        <video class="footer__video-placeholder" src="${b}assets/videos/hero-bg.mp4"
+          muted loop autoplay playsinline preload="auto" aria-label="Aike intro video"></video>
       </div>
     </div>
   </div>

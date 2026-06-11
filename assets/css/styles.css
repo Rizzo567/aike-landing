@@ -64,6 +64,14 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Mobile: blocca lo scroll orizzontale (iOS Safari) — solo mobile */
+@media (max-width: 768px) {
+  html {
+    overflow-x: clip;
+    max-width: 100vw;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-bg);

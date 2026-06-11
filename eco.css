@@ -1,0 +1,369 @@
+/* ════════════════════════════════════════════════════════════════
+   Ecosystem section — floating stone cluster, multi-layer parallax
+   Accent: #8B5CF6 (purple, replaces the reference's yellow)
+   ════════════════════════════════════════════════════════════════ */
+
+.eco-section {
+  position: relative;
+  /* clip, not hidden: overflow:hidden turns the section into a scroll
+     container and kills the sticky stage */
+  overflow: clip;
+  background: #000;
+  min-height: 180vh;
+}
+
+/* ── Title — overlaid on the first screenful, scrolls away ── */
+.eco-title {
+  position: absolute;
+  top: 112px; /* below the 80px fixed navbar */
+  left: 0;
+  right: 0;
+  z-index: 6;
+  margin: 0;
+  text-align: center;
+  font-family: 'Anton', 'Archivo Black', sans-serif;
+  font-weight: 400; /* Anton is single-weight black */
+  font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+  letter-spacing: 0.05em;
+  word-spacing: 0.35em; /* ref has wide gaps between words */
+  text-transform: uppercase;
+  color: #fff;
+  pointer-events: none;
+}
+.eco-title__mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.08em; /* keep descenders inside the mask */
+  margin-bottom: -0.08em;
+}
+.eco-title__word {
+  display: inline-block;
+  will-change: transform;
+}
+.eco-title__word--accent {
+  color: #8B5CF6;
+}
+
+/* ── Sticky stage: the whole composition lives in one viewport ── */
+.eco-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+/* ── Eclipse: huge ellipse behind everything, scrubbed vertically.
+      Black core, purple rim — soft falloff from gradient stops only
+      (no filter:blur — element is far too large for it). ── */
+.eco-eclipse {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 170vw;
+  height: 270vh; /* taller than wide, like the ref oval */
+  z-index: 0;
+  pointer-events: none;
+  /* base position via margins, NOT transform: GSAP would read a CSS
+     translate as px and double it with its own yPercent.
+     Start state = dome rising from the bottom. */
+  margin-left: -85vw;           /* -50% of 170vw */
+  margin-top: -68.75vh;
+  background:
+    /* faint dark-purple spill around the rim for diffusion */
+    radial-gradient(50% 50% at 50% 50%,
+      transparent 70%,
+      rgba(59, 26, 110, 0.38) 84%,
+      rgba(59, 26, 110, 0.18) 93%,
+      transparent 100%),
+    /* main ring: thin band, peak is FULL PURPLE — the outer aura goes
+       back to dark desaturated purple, never towards white */
+    radial-gradient(50% 50% at 50% 50%,
+      #000 0%,
+      #000 75%,
+      #4C1D95 79%,
+      #8B5CF6 82%,
+      #8B5CF6 86%,
+      #3B1A6E 91%,
+      rgba(59, 26, 110, 0.45) 96%,
+      transparent 100%);
+  will-change: transform;
+}
+
+/* ── Glow frame: ONE huge ring hugging the viewport edges,
+      brighter in the corners, fading to black at the centre ── */
+.eco-glow-frame {
+  position: absolute;
+  inset: -10%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 4% 3%,  rgba(192, 38, 211, 0.34), transparent 22%),
+    radial-gradient(circle at 96% 3%, rgba(168, 85, 247, 0.38), transparent 22%),
+    radial-gradient(circle at 4% 97%, rgba(99, 102, 241, 0.28), transparent 22%),
+    radial-gradient(circle at 96% 97%, rgba(139, 92, 246, 0.32), transparent 22%),
+    radial-gradient(ellipse at 50% 50%,
+      transparent 52%,
+      rgba(139, 92, 246, 0.14) 70%,
+      rgba(124, 58, 237, 0.32) 85%,
+      rgba(88, 36, 190, 0.46) 96%);
+  filter: blur(70px);
+  will-change: transform;
+}
+
+/* ── Parallax item plumbing ──
+   [data-depth]      → outer: scroll parallax (GSAP scrub)
+   .eco-float        → middle: idle floating loop
+   .eco-inner        → inner: entrance + mouse parallax
+   Three layers so the transforms never overwrite each other. */
+.eco-entity,
+.eco-soon,
+.eco-center,
+.eco-rock {
+  position: absolute;
+  will-change: transform;
+}
+.eco-float,
+.eco-inner {
+  will-change: transform;
+}
+.eco-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* ── Entities (named rocks with type lockup) ── */
+.eco-entity {
+  z-index: 2;
+  text-decoration: none;
+}
+.eco-entity img {
+  display: block;
+  height: auto;
+}
+.eco-ent__name {
+  margin-top: 18px;
+  font-family: 'Anton', 'Archivo Black', sans-serif;
+  font-weight: 400;
+  font-size: 27px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.eco-ent__sub {
+  margin-top: 10px;
+  font-family: 'Archivo', 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.6;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.eco-entity--main {
+  top: 4%;
+  left: 50%;
+  margin-left: -170px; /* centre a 340px column without transform */
+  width: 340px;
+}
+.eco-entity--main img {
+  width: 340px;
+}
+
+.eco-entity--second {
+  top: 33%;
+  right: 8.5%;
+  width: 340px;
+  cursor: pointer;
+}
+.eco-entity--second img {
+  width: 340px;
+  transition: transform 0.35s ease;
+}
+.eco-entity--second:hover img {
+  transform: scale(1.05);
+}
+
+/* ── SOON rock, left ── */
+.eco-soon {
+  top: 28%;
+  left: 5%;
+  z-index: 2;
+  width: 400px;
+}
+.eco-soon img {
+  width: 400px;
+  height: auto;
+  display: block;
+  transform: rotate(-9deg);
+}
+.eco-soon__label {
+  margin-top: 4px;
+  font-family: 'Archivo', 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* ── Centre block: giant group name + spray tag overlay ── */
+.eco-center {
+  top: 54%; /* fixed anchor, no translateY: pure-CSS layout must hold
+               on its own for prefers-reduced-motion */
+  left: 50%;
+  z-index: 3;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 92vw;
+}
+.eco-center__name {
+  position: relative;
+  display: block;
+  font-family: 'Anton', 'Archivo Black', sans-serif;
+  font-weight: 400;
+  font-size: clamp(4rem, 10vw, 8rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
+.eco-center__tag {
+  position: absolute;
+  top: 72%;
+  left: 53%;
+  z-index: 2;
+  transform: translate(-50%, -50%) rotate(-5deg);
+  font-family: 'Caveat Brush', 'Permanent Marker', cursive;
+  font-weight: 400;
+  font-size: 0.92em; /* handwriting metrics run smaller */
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #8B5CF6;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.eco-center__line {
+  display: block;
+  margin-top: 18px;
+  font-family: 'Archivo', 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.eco-center__line + .eco-center__line {
+  margin-top: 10px;
+}
+.eco-center__line--dots {
+  letter-spacing: 0.4em;
+  opacity: 0.85;
+}
+
+/* ── Small rocks: one image, differentiated via transforms ──
+   Static rotate/flip/size on the <img>, so GSAP transforms on the
+   wrappers never clash with them. */
+.eco-rock {
+  z-index: 1;
+  pointer-events: none;
+}
+.eco-rock img {
+  display: block;
+  height: auto;
+}
+.eco-rock--1 { top: 12%;   left: 22%;  opacity: 0.95; }
+.eco-rock--1 img { width: 96px;  transform: rotate(18deg); }
+.eco-rock--2 { top: 10%;   right: 22%; opacity: 1; }
+.eco-rock--2 img { width: 118px; transform: rotate(-24deg) scaleX(-1); }
+.eco-rock--3 { top: 47%;   left: 28%;  opacity: 0.8; }
+.eco-rock--3 img { width: 62px;  transform: rotate(46deg); }
+.eco-rock--4 { bottom: 13%; left: 1%;  opacity: 0.9; }
+.eco-rock--4 img { width: 132px; transform: rotate(-12deg) scaleX(-1); }
+.eco-rock--5 { bottom: 10%; right: 28%; opacity: 1; }
+.eco-rock--5 img { width: 88px;  transform: rotate(30deg); }
+.eco-rock--6 { top: 56%;   right: 1%;  opacity: 0.85; }
+.eco-rock--6 img { width: 112px; transform: rotate(-40deg) scaleX(-1); }
+
+/* ── Responsive: vertical stacked layout, no sticky scene ── */
+@media (max-width: 992px) {
+  .eco-section {
+    min-height: 0;
+  }
+  .eco-title {
+    position: relative;
+    top: 0;
+    padding: 110px 20px 8px; /* clear the fixed mobile navbar */
+    font-size: clamp(1.4rem, 6vw, 2rem);
+  }
+  .eco-stage {
+    position: relative;
+    top: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 56px;
+    padding: 48px 20px 80px;
+  }
+  .eco-glow-frame {
+    position: absolute; /* frames the whole stacked section */
+    inset: -10%;
+    filter: blur(48px);
+  }
+  .eco-eclipse {
+    display: none; /* desktop-only effect: no sticky stage on mobile */
+  }
+  .eco-entity,
+  .eco-soon,
+  .eco-center {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin-left: 0;
+    width: auto;
+    transform: none;
+  }
+  /* stacking order: main entity → second entity → SOON → centre block */
+  .eco-entity--main   { order: 1; }
+  .eco-entity--second { order: 2; }
+  .eco-soon           { order: 3; }
+  .eco-center         { order: 4; }
+  .eco-entity--main img   { width: min(300px, 70vw); }
+  .eco-entity--second img { width: min(250px, 60vw); }
+  .eco-soon img           { width: min(280px, 65vw); }
+  .eco-ent__name { font-size: 22px; }
+  .eco-ent__sub  { font-size: 12px; }
+  .eco-center__name { font-size: clamp(3rem, 13vw, 4.5rem); white-space: normal; }
+  .eco-center__tag  { font-size: 0.8em; }
+  /* only 3 small rocks survive, pinned to the section corners */
+  .eco-rock--3, .eco-rock--4, .eco-rock--6 { display: none; }
+  .eco-rock--1 { position: absolute; top: 14%;  left: 4%; }
+  .eco-rock--1 img { width: 56px; }
+  .eco-rock--2 { position: absolute; top: 36%;  right: -4%; }
+  .eco-rock--2 img { width: 72px; }
+  .eco-rock--5 { position: absolute; bottom: 4%; right: 8%; }
+  .eco-rock--5 img { width: 52px; }
+}
+
+/* ── Reduced motion: everything visible, nothing moves ── */
+@media (prefers-reduced-motion: reduce) {
+  .eco-title__word,
+  .eco-glow-frame,
+  .eco-float,
+  .eco-inner,
+  .eco-entity,
+  .eco-soon,
+  .eco-center,
+  .eco-rock {
+    will-change: auto;
+  }
+  .eco-entity--second img {
+    transition: none;
+  }
+}

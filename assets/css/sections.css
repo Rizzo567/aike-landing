@@ -1512,10 +1512,10 @@ body.aike-lock { overflow: hidden; }
   transform: translateY(-2px);
 }
 
-/* ── Cloud scene wrapper: garantisce che nuvole siano sopra sezione 4 ── */
+/* ── Cloud scene wrapper ── */
 .cloud-scene {
   position: relative;
-  z-index: 5; /* > z-index:2 di .aike-letters */
+  z-index: 5;
 }
 
 /* ── Cloud Transition ── */
@@ -1603,5 +1603,58 @@ body.aike-lock { overflow: hidden; }
 @media (max-width: 768px) {
   .aike-cloudTransition { height: 160px; }
   .act-c { transform: scale(0.6); transform-origin: left top; }
+}
+
+/* ── Mobile: video sez 1 e 3 sempre orizzontali, niente bande nere ── */
+@media (max-width: 768px) {
+  /* Sez 1: sezione si adatta all'altezza del video → zero letterbox sopra/sotto */
+  .aike-videoSection {
+    height: auto;
+  }
+  .aike-videoSection__video {
+    position: static;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  /* gradiente di chiusura corto, non copre il video */
+  .aike-videoSection::after {
+    height: 80px;
+  }
+  /* frasi centrate SOPRA il video, non più nella banda nera */
+  .aike-videoSection__copy {
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  /* frasi più piccole su mobile → non coprono il video */
+  .aike-vs-line {
+    font-size: clamp(1.15rem, 5vw, 1.6rem);
+  }
+
+  /* Sez 2: stack a colonna singola → h2 leggibile, niente sovrapposizione col globo */
+  #workspace-launch {
+    height: auto;
+    padding: 3.5rem 0;
+  }
+  #workspace-launch .container > div {
+    grid-template-columns: 1fr !important;
+    gap: 2.5rem !important;
+  }
+
+  /* Seam sopra sez 3: l'hero è sticky dietro (z-index 1) e trapelava da una
+     linea sub-pixel. Bg pieno + -1px chiudono il varco. */
+  .cloud-scene {
+    background: #111111;
+    margin-top: -1px;
+  }
+
+  /* Sez 3 (video città + card) nascosta su mobile:
+     dopo il globo → direttamente la transition delle nuvole */
+  .aike-scrollVideo {
+    display: none;
+  }
+  .aike-cloudTransition {
+    margin-top: 0;
+  }
 }
 

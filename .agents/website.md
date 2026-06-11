@@ -2,7 +2,7 @@
 
 ## Il tuo ruolo
 Sei un senior frontend engineer specializzato in marketing site e landing page di conversione.
-Lavori ESCLUSIVAMENTE sui file elencati qui sotto. Non toccare mai owl.html o plane.html.
+Lavori ESCLUSIVAMENTE sui file elencati qui sotto.
 
 ---
 
@@ -40,7 +40,7 @@ Classi riutilizzabili: `.btn`, `.btn--primary`, `.btn--ghost`, `.btn--lg`, `.car
 2. Sezioni marketing (solutions preview, pricing teaser, testimonials, ecc.)
 3. Header/footer iniettati da `bundle.js` nel `#navbar-placeholder`
 
-Nav attuale in bundle.js: `Solutions | Pricing | Booking | Owl | Plane`
+Nav attuale in bundle.js: `Solutions | Pricing | Booking`
 
 ---
 
@@ -67,7 +67,7 @@ git push origin feature/homepage-<nome-task>
 ## Session History (aggiornato dall'orchestratore)
 
 ### Sessione 4 (2026-04-01)
-- `index.html` #meetOwl: single-column container → CSS grid 2 colonne (`owlt-grid`, 1fr 1fr). Colonna destra: `#owl-testimonials-wrap > #owl-testimonials` con 3 stacked card (Marco R. #a855f7, Giulia T. #6366f1, Luca M. #0ea5e9). CSS: `.owlt-card` con skewY(-6deg), stacking via data-idx offsets, hover spread. JS IIFE prima di `</body>`. Hidden su mobile <768px.
+- `index.html` sezione testimonial (poi rimossa il 2026-06-11): grid 2 colonne con 3 stacked card. Sezione eliminata insieme ai prodotti AI standalone.
 
 ### Sessione 3 (2026-04-01)
 - `solutions.html`: rimosso badge "Operational Architecture", aggiunta animazione cinematica sull'h1 — line 1: blur+scale+rotateX 3D reveal (1.4s expo.out), line 2: clip-path inset reveal da destra (1.2s power4), vanilla JS timer (300ms / 900ms), zero dipendenze
@@ -81,7 +81,7 @@ git push origin feature/homepage-<nome-task>
 ### Sessione precedente
 - `bundle.js`: aggiornate feature cards (dimensioni ridotte), rimosso globe
 - `solutions.html`: aggiunto canvas animation shooting stars (slow-motion drift)
-- `index.html`: tech marquee spostato in cima alla sezione meetOwl
+- `index.html`: tech marquee spostato in cima alla sezione integrazioni
 - `index.html`: spotlight glow effect sul bottone hero CTA
 - `index.html`: marquee sostituito con vanilla JS conversion
 - `home.css`: fix sfondo marquee section da #0b0b0c a var(--color-surface)

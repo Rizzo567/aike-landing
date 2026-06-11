@@ -73,8 +73,6 @@ Motivazione:
 | `pages/solutions.html` | FRONTEND | Riscrittura contenuto per 4 servizi |
 | `pages/pricing.html` | FRONTEND | Riscrittura completa — da packages website a overview 4 servizi |
 | `pages/booking.html` | FRONTEND + BACKEND | FRONTEND: markup form + stili. BACKEND: JS di submit + endpoint |
-| `pages/owl.html` | NESSUNO | Solo badge "In arrivo" se mancante |
-| `pages/plane.html` | NESSUNO | Solo badge "In arrivo" se mancante |
 | `assets/css/styles.css` | FRONTEND | Solo aggiunte (stili form booking) |
 | `assets/js/bundle.js` | NESSUNO | Navigazione invariata |
 | `assets/js/config.js` | BACKEND | Aggiungere URL endpoint API leads |
@@ -100,10 +98,10 @@ Motivazione:
 **Proposta:** Trasformare questa sezione da "website only" a overview dei servizi AIKE. Invece di ripetere il messaging website (gia coperto sopra), mostrare i 4 servizi in card compatte: Website Creation, Marketing, Automazioni, AIKE Motion (quest'ultimo con badge "Secondario" o presentazione piu discreta). Ogni card ha una breve descrizione + CTA "Scopri di piu" o "Richiedi preventivo".
 **Motivazione:** Attualmente la homepage ha 2 sezioni website consecutive — ridondante. Questa sezione diventa il "catalogo servizi" che mostra tutta l'offerta AIKE.
 
-#### Sezione 4: Tech Marquee + Meet Owl
-**Stato attuale:** Marquee con nomi tech (Claude AI, GPT-4o, etc.) + sezione Owl con copy dettagliato (16 skills, DALL-E 3, multimodal) + testimonial cards stack. CTA "Try Owl now" linka a owl.html.
-**Proposta:** Mantenere la sezione ma aggiungere un badge "In arrivo" accanto al CTA "Try Owl now". Il copy resta invariato — Owl e un prodotto AIKE reale, va menzionato. Il CTA cambia da "Try Owl now" a "Scopri Owl" con badge pill "In arrivo" accanto.
-**Motivazione:** Owl va menzionato ma non puo essere venduto ora. Il badge comunica che e in sviluppo senza rimuovere la sezione.
+#### Sezione 4: Tech Marquee
+**Stato attuale:** Marquee con nomi tech (Claude AI, GPT-4o, etc.).
+**Proposta:** Mantenere il marquee come vetrina delle integrazioni.
+**Motivazione:** Comunica l'ecosistema tecnologico di AIKE. (Nota 2026-06-11: i prodotti AI standalone citati in versioni precedenti di questo piano sono stati eliminati dall'offerta.)
 
 #### Sezione 5: AIKE Motion
 **Stato attuale:** Carousel di video/card con categorie motion (Infografica, Animazione testo, Poster, Presentazione, Da zero). Titolo "CREA CON AIKE MOTION". Floating icons ai lati.
@@ -129,15 +127,15 @@ Motivazione:
 **Proposta:** Riscrivere il titolo per riflettere i 4 servizi: qualcosa come "Tutto cio che serve al tuo business digitale" o simile (FRONTEND ha liberta creativa). Il sottotitolo introduce i 4 servizi. CTA diventa "Richiedi preventivo" e linka a booking.html.
 **Motivazione:** La pagina Solutions deve diventare la panoramica dei 4 servizi, non solo "automazione".
 
-#### Sezione 2: CTA + Owl Image
-**Stato attuale:** Split layout con tweet card finta (Alex Chen) a sinistra + immagine Owl con floating icons a destra. Titolo "Your business is slow, but you don't notice it".
-**Proposta:** Riscrivere come sezione di value proposition generica AIKE. La tweet card puo restare come social proof ma con contenuto piu rilevante ai servizi offerti. L'immagine Owl resta — e il mascot AIKE.
+#### Sezione 2: CTA + immagine mascotte
+**Stato attuale:** Split layout con tweet card finta (Alex Chen) a sinistra + immagine della mascotte AIKE con floating icons a destra. Titolo "Your business is slow, but you don't notice it".
+**Proposta:** Riscrivere come sezione di value proposition generica AIKE. La tweet card puo restare come social proof ma con contenuto piu rilevante ai servizi offerti. L'immagine della mascotte resta — e il mascot AIKE.
 **Motivazione:** Il copy attuale e troppo generico e non vende i 4 servizi.
 
-#### Sezione 3: Plane BETA
-**Stato attuale:** Sezione con brand Plane + BETA badge, typing effect, vertical text marquee (owl, automation, workflow, etc.). Sotto: split con CTA "Join the waitlist" + globe 3D rotante. Prezzi link "See pricing".
-**Proposta:** Mantenere con badge "In arrivo" prominente. Rimuovere link "See pricing". Il CTA "Join the waitlist" resta (Plane e un prodotto futuro, la waitlist ha senso). Aggiungere menzione che Plane sara parte dell'ecosistema AIKE.
-**Motivazione:** Plane e dichiarato "In arrivo" — la waitlist e coerente. Ma non deve confondere con i servizi vendibili ora.
+#### Sezione 3: Workspace (ex sezione prodotto rimossa)
+**Stato attuale:** Sezione brand AIKE con typing effect, vertical text marquee (websites, automation, workflow, etc.). Sotto: split con CTA "Join the waitlist" + globe 3D rotante.
+**Proposta:** Mantenere come sezione workspace/waitlist generica dell'ecosistema AIKE.
+**Motivazione:** (Nota 2026-06-11: il prodotto standalone a cui questa sezione era dedicata e stato eliminato dall'offerta; la sezione e stata genericizzata.)
 
 #### Nuova sezione: I 4 Servizi
 **Stato attuale:** Non esiste.
@@ -190,21 +188,9 @@ Motivazione:
 
 ---
 
-### pages/owl.html
-**Stato attuale:** App completa Owl (chat AI workspace, ~5000 righe). Ha il proprio design system (warm tones, --h-bg: #1C1917).
-**Proposta:** NON TOCCARE. E un'app standalone. Verificare solo che nella navbar generale (iniettata da bundle.js) il link Owl abbia un badge "In arrivo" — ma dato che il link e gia `data-admin-only style="display:none"`, e gia nascosto ai visitatori. Nessuna modifica necessaria.
-**Motivazione:** Owl e nascosto dalla navbar per i non-admin. Nessun intervento richiesto.
-
-### pages/plane.html
-**Stato attuale:** App canvas AI di Plane, design system proprio. Link navbar gia `data-admin-only style="display:none"`.
-**Proposta:** Stesso di Owl — nessuna modifica. Gia nascosto ai visitatori.
-**Motivazione:** Plane e nascosto dalla navbar. Nessun intervento richiesto.
-
 ## File NON da toccare
-- `pages/owl.html` — app standalone, gia nascosta nella nav pubblica
-- `pages/plane.html` — app standalone, gia nascosta nella nav pubblica
 - `assets/css/styles.css` — solo aggiunte (nuove classi per form booking), mai rimuovere variabili esistenti
-- `assets/js/bundle.js` — navigazione invariata (Solutions, Pricing visibili; Owl, Plane, OperationsOS nascosti con `data-admin-only`)
+- `assets/js/bundle.js` — navigazione invariata (Solutions, Pricing visibili; OperationsOS nascosto con `data-admin-only`)
 - `assets/js/auth.js` — sistema auth esistente non va toccato
 - `assets/js/config.js` — solo aggiunta URL endpoint leads
 

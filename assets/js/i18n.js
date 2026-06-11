@@ -4,7 +4,6 @@
       // Nav
       'nav.solutions': 'Solutions',
       'nav.stories': 'Success Stories',
-      'nav.owl': 'Try Owl',
       'nav.book': 'Book a call',
       // Hero index
       'hero.title': 'Intelligent automation for<br><span class="hero__title-highlight">modern businesses.</span>',
@@ -32,7 +31,6 @@
       // Nav
       'nav.solutions': 'Soluzioni',
       'nav.stories': 'Storie di Successo',
-      'nav.owl': 'Prova Owl',
       'nav.book': 'Prenota una call',
       // Hero index
       'hero.title': 'Automazione intelligente per<br><span class="hero__title-highlight">le aziende moderne.</span>',

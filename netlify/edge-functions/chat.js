@@ -1,6 +1,6 @@
 /**
  * AIKE — netlify/edge-functions/chat.js
- * Owl AI proxy — routes messages to Anthropic, Google Gemini, or OpenAI.
+ * Aike AI proxy — routes messages to Anthropic, Google Gemini, or OpenAI.
  *
  * Required Netlify env vars (Netlify UI → Site settings → Environment variables):
  *   ANTHROPIC_API_KEY  — from https://console.anthropic.com
@@ -16,7 +16,7 @@
  */
 
 // ── System prompt ─────────────────────────────────────────────────────────────
-const OWL_SYSTEM = `You are Owl — the AI assistant built into Aike, a premium automation and intelligence platform.
+const AIKE_SYSTEM = `You are Aike — the AI assistant built into Aike, a premium automation and intelligence platform.
 
 You are not restricted to any single domain. You can help with anything: code, learning, science, philosophy, creativity, daily life, business, strategy, math, writing, research, and more.
 
@@ -30,7 +30,7 @@ Rules:
 - Respond in Italian by default. Switch language naturally if the user writes in another language.
 - Structure responses clearly when the topic is complex. Keep it tight when it's simple.
 - Never start with "Certo!", "Certamente!", "Assolutamente!" or any hollow affirmation.
-- You are Owl. You are part of Aike. That's your identity — don't disclaim it.`;
+- You are Aike. That's your identity — don't disclaim it.`;
 
 // ── CORS helpers ──────────────────────────────────────────────────────────────
 function corsHeaders() {
@@ -96,7 +96,7 @@ export default async function handler(request) {
   }
 
   // Build dynamic system prompt
-  let systemPrompt = OWL_SYSTEM;
+  let systemPrompt = AIKE_SYSTEM;
   if (businessContext && typeof businessContext === 'object') {
     const lines = [];
     if (businessContext.company)   lines.push('Azienda: ' + businessContext.company);
@@ -134,7 +134,7 @@ export default async function handler(request) {
       return jsonResponse({ content });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Internal server error';
-      console.error('[Owl/chat]', message);
+      console.error('[Aike/chat]', message);
       return jsonResponse({ error: message }, 500);
     }
   }
@@ -169,7 +169,7 @@ export default async function handler(request) {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Streaming error';
-      console.error('[Owl/chat/stream]', message);
+      console.error('[Aike/chat/stream]', message);
       try {
         await emit({ error: message });
       } catch { /* writer may already be closed */ }

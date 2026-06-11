@@ -16,14 +16,12 @@ Aike è una SaaS di automazione business premium. Stack statico (HTML/CSS/JS pur
 ```
 index.html                  → Homepage principale
 pages/
-  owl.html                 → App Owl (chat AI, ~5000 righe — file più grande)
   pricing.html              → Prezzi €14 / €49 / custom
   solutions.html            → Soluzioni
   booking.html              → Prenotazione call
   login.html / signup.html  → Auth pages
   admin.html                → Dashboard admin (protetta)
   stories.html              → Success stories
-  owl.html                 → Workspace AI
 
 functions/api/              → Cloudflare Pages Functions (edge, no Node)
   chat.js                   → Chat API con auth JWT + credit deduction
@@ -120,7 +118,6 @@ Cloudflare Pages: push su `main` → deploy automatico.
 
 ## File Grandi — Attenzione al Contesto
 
-- `pages/owl.html` → ~5200 righe. Leggi solo la sezione necessaria con offset/limit.
 - `index.html` → ~420 righe. Si può leggere intero.
 
 ---
@@ -131,7 +128,7 @@ Cloudflare Pages: push su `main` → deploy automatico.
 - **MAI pushare direttamente su main** — lavora sempre su un feature branch
 - Workflow obbligatorio:
   1. `git checkout main && git pull origin main`
-  2. `git checkout -b feature/<nome-task>` (es. `feature/owl-hero`, `feature/homepage-nav`)
+  2. `git checkout -b feature/<nome-task>` (es. `feature/pricing-hero`, `feature/homepage-nav`)
   3. Fai il lavoro
   4. `git add -A && git commit -m "feat(scope): descrizione"`
   5. `git push origin feature/<nome-task>`

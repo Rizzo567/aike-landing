@@ -29,8 +29,8 @@
       to   { opacity: 1; transform: translateY(0);    }
     }
 
-    /* ── Ghost-owl float animation ── */
-    @keyframes owl-float {
+    /* ── Ghost mascot float animation ── */
+    @keyframes ghost-float {
       0%, 100% { transform: translateY(-6px); }
       50%       { transform: translateY(6px);  }
     }
@@ -54,7 +54,7 @@
       gap: 0;
     }
 
-    /* ── 4 [owl] 4 row ── */
+    /* ── 4 [ghost] 4 row ── */
     .e-numbers {
       display: flex;
       align-items: center;
@@ -75,18 +75,18 @@
       animation: fadeInUp 0.55s ease forwards;
     }
 
-    .e-owl {
+    .e-ghost {
       width: auto;
       height: clamp(80px, 16vw, 100px);
       object-fit: contain;
       opacity: 0;
-      animation: fadeInUp 0.55s ease forwards, owl-float 2s ease-in-out infinite;
+      animation: fadeInUp 0.55s ease forwards, ghost-float 2s ease-in-out infinite;
       cursor: pointer;
       user-select: none;
       -webkit-user-drag: none;
     }
 
-    .e-owl:hover {
+    .e-ghost:hover {
       filter: drop-shadow(0 0 18px rgba(168, 85, 247, 0.5));
     }
 
@@ -170,14 +170,14 @@
   <main class="error-page">
     <div class="error-inner">
 
-      <!-- 4 [ghost-owl] 4 -->
+      <!-- 4 [ghost] 4 -->
       <div class="e-numbers">
         <span class="e-num" style="animation-delay: 0.1s">4</span>
         <img
           src="assets/images/fai_una_versione_202604021418-removebg-preview.png"
-          class="e-owl"
+          class="e-ghost"
           style="animation-delay: 0.2s"
-          alt="Ghost Owl"
+          alt="Aike ghost mascot"
           draggable="false"
         />
         <span class="e-num" style="animation-delay: 0.3s">4</span>

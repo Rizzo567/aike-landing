@@ -18,6 +18,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="assets/css/styles.css?v=5" />
   <link rel="stylesheet" href="assets/css/components.css?v=6" />
+  <link rel="stylesheet" href="assets/css/header-redesign.css?v=1" />
   <link rel="stylesheet" href="assets/css/home.css?v=5" />
   <link rel="stylesheet" href="assets/css/sections.css?v=5" />
   <style>
@@ -26,126 +27,6 @@
       100% { transform: scale(1.5); opacity: 0; }
     }
 
-    /* ── Owl Testimonial Cards ──────────────────────────────── */
-    /* ── Stacked Twitter Testimonial Cards ── */
-    .owlt-card {
-      grid-area: stack;
-      width: 340px;
-      min-height: 175px;
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 16px;
-      padding: 16px 18px;
-      cursor: pointer;
-      position: relative;
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.5s cubic-bezier(0.25,1,0.5,1),
-                  filter 0.5s ease;
-      /* base: front card */
-      transform: skewY(-8deg);
-      filter: grayscale(0);
-      z-index: 3;
-      backdrop-filter: blur(4px);
-    }
-
-    /* dark overlay pseudo-element */
-    .owlt-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 16px;
-      background: rgba(10,10,15,0.6);
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      pointer-events: none;
-      z-index: 4;
-    }
-
-    /* right-edge gradient fade (matches React dark:after: classes) */
-    .owlt-card::after {
-      content: '';
-      position: absolute;
-      top: -5%;
-      right: -4px;
-      height: 110%;
-      width: 9rem;
-      background: linear-gradient(to left, var(--color-bg, #111111) 0%, transparent 100%);
-      pointer-events: none;
-      border-radius: 16px;
-      z-index: 6;
-    }
-
-    .owlt-card[data-idx="0"] { transform: skewY(-8deg) translate(0,0);          filter: grayscale(0);   z-index: 3; }
-    .owlt-card[data-idx="1"] { transform: skewY(-8deg) translate(56px, 32px);   filter: grayscale(1);   z-index: 2; }
-    .owlt-card[data-idx="2"] { transform: skewY(-8deg) translate(112px, 64px);  filter: grayscale(1);   z-index: 1; }
-    .owlt-card[data-idx="1"]::before { opacity: 1; }
-    .owlt-card[data-idx="2"]::before { opacity: 1; }
-
-    /* hover-0: hovering front card → push 1 and 2 further down */
-    #owl-testimonials.h0 .owlt-card[data-idx="1"] { transform: skewY(-8deg) translate(72px, 104px);  filter: grayscale(0.4); }
-    #owl-testimonials.h0 .owlt-card[data-idx="2"] { transform: skewY(-8deg) translate(144px, 152px); filter: grayscale(0.7); }
-    #owl-testimonials.h0 .owlt-card[data-idx="1"]::before { opacity: 0.4; }
-    #owl-testimonials.h0 .owlt-card[data-idx="2"]::before { opacity: 0.7; }
-
-    /* hover-1: hovering middle card → push 2 down, reveal self */
-    #owl-testimonials.h1 .owlt-card[data-idx="1"] { filter: grayscale(0); }
-    #owl-testimonials.h1 .owlt-card[data-idx="1"]::before { opacity: 0; }
-    #owl-testimonials.h1 .owlt-card[data-idx="2"] { transform: skewY(-8deg) translate(144px, 128px); filter: grayscale(0.6); }
-    #owl-testimonials.h1 .owlt-card[data-idx="2"]::before { opacity: 0.6; }
-
-    /* hover-2: hovering back card → reveal self */
-    #owl-testimonials.h2 .owlt-card[data-idx="2"] { filter: grayscale(0); }
-    #owl-testimonials.h2 .owlt-card[data-idx="2"]::before { opacity: 0; }
-
-    .owlt-card * { position: relative; z-index: 5; }
-
-    .owlt-avatar {
-      width: 38px; height: 38px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 0.85rem; color: #fff;
-      flex-shrink: 0; overflow: hidden;
-    }
-    .owlt-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-    .owlt-header {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
-    }
-    .owlt-header-right { flex: 1; min-width: 0; }
-
-    .owlt-name-row { display: flex; align-items: center; gap: 5px; }
-    .owlt-name {
-      font-size: 0.88rem; font-weight: 700;
-      color: var(--color-white); line-height: 1.2;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .owlt-verified { width: 15px; height: 15px; flex-shrink: 0; }
-    .owlt-handle { font-size: 0.76rem; color: var(--color-text-muted); }
-
-    .owlt-twitter-icon {
-      width: 16px; height: 16px; color: var(--color-white);
-      opacity: 0.5; flex-shrink: 0; align-self: flex-start;
-    }
-
-    .owlt-content {
-      font-size: 0.84rem; color: rgba(229,231,235,0.9);
-      line-height: 1.65; margin-bottom: 12px;
-      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-      flex: 1;
-    }
-    .owlt-footer {
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: 0.72rem; color: rgba(156,163,175,0.6); margin-top: auto;
-    }
-    .owlt-stats { display: flex; gap: 14px; align-items: center; }
-    .owlt-stat { display: flex; align-items: center; gap: 4px; }
-
-    @media (max-width: 768px) {
-      #owl-testimonials-wrap { display: none; }
-      #meetOwl .owlt-grid { grid-template-columns: 1fr !important; }
-    }
 
     /* ── Services 2x2 Grid ──────────────────────────────────── */
     .services-grid {
@@ -442,8 +323,8 @@
       <!-- ── BACKGROUND TRANSITION ──────────────────────────────── -->
       <div class="pixel-transition" aria-hidden="true"></div>
 
-      <!-- ── MEET OWL ──────────────────────────────────────────── -->
-      <section class="section bg-dark" id="meetOwl" style="padding: var(--space-md) 0 var(--space-4xl) 0; background:var(--color-surface);">
+      <!-- ── INTEGRATIONS ───────────────────────────────────────── -->
+      <section class="section bg-dark" id="integrations" style="padding: var(--space-md) 0 var(--space-4xl) 0; background:var(--color-surface);">
 
         <!-- ── TECH MARQUEE ──────────────────────────────────────── -->
         <div class="aike-marquee-section" aria-label="Integrations">
@@ -487,50 +368,6 @@
           </div>
         </div>
 
-        <div class="container">
-          <div class="owlt-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;">
-            <!-- LEFT: testo esistente (invariato) -->
-            <div data-reveal>
-              <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;color:var(--color-white);line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.25rem;">Your AI operator.<br><span class="always-on-wrap" id="alwaysOnWrap">Always on.<svg class="always-on-underline" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path id="alwaysOnPath" d="M 0,10 Q 75,0 150,10 Q 225,20 300,10"/></svg></span></h2>
-              <p style="color:var(--color-text-muted);font-size:1rem;line-height:1.7;margin-bottom:2rem;">Owl is not a chatbot. It's a multi-model AI operator that lives inside your workspace — switching between Claude, GPT-4, and Gemini depending on what the task demands. Sharp, direct, and unrestricted.</p>
-              <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:2rem;">
-                <div style="display:flex;align-items:flex-start;gap:12px;">
-                  <div style="width:28px;height:28px;border-radius:8px;background:rgba(168,85,247,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
-                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--color-primary)" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg>
-                  </div>
-                  <div style="font-size:0.88rem;color:var(--color-text-muted);line-height:1.6;"><strong style="color:var(--color-white);">16 specialized skills</strong> — from revenue analysis to proposals, each one a domain expert prompt.</div>
-                </div>
-                <div style="display:flex;align-items:flex-start;gap:12px;">
-                  <div style="width:28px;height:28px;border-radius:8px;background:rgba(168,85,247,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
-                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--color-primary)" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg>
-                  </div>
-                  <div style="font-size:0.88rem;color:var(--color-text-muted);line-height:1.6;"><strong style="color:var(--color-white);">DALL·E 3 image generation</strong> — create visuals from text, directly inside Owl.</div>
-                </div>
-                <div style="display:flex;align-items:flex-start;gap:12px;">
-                  <div style="width:28px;height:28px;border-radius:8px;background:rgba(168,85,247,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
-                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--color-primary)" stroke-width="2.2" stroke-linecap="round"><polyline points="2 8 6 12 14 4"/></svg>
-                  </div>
-                  <div style="font-size:0.88rem;color:var(--color-text-muted);line-height:1.6;"><strong style="color:var(--color-white);">Multimodal input</strong> — send images, PDFs, and documents. Owl reads and responds to everything.</div>
-                </div>
-              </div>
-              <!-- MODIFIED: CTA changed to "Scopri Owl" + "In arrivo" badge -->
-              <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-                <a href="pages/owl.html" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px;">
-                  Scopri Owl
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="6 3 11 8 6 13"/></svg>
-                </a>
-                <span class="badge" style="border-radius:9999px;">In arrivo</span>
-              </div>
-            </div>
-
-            <!-- RIGHT: testimonial cards -->
-            <div id="owl-testimonials-wrap">
-              <div id="owl-testimonials" style="display:grid; grid-template-areas:'stack'; place-items:center; padding:2rem 0; min-height:300px;">
-                <!-- cards generated by JS -->
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
 
       <!-- ── BACKGROUND TRANSITION (Vibe) ──────────────────────── -->
@@ -1159,89 +996,6 @@
   })();
   </script>
 
-  <!-- Owl Testimonial Cards -->
-  <script>
-  (function() {
-    var owlCards = [
-      {
-        username: "Marco R.", handle: "@marco_ceo", verified: true,
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marco",
-        content: "Ho risparmiato 12 ore a settimana dalla prima settimana. Owl gestisce le email, i follow-up e i report mentre io mi concentro sulla strategia.",
-        date: "Mar 12, 2025", likes: 84, retweets: 17,
-        tweetUrl: "https://x.com"
-      },
-      {
-        username: "Giulia T.", handle: "@giulia_ops", verified: true,
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Giulia",
-        content: "Finalmente un AI che non ha bisogno di essere guidato. Gli dai il contesto una volta e lavora in autonomia. Assurdo quanto sia preciso.",
-        date: "Feb 28, 2025", likes: 142, retweets: 31,
-        tweetUrl: "https://x.com"
-      },
-      {
-        username: "Luca M.", handle: "@luca_growth", verified: true,
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Luca",
-        content: "La migliore decisione che abbiamo preso quest'anno. I clienti ricevono risposte in meno di 2 minuti, H24, senza che nessuno nel team faccia nulla.",
-        date: "Jan 15, 2025", likes: 203, retweets: 44,
-        tweetUrl: "https://x.com"
-      }
-    ];
-
-    var container = document.getElementById('owl-testimonials');
-    if (!container) return;
-
-    var VERIFIED_SVG = '<svg class="owlt-verified" viewBox="0 0 22 22" fill="#1d9bf0"><path d="M20.396 11c-.018-.646-.215-1.275-.57-1.816-.354-.54-.852-.972-1.438-1.246.223-.607.27-1.264.14-1.897-.131-.634-.437-1.218-.882-1.687-.47-.445-1.053-.75-1.687-.882-.633-.13-1.29-.083-1.897.14-.273-.587-.704-1.086-1.245-1.44S11.647 1.62 11 1.604c-.646.017-1.273.213-1.813.568s-.969.854-1.24 1.44c-.608-.223-1.267-.272-1.902-.14-.635.13-1.22.436-1.69.882-.445.47-.749 1.055-.878 1.688-.13.633-.08 1.29.144 1.896-.587.274-1.087.705-1.443 1.245-.356.54-.555 1.17-.574 1.817.02.647.218 1.276.574 1.817.356.54.856.972 1.443 1.245-.224.606-.274 1.263-.144 1.896.13.634.433 1.218.877 1.688.47.443 1.054.747 1.687.878.633.132 1.29.084 1.897-.136.274.586.705 1.084 1.246 1.439.54.354 1.17.551 1.816.569.647-.016 1.276-.213 1.817-.567s.972-.854 1.245-1.44c.604.239 1.266.296 1.903.164.636-.132 1.22-.447 1.68-.907.46-.46.776-1.044.908-1.681s.075-1.299-.165-1.903c.586-.274 1.084-.705 1.439-1.246.354-.54.551-1.17.569-1.816zM9.662 14.85l-3.429-3.428 1.293-1.302 2.072 2.072 4.4-4.794 1.347 1.246z"/></svg>';
-    var TWITTER_SVG = '<svg class="owlt-twitter-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
-    var HEART_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>';
-    var RT_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>';
-
-    owlCards.forEach(function(c, i) {
-      var card = document.createElement('a');
-      card.className = 'owlt-card';
-      card.setAttribute('data-idx', i);
-      card.href = c.tweetUrl || '#';
-      card.target = '_blank';
-      card.rel = 'noopener noreferrer';
-
-      card.innerHTML =
-        '<div class="owlt-header">' +
-          '<div class="owlt-avatar">' +
-            '<img src="' + c.avatar + '" alt="' + c.username + '" loading="lazy">' +
-          '</div>' +
-          '<div class="owlt-header-right">' +
-            '<div class="owlt-name-row">' +
-              '<span class="owlt-name">' + c.username + '</span>' +
-              (c.verified ? VERIFIED_SVG : '') +
-            '</div>' +
-            '<div class="owlt-handle">' + c.handle + '</div>' +
-          '</div>' +
-          TWITTER_SVG +
-        '</div>' +
-        '<p class="owlt-content">' + c.content + '</p>' +
-        '<div class="owlt-footer">' +
-          '<span>' + c.date + '</span>' +
-          '<div class="owlt-stats">' +
-            '<div class="owlt-stat">' + HEART_SVG + c.likes + '</div>' +
-            '<div class="owlt-stat">' + RT_SVG + c.retweets + '</div>' +
-          '</div>' +
-        '</div>';
-
-      container.appendChild(card);
-    });
-
-    // Hover interaction
-    var wrap = document.getElementById('owl-testimonials');
-    if (!wrap) return;
-    wrap.addEventListener('mouseover', function(e) {
-      var card = e.target.closest('.owlt-card');
-      if (!card) return;
-      var idx = card.getAttribute('data-idx');
-      wrap.className = 'h' + idx;
-    });
-    wrap.addEventListener('mouseleave', function() {
-      wrap.className = '';
-    });
-  })();
-  </script>
 
 </body>
 

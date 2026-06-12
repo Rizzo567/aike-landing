@@ -100,6 +100,58 @@
   gap: var(--space-sm);
 }
 
+/* ── 4b. Download = CTA primaria (pill viola piena), a destra di Log in ── */
+.header__download-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.15rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--color-white);
+  text-decoration: none;
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset,
+              0 6px 18px rgba(168, 85, 247, 0.28);
+  transition: background var(--transition-fast),
+              box-shadow var(--transition-fast),
+              transform var(--transition-fast);
+}
+
+.header__download-icon {
+  flex: none;
+  transition: transform var(--transition-fast);
+}
+
+.header__download-pill:hover {
+  background: #b66bff;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.22) inset,
+              0 8px 22px rgba(168, 85, 247, 0.42);
+}
+.header__download-pill:hover .header__download-icon {
+  transform: translateY(1px);
+}
+
+.header__download-pill:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.14) inset,
+              0 3px 10px rgba(168, 85, 247, 0.3);
+}
+
+.header__download-pill:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 2px;
+}
+
+.header__login-pill:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 /* ── 5. Scritta "aike" che scompare verso l'alto allo scroll ───── */
 .header__brand-wrap {
   display: inline-flex;
@@ -141,5 +193,22 @@
     color: var(--color-white);
     background: rgba(168, 85, 247, 0.28);
     border-color: rgba(168, 85, 247, 0.55);
+  }
+
+  /* download mobile = CTA primaria piena, sotto Log in */
+  .mobile-nav-link--download {
+    margin-top: var(--space-sm);
+    color: var(--color-white);
+    background: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-full);
+    text-align: center;
+    padding: 14px 0;
+    font-weight: 600;
+    box-shadow: 0 6px 18px rgba(168, 85, 247, 0.28);
+  }
+  .mobile-nav-link--download:hover {
+    color: var(--color-white);
+    background: #b66bff;
   }
 }

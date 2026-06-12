@@ -12,13 +12,17 @@ const getHeaderHTML = (b) => `
     </a>
     <nav class="header__nav header__nav--pill hide-on-mobile" aria-label="Primary">
       <a href="${b}pages/solutions.html" class="header__link">Solutions</a>
-      <!-- Download: pagina dedicata non ancora esistente — placeholder href fino a pages/download.html -->
-      <a href="#" class="header__link">Download</a>
       <a href="${b}pages/operations-os.html" class="header__link" data-admin-only style="display:none">OperationsOS</a>
     </nav>
     <div class="header__actions">
-      <!-- Desktop Log In (pill viola) -->
+      <!-- Desktop Log In (pill viola outline) -->
       <a id="auth-login-btn" href="${b}pages/login.html" class="header__login-pill auth-btn-login hide-on-mobile">Log in</a>
+
+      <!-- Desktop Download (CTA primaria, pill viola piena) — a destra di Log in -->
+      <a href="${b}pages/download.html" class="header__download-pill hide-on-mobile">
+        <svg class="header__download-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>
+        Download
+      </a>
 
       <!-- Profile Wrapper (Desktop & Mobile) -->
       <div id="auth-profile-wrapper" style="display:none; align-items:center; position:relative;">
@@ -71,11 +75,10 @@ const getHeaderHTML = (b) => `
   <div class="mobile-nav-panel" id="mobile-nav-panel">
     <div class="mobile-nav-panel-inner">
       <a href="${b}pages/solutions.html" class="mobile-nav-link">Solutions</a>
-      <!-- Download: pagina dedicata non ancora esistente — placeholder href fino a pages/download.html -->
-      <a href="#" class="mobile-nav-link">Download</a>
       <a href="${b}pages/operations-os.html" class="mobile-nav-link" data-admin-only style="display:none">OperationsOS</a>
       <div class="mobile-nav-divider"></div>
       <a id="auth-login-btn-mobile" href="${b}pages/login.html" class="mobile-nav-link mobile-nav-link--login auth-btn-login">Log in</a>
+      <a href="${b}pages/download.html" class="mobile-nav-link mobile-nav-link--download">Download</a>
     </div>
   </div>
 </header>

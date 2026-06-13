@@ -10,7 +10,7 @@
 //   nel campo `credits` ma NON usati per i limiti (coerenza con Free).
 // - Risposta: SSE con protocollo SEMPLIFICATO (vedi sotto), ottenuto
 //   trasformando lo stream nativo Anthropic.
-// - ENV richieste: SUPABASE_URL, SUPABASE_SERVICE_KEY, ANTHROPIC_API_KEY
+// - ENV richieste: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY
 //
 // Protocollo SSE emesso (ogni evento: `data: {json}\n\n`):
 //   { "type":"text", "delta":"..." }
@@ -26,6 +26,14 @@ const DAILY_LIMIT = 75;      // eventi per 24 ore
 const MAX_MESSAGES = 30;
 const MAX_TOKENS = 4096;
 
+// Cap input per richiesta (guardrail anti-perdita, vedi
+// docs/monetization/GUARDRAILS.md §1). Senza un tetto all'input, "1 credito"
+// non ha un costo massimo e il modello di margine crolla. Stima conservativa
+// token ≈ caratteri/4: oltre questa soglia rifiutiamo PRIMA di tracciare
+// l'evento e PRIMA di chiamare Anthropic.
+const MAX_INPUT_TOKENS = 8000;
+const CHARS_PER_TOKEN = 4;
+
 // Mappa alias modello → ID Anthropic + crediti pesati
 const MODELS = {
   haiku:  { id: 'claude-haiku-4-5',  credits: 1 },
@@ -33,6 +41,18 @@ const MODELS = {
   opus:   { id: 'claude-opus-4-8',   credits: 8 },
 };
 const DEFAULT_MODEL = 'sonnet';
+
+// Modelli Claude ammessi per piano (guardrail anti-perdita, vedi
+// docs/monetization/GUARDRAILS.md §6). Il piano Free usa Groq (chat.js),
+// NON questo endpoint: nessun modello a pagamento. Un piano non abilitato
+// non può usare un modello che costerebbe più di quanto incassiamo.
+// Fail-safe: piano sconosciuto → trattato come 'free' (nessun modello).
+const PLAN_MODELS = {
+  free:  [],
+  basic: ['haiku', 'sonnet'],
+  pro:   ['haiku', 'sonnet'],
+  max:   ['haiku', 'sonnet', 'opus'],
+};
 
 const SYSTEM_PROMPT = `You are Aike, the AI agent of Aike (aikeautomation.com), a premium business automation platform.
 You help business owners run and grow their companies: strategy, marketing, operations, copywriting, analysis.
@@ -67,11 +87,32 @@ export async function onRequest({ request, env }) {
   if (!jwt) return json({ error: 'UNAUTHORIZED' }, 401);
 
   const userRes = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
-    headers: { Authorization: `Bearer ${jwt}`, apikey: env.SUPABASE_SERVICE_KEY },
+    headers: { Authorization: `Bearer ${jwt}`, apikey: env.SUPABASE_SERVICE_ROLE_KEY },
   });
   if (!userRes.ok) return json({ error: 'UNAUTHORIZED' }, 401);
   const user = await userRes.json();
   if (!user?.id) return json({ error: 'UNAUTHORIZED' }, 401);
+
+  // --- 1b. Piano utente (per allowlist modelli) ---
+  // Fail-safe: lookup fallito o piano assente → 'free' (nessun modello a pagamento).
+  let plan = 'free';
+  try {
+    const planRes = await fetch(
+      `${env.SUPABASE_URL}/rest/v1/user_credits?user_id=eq.${user.id}&select=plan`,
+      {
+        headers: {
+          apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+      },
+    );
+    if (planRes.ok) {
+      const rows = await planRes.json().catch(() => []);
+      if (rows?.[0]?.plan) plan = String(rows[0].plan);
+    }
+  } catch {
+    /* fail-safe: resta 'free' */
+  }
 
   // --- 2. Validazione input ---
   let body;
@@ -81,8 +122,18 @@ export async function onRequest({ request, env }) {
     return json({ error: 'INVALID_JSON' }, 400);
   }
 
-  const modelAlias = typeof body?.model === 'string' ? body.model : DEFAULT_MODEL;
-  const modelCfg = MODELS[modelAlias] || MODELS[DEFAULT_MODEL];
+  const requestedAlias = typeof body?.model === 'string' ? body.model : DEFAULT_MODEL;
+  const modelAlias = MODELS[requestedAlias] ? requestedAlias : DEFAULT_MODEL;
+
+  // Guardrail: il modello richiesto dev'essere ammesso dal piano dell'utente.
+  const allowed = PLAN_MODELS[plan] || PLAN_MODELS.free;
+  if (!allowed.includes(modelAlias)) {
+    return json(
+      { error: 'MODEL_NOT_IN_PLAN', plan, model: modelAlias, allowed },
+      403,
+    );
+  }
+  const modelCfg = MODELS[modelAlias];
 
   const rawMessages = Array.isArray(body?.messages) ? body.messages : null;
   if (!rawMessages || rawMessages.length === 0) {
@@ -120,11 +171,27 @@ export async function onRequest({ request, env }) {
     ? body.tools
     : null;
 
+  // --- 2b. Cap input token (guardrail anti-perdita) ---
+  // Stima conservativa dei caratteri di testo su system + messages + tools,
+  // poi token ≈ caratteri / 4. Se supera la soglia → 413 PRIMA di tracciare
+  // l'evento e PRIMA della chiamata Anthropic.
+  const inputChars =
+    systemPrompt.length +
+    clean.reduce((sum, m) => sum + countContentChars(m.content), 0) +
+    (tools ? JSON.stringify(tools).length : 0);
+  const estimatedTokens = Math.ceil(inputChars / CHARS_PER_TOKEN);
+  if (estimatedTokens > MAX_INPUT_TOKENS) {
+    return json(
+      { error: 'INPUT_TOO_LARGE', max_tokens: MAX_INPUT_TOKENS },
+      413,
+    );
+  }
+
   // --- 3. Limiti Free su usage_events (per CONTEGGIO) ---
   const rest = `${env.SUPABASE_URL}/rest/v1/usage_events`;
   const svcHeaders = {
-    apikey: env.SUPABASE_SERVICE_KEY,
-    Authorization: `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+    apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+    Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
   };
 
   const windowStart = new Date(Date.now() - WINDOW_MINUTES * 60_000).toISOString();
@@ -377,6 +444,39 @@ function transformAnthropicStream(upstreamBody) {
       reader.cancel().catch(() => {});
     },
   });
+}
+
+// Conta i caratteri del contenuto testuale di un messaggio, gestendo sia
+// content stringa sia array di content block Anthropic. Per i blocchi
+// considera campi testuali noti (text) e tool_result.content (string o
+// array annidato di blocchi); per gli altri blocchi serializza il JSON come
+// stima conservativa (mai sottostimare l'input).
+function countContentChars(content) {
+  if (typeof content === 'string') return content.length;
+  if (!Array.isArray(content)) return 0;
+
+  let chars = 0;
+  for (const block of content) {
+    if (!block || typeof block !== 'object') {
+      chars += String(block ?? '').length;
+      continue;
+    }
+    if (typeof block.text === 'string') {
+      chars += block.text.length;
+    } else if (block.type === 'tool_result') {
+      chars += countContentChars(block.content);
+    } else if (typeof block.content === 'string') {
+      chars += block.content.length;
+    } else {
+      // input di tool_use o blocchi sconosciuti: serializza per stimare.
+      try {
+        chars += JSON.stringify(block).length;
+      } catch {
+        /* ignora blocchi non serializzabili */
+      }
+    }
+  }
+  return chars;
 }
 
 async function countEvents(rest, headers, userId, sinceIso) {

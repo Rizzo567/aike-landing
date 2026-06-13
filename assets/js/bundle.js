@@ -12,8 +12,6 @@ const getHeaderHTML = (b) => `
     </a>
     <nav class="header__nav hide-on-mobile">
       <a href="${b}pages/solutions.html" class="header__link">Solutions</a>
-      <a href="${b}pages/owl.html" class="header__link" data-admin-only style="display:none">Owl</a>
-      <a href="${b}pages/plane.html" class="header__link" data-admin-only style="display:none">Plane</a>
       <a href="${b}pages/operations-os.html" class="header__link" data-admin-only style="display:none">OperationsOS</a>
     </nav>
     <div class="header__actions">
@@ -71,8 +69,6 @@ const getHeaderHTML = (b) => `
   <div class="mobile-nav-panel" id="mobile-nav-panel">
     <div class="mobile-nav-panel-inner">
       <a href="${b}pages/solutions.html" class="mobile-nav-link">Solutions</a>
-      <a href="${b}pages/owl.html" class="mobile-nav-link" data-admin-only style="display:none">Owl</a>
-      <a href="${b}pages/plane.html" class="mobile-nav-link" data-admin-only style="display:none">Plane</a>
       <a href="${b}pages/operations-os.html" class="mobile-nav-link" data-admin-only style="display:none">OperationsOS</a>
       <div class="mobile-nav-divider"></div>
       <a id="auth-login-btn-mobile" href="${b}pages/login.html" class="mobile-nav-link auth-btn-login" style="color:var(--color-primary)">Log in</a>

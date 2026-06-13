@@ -31,7 +31,7 @@ export async function onRequest({ request, env }) {
   }
 
   const supabaseUrl = env.SUPABASE_URL;
-  const serviceKey  = env.SUPABASE_SERVICE_KEY;
+  const serviceKey  = env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !serviceKey) {
     return json({ error: 'Server misconfigured' }, 500);

@@ -19,7 +19,9 @@
  *   -- Service role bypasses RLS for writes
  */
 
-const PLAN_LIMITS = { free: 30, basic: 300, pro: 1000 };
+// Crediti per ciclo mensile per piano (allineati a docs/monetization/CREDIT_SYSTEM.md).
+// Free usa Groq (0 crediti Claude); 'basic' resta come alias legacy = Pro.
+const PLAN_LIMITS = { free: 0, basic: 350, pro: 350, max: 1200 };
 
 export async function onRequest({ request, env }) {
   const url = new URL(request.url);
